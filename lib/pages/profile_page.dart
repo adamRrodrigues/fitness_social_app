@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_social_app/models/user_model.dart';
 import 'package:fitness_social_app/services/auth_service.dart';
+import 'package:fitness_social_app/widgets/count_widget.dart';
 import 'package:fitness_social_app/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 
@@ -35,7 +36,8 @@ class _ProfilePageState extends State<ProfilePage> {
             return NestedScrollView(
               headerSliverBuilder: (context, innerBoxIsScrolled) => [
                 SliverAppBar(
-                  title: Text(thisUser.username),
+                  title: Text(thisUser.username, style: Theme.of(context).textTheme.titleLarge,),
+
                   actions: [
                     Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -80,48 +82,10 @@ class _ProfilePageState extends State<ProfilePage> {
                       Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            Column(
-                              children: [
-                                Text(
-                                  thisUser.posts.length.toString(),
-                                  style:
-                                      Theme.of(context).textTheme.titleMedium,
-                                ),
-                                Text(
-                                  'posts',
-                                  style:
-                                      Theme.of(context).textTheme.titleMedium,
-                                ),
-                              ],
-                            ),
-                            Column(
-                              children: [
-                                Text(
-                                  '1.4k',
-                                  style:
-                                      Theme.of(context).textTheme.titleMedium,
-                                ),
-                                Text(
-                                  'followers',
-                                  style:
-                                      Theme.of(context).textTheme.titleMedium,
-                                ),
-                              ],
-                            ),
-                            Column(
-                              children: [
-                                Text(
-                                  '133',
-                                  style:
-                                      Theme.of(context).textTheme.titleMedium,
-                                ),
-                                Text(
-                                  'following',
-                                  style:
-                                      Theme.of(context).textTheme.titleMedium,
-                                ),
-                              ],
-                            ),
+                            CountWidget(amount: thisUser.posts.length.toString(), type: 'posts'),
+                            CountWidget(amount: '1.4k', type: 'followers'),
+                            CountWidget(amount: '120', type: 'following'),
+                        
                           ])
                     ],
                   ),
@@ -138,3 +102,5 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 }
+
+

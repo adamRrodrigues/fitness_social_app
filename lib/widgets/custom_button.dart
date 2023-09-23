@@ -10,15 +10,18 @@ class CustomButton extends StatelessWidget {
     return Container(
       width: 300,
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(5),
           border: Border.all(
-              color: Theme.of(context).colorScheme.primary, width: 2)),
+              color: Theme.of(context).colorScheme.primary, width: 3)),
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(4.0),
         child: Center(
           child: Text(
             buttonText,
-            style: Theme.of(context).textTheme.titleMedium,
+            style: Theme.of(context)
+                .textTheme
+                .titleMedium!
+                .copyWith(fontWeight: FontWeight.bold),
           ),
         ),
       ),

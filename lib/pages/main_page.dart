@@ -33,7 +33,10 @@ class MainPageState extends State<MainPage> {
           body: pages[_selectedIndex],
           bottomNavigationBar: Container(
               decoration: BoxDecoration(
-                color: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
+                border: Border(
+                    top: BorderSide(
+                        color: Theme.of(context).colorScheme.primary)),
+                color: Theme.of(context).colorScheme.background,
               ),
               child: SafeArea(
                 child: Padding(
