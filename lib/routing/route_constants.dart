@@ -1,6 +1,7 @@
-class RouteConstants{
-  static String createPost = 'createPost';
-  static String postScreen = 'postScreen';
+class RouteConstants {
+  // static String createPost = 'createPost';
+  static String userPage = 'userPage';
+  // static String postScreen = 'postScreen';
   // static String followers = 'followers';
   // static String edit = 'edit';
 }

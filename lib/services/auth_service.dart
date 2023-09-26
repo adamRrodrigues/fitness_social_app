@@ -17,9 +17,6 @@ class Auth {
         UserCredential user = await FirebaseAuth.instance
             .createUserWithEmailAndPassword(email: email, password: password);
 
-        // String profileUrl =
-        //     await storageServices.storeImage('profileImage', file);
-
         await FirebaseFirestore.instance
             .collection('users')
             .doc(user.user!.uid)
@@ -30,6 +27,16 @@ class Auth {
               uid: user.user!.uid,
               posts: [],
             ).toMap());
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.user!.uid)
+            .collection('followers')
+            .add({});
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.user!.uid)
+            .collection('following')
+            .add({});
 
         created = true;
       } catch (e) {

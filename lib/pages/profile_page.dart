@@ -1,9 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fitness_social_app/models/user_model.dart';
 import 'package:fitness_social_app/services/auth_service.dart';
-import 'package:fitness_social_app/widgets/count_widget.dart';
-import 'package:fitness_social_app/widgets/custom_button.dart';
+import 'package:fitness_social_app/services/user_services.dart';
+import 'package:fitness_social_app/widgets/user_profile.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -27,16 +26,15 @@ class _ProfilePageState extends State<ProfilePage> {
             Map<String, dynamic> data =
                 snapshot.data!.data() as Map<String, dynamic>;
 
-            final thisUser = UserModel(
-                username: data['username'],
-                uid: user.uid,
-                posts: data['posts'],
-                profileUrl: data['profileUrl']);
+            final thisUser = UserServices().mapSingleUser(data);
 
             return NestedScrollView(
               headerSliverBuilder: (context, innerBoxIsScrolled) => [
                 SliverAppBar(
-                  title: Text(thisUser.username, style: Theme.of(context).textTheme.titleLarge,),
+                  title: Text(
+                    thisUser.username,
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
 
                   actions: [
                     Padding(
@@ -52,45 +50,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   floating: true,
                 )
               ],
-              body: SafeArea(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 14),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Column(
-                        children: [
-                          CircleAvatar(
-                            backgroundImage: NetworkImage(thisUser.profileUrl),
-                            radius: 48,
-                          ),
-                          const SizedBox(height: 10),
-                          Text(
-                            "Full Name",
-                            style: Theme.of(context).textTheme.titleLarge,
-                          )
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      const CustomButton(buttonText: "Edit Profile"),
-                      Divider(
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            CountWidget(amount: thisUser.posts.length.toString(), type: 'posts'),
-                            CountWidget(amount: '1.4k', type: 'followers'),
-                            CountWidget(amount: '120', type: 'following'),
-                        
-                          ])
-                    ],
-                  ),
-                ),
-              ),
+              body: UserProfile(thisUser: thisUser),
             );
           } else {
             return const Center(

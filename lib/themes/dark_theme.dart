@@ -7,13 +7,13 @@ ThemeData darkTheme = ThemeData(
     appBarTheme: const AppBarTheme(),
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(
       backgroundColor: Color.fromARGB(255, 27, 27, 27),
-      selectedItemColor: Color(0xfff0f0f0),
+      selectedItemColor: Color(0xff46B47D),
       unselectedItemColor: Color(0xff001913),
     ),
     colorScheme: const ColorScheme.dark(
       background: Colors.black,
-      primary: Color(0xfff0f0f0),
-      secondary: Color.fromARGB(255, 28, 29, 29),
+      primary: Color(0xff46B47D),
+      secondary: Color(0xff91D350),
     ),
     textTheme: const TextTheme(
       titleLarge: TextStyle(

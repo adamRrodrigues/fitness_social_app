@@ -60,7 +60,7 @@ class MainPageState extends State<MainPage> {
                         .selectedItemColor,
                     tabs: const [
                       GButton(
-                        icon: Icons.home,
+                        icon: Icons.home_outlined,
                         text: 'Home',
                       ),
                       GButton(

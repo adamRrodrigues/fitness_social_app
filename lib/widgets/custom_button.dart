@@ -8,11 +8,11 @@ class CustomButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 300,
+      width: 275,
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5),
+          borderRadius: BorderRadius.circular(20),
           border: Border.all(
-              color: Theme.of(context).colorScheme.primary, width: 3)),
+              color: Theme.of(context).colorScheme.secondary, width: 3)),
       child: Padding(
         padding: const EdgeInsets.all(4.0),
         child: Center(
