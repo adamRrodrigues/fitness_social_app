@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fitness_social_app/models/comment_model.dart';
 import 'package:fitness_social_app/models/generic_post_model.dart';
 import 'package:fitness_social_app/services/storage_services.dart';
 
@@ -20,6 +21,7 @@ class GenericPostServices {
                 postName: postName,
                 uid: thisUser!.uid,
                 likes: List.empty(),
+                comments: List.empty(),
                 image: '',
                 createdAt: Timestamp.now())
             .toMap())
@@ -40,6 +42,7 @@ class GenericPostServices {
         postName: data['postName'],
         uid: data['uid'],
         likes: List.from(data['likes']),
+        comments: List.from(data['comments']),
         image: data['image'],
         createdAt: data['createdAt']);
     print(thisPost);
@@ -57,30 +60,29 @@ class GenericPostServices {
     });
   }
 
-  bool hasLiked = false;
-
   Future likePost(postId, uid, liked) async {
     if (liked) {
-      await FirebaseFirestore.instance.collection('generic_posts').doc(postId).update({
+      await FirebaseFirestore.instance
+          .collection('generic_posts')
+          .doc(postId)
+          .update({
         'likes': FieldValue.arrayRemove([uid])
       });
     } else {
-      await FirebaseFirestore.instance.collection('generic_posts').doc(postId).update({
+      await FirebaseFirestore.instance
+          .collection('generic_posts')
+          .doc(postId)
+          .update({
         'likes': FieldValue.arrayUnion([uid])
       });
     }
   }
 
-  Stream hasLikedCheck(String uid, String postId) async* {
-    DocumentSnapshot snap =
-        await FirebaseFirestore.instance.collection('generic_posts').doc(postId).get();
-
-    List likes = (snap.data()! as dynamic)['likes'];
-
-    if (likes.contains(postId)) {
-      hasLiked = true;
-    } else {
-      hasLiked = false;
-    }
+  Future comment(String postId, String uid, String comment) async {
+    await genPosts.doc(postId).update({
+      'comments': FieldValue.arrayUnion([
+        {'uid': uid, 'comment': comment}
+      ])
+    });
   }
 }

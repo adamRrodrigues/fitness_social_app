@@ -36,14 +36,15 @@ final GoRouter appRouter = GoRouter(routes: <GoRoute>[
           },
         ),
         GoRoute(
-          path: 'viewPostScreen',
+          path: 'viewPostScreen/:id',
           name: RouteConstants.viewPostScreen,
           pageBuilder: (context, state) {
             GenericPost post = state.extra as GenericPost;
-
+            final  postId = state.pathParameters['id'];
             return CupertinoPage(
                 child: ViewPost(
               post: post,
+              postId: postId!,
             ));
           },
         ),

@@ -9,7 +9,7 @@ class FallbackService {
     var querySnapshots = await posts.get();
     for (var doc in querySnapshots.docs) {
       await doc.reference.update({
-        'likes': List<String>.empty(),
+        'comments': List<String>.empty(),
       });
     }
   }

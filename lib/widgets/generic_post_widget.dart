@@ -44,7 +44,8 @@ class _GenericPostWidgetState extends State<GenericPostWidget> {
 
     return GestureDetector(
       onTap: () {
-        context.pushNamed(RouteConstants.viewPostScreen, extra: widget.post);
+        context.pushNamed(RouteConstants.viewPostScreen,
+            extra: widget.post, pathParameters: {'id': widget.postId});
       },
       child: Padding(
         padding: const EdgeInsets.all(14.0),
@@ -119,7 +120,7 @@ class _GenericPostWidgetState extends State<GenericPostWidget> {
                                         ? loadingProgress
                                                 .cumulativeBytesLoaded /
                                             loadingProgress.expectedTotalBytes!
-                                        : null,
+                                        : 10,
                                   ),
                                 ),
                               );
@@ -144,35 +145,48 @@ class _GenericPostWidgetState extends State<GenericPostWidget> {
                     SizedBox(
                       height: 10,
                     ),
-                    Padding(
-                      padding: EdgeInsets.all(4.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  like();
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.all(2.0),
-                                  child: isLiked
-                                      ? Icon(Icons.favorite)
-                                      : Icon(Icons.favorite_outline),
-                                ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                like();
+                              },
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 2.0),
+                                child: isLiked
+                                    ? Icon(Icons.favorite)
+                                    : Icon(Icons.favorite_outline),
                               ),
-                              Padding(
-                                  padding: const EdgeInsets.all(2.0),
-                                  child:
-                                      Text(widget.post.likes.length.toString()))
-                            ],
-                          ),
-                          Icon(Icons.comment_outlined),
-                          Icon(Icons.share_outlined),
-                        ],
-                      ),
+                            ),
+                            Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 2.0),
+                                child:
+                                    Text(widget.post.likes.length.toString()))
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 2.0),
+                              child: Icon(Icons.comment_outlined),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 2.0),
+                              child:
+                                  Text(widget.post.comments.length.toString()),
+                            ),
+                          ],
+                        ),
+                        Icon(Icons.share_outlined),
+                      ],
                     )
                   ],
                 ),

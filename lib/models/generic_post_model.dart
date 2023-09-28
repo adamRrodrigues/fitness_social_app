@@ -2,6 +2,8 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fitness_social_app/models/comment_model.dart';
+import 'package:fitness_social_app/models/user_model.dart';
 import 'package:flutter/foundation.dart';
 
 class GenericPost {
@@ -9,12 +11,14 @@ class GenericPost {
   final String uid;
   final String image;
   final List<String> likes;
+  final List<dynamic> comments;
   final Timestamp createdAt;
   GenericPost({
     required this.postName,
     required this.uid,
     required this.image,
     required this.likes,
+    required this.comments,
     required this.createdAt,
   });
 
@@ -23,6 +27,7 @@ class GenericPost {
     String? uid,
     String? image,
     List<String>? likes,
+    List<dynamic>? comments,
     Timestamp? createdAt,
   }) {
     return GenericPost(
@@ -31,6 +36,7 @@ class GenericPost {
       image: image ?? this.image,
       likes: likes ?? this.likes,
       createdAt: createdAt ?? this.createdAt,
+      comments: comments ?? this.comments,
     );
   }
 
@@ -51,6 +57,7 @@ class GenericPost {
       image: map['image'] as String,
       likes: List<String>.from((map['likes'] as List<dynamic>)),
       createdAt: map['createdAt'],
+      comments: List<dynamic>.from((map['comments'] as List<dynamic>)),
     );
   }
 

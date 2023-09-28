@@ -35,12 +35,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                 // Map<String, dynamic> data = e as Map<String, dynamic>;
                 UserModel thisUser = UserServices().mapDocUser(e);
 
-                return GestureDetector(
-                    onTap: () {
-                      context.pushNamed(RouteConstants.userPage,
-                          extra: thisUser);
-                    },
-                    child: MiniProfie(user: thisUser));
+                return MiniProfie(user: thisUser);
               }).toList());
             } else {
               return Center(child: CircularProgressIndicator());
