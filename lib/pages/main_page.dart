@@ -43,8 +43,8 @@ class MainPageState extends State<MainPage> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 15.0, vertical: 4),
                   child: GNav(
-                    rippleColor: Theme.of(context).colorScheme.primary,
-                    hoverColor: Theme.of(context).colorScheme.secondary,
+                    rippleColor: Theme.of(context).colorScheme.secondary,
+                    hoverColor: Theme.of(context).colorScheme.primary,
                     gap: 8,
                     activeColor: Theme.of(context)
                         .bottomNavigationBarTheme

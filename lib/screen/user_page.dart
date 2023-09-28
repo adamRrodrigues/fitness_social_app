@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 class UserPage extends StatefulWidget {
   const UserPage({Key? key, required this.user}) : super(key: key);
 
-  @override
   final UserModel user;
 
+  @override
   _UserPageState createState() => _UserPageState();
 }
 
@@ -27,7 +27,7 @@ class _UserPageState extends State<UserPage> {
                   floating: true,
                 )
               ],
-          body: Column(
+          body: Stack(
             children: [UserProfile(thisUser: widget.user)],
           )),
     );

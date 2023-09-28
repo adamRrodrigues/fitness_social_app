@@ -3,17 +3,17 @@ import 'package:flutter/material.dart';
 
 ThemeData darkTheme = ThemeData(
     brightness: Brightness.dark,
-    scaffoldBackgroundColor: Colors.black,
+    scaffoldBackgroundColor: Color(0xff101214),
     appBarTheme: const AppBarTheme(),
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(
       backgroundColor: Color.fromARGB(255, 27, 27, 27),
-      selectedItemColor: Color(0xff46B47D),
+      selectedItemColor: Color(0xff91D350),
       unselectedItemColor: Color(0xff001913),
     ),
     colorScheme: const ColorScheme.dark(
-      background: Colors.black,
-      primary: Color(0xff46B47D),
-      secondary: Color(0xff91D350),
+      background: Color(0xff101214),
+      primary: Color(0xff91D350),
+      secondary: Color(0xff46B47D),
     ),
     textTheme: const TextTheme(
       titleLarge: TextStyle(

@@ -1,9 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fitness_social_app/routing/route_constants.dart';
 import 'package:fitness_social_app/services/auth_service.dart';
+import 'package:fitness_social_app/services/post_service.dart';
 import 'package:fitness_social_app/services/user_services.dart';
 import 'package:fitness_social_app/widgets/user_profile.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -41,7 +44,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       padding: const EdgeInsets.all(8.0),
                       child: GestureDetector(
                         onTap: () => Auth().signOut(),
-                        child: Icon(Icons.logout_outlined),
+                        child: const Icon(Icons.logout_outlined),
                       ),
                     )
                   ],
@@ -50,7 +53,30 @@ class _ProfilePageState extends State<ProfilePage> {
                   floating: true,
                 )
               ],
-              body: UserProfile(thisUser: thisUser),
+              body: Column(
+                children: [
+                  Expanded(
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        UserProfile(thisUser: thisUser),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Align(
+                            alignment: Alignment.bottomRight,
+                            child: FloatingActionButton.small(
+                              onPressed: () {
+                                context.pushNamed(RouteConstants.createPost);
+                              },
+                              child: Icon((Icons.add)),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             );
           } else {
             return const Center(
@@ -62,5 +88,3 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 }
-
-

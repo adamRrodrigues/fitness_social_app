@@ -1,7 +1,11 @@
 import 'package:fitness_social_app/auth/auth_state.dart';
+import 'package:fitness_social_app/models/generic_post_model.dart';
 import 'package:fitness_social_app/models/user_model.dart';
 import 'package:fitness_social_app/routing/route_constants.dart';
+import 'package:fitness_social_app/screen/create_post.dart';
+// import 'package:fitness_social_app/screen/fall_back_screen.dart';
 import 'package:fitness_social_app/screen/user_page.dart';
+import 'package:fitness_social_app/screen/view_post.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
 
@@ -23,6 +27,25 @@ final GoRouter appRouter = GoRouter(routes: <GoRoute>[
               user: user,
             ));
           },
-        )
+        ),
+        GoRoute(
+          path: 'createPage',
+          name: RouteConstants.createPost,
+          pageBuilder: (context, state) {
+            return CupertinoPage(child: CreatePost());
+          },
+        ),
+        GoRoute(
+          path: 'viewPostScreen',
+          name: RouteConstants.viewPostScreen,
+          pageBuilder: (context, state) {
+            GenericPost post = state.extra as GenericPost;
+
+            return CupertinoPage(
+                child: ViewPost(
+              post: post,
+            ));
+          },
+        ),
       ])
 ]);

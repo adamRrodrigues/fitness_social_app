@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_social_app/models/user_model.dart';
 import 'package:fitness_social_app/routing/route_constants.dart';
 import 'package:fitness_social_app/services/user_services.dart';
+import 'package:fitness_social_app/widgets/mini_profie.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -20,6 +21,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(title: Text("Discover"), backgroundColor: Theme.of(context).colorScheme.background, elevation: 0,),
           body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: FutureBuilder(
@@ -38,7 +40,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                       context.pushNamed(RouteConstants.userPage,
                           extra: thisUser);
                     },
-                    child: Text(thisUser.username));
+                    child: MiniProfie(user: thisUser));
               }).toList());
             } else {
               return Center(child: CircularProgressIndicator());
