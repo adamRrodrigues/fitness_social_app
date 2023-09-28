@@ -203,7 +203,10 @@ class _UserProfileState extends State<UserProfile> {
                                     });
                                   }
                                 },
-                                child: GenericPostWidget(post: thisPost));
+                                child: GenericPostWidget(
+                                  post: thisPost,
+                                  postId: e.id,
+                                ));
                           }).toList()),
                         );
                       } else {

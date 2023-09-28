@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_social_app/models/generic_post_model.dart';
 import 'package:fitness_social_app/routing/route_constants.dart';
@@ -8,9 +9,11 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class GenericPostWidget extends StatefulWidget {
-  const GenericPostWidget({Key? key, required this.post}) : super(key: key);
+  const GenericPostWidget({Key? key, required this.post, required this.postId})
+      : super(key: key);
 
   final GenericPost post;
+  final String postId;
 
   @override
   _GenericPostWidgetState createState() => _GenericPostWidgetState();
@@ -21,8 +24,24 @@ class _GenericPostWidgetState extends State<GenericPostWidget> {
 
   GenericPostServices genericPostServices = GenericPostServices();
 
+  bool isLiked = false;
+
+  @override
+  void initState() {
+    isLiked = widget.post.likes.contains(user!.uid);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    ImageProvider thumbnail = Image.network(widget.post.image).image;
+    void like() {
+      setState(() {
+        genericPostServices.likePost(widget.postId, user!.uid, isLiked);
+        isLiked = !isLiked;
+      });
+    }
+
     return GestureDetector(
       onTap: () {
         context.pushNamed(RouteConstants.viewPostScreen, extra: widget.post);
@@ -78,39 +97,43 @@ class _GenericPostWidgetState extends State<GenericPostWidget> {
                     SizedBox(
                       height: 5,
                     ),
-                    SizedBox(
-                      height: 300,
-                      width: double.infinity,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: Image.network(
-                          widget.post.image,
+                    GestureDetector(
+                      onTap: () => showImageViewer(context, thumbnail),
+                      child: SizedBox(
+                        height: 300,
+                        width: double.infinity,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Image.network(
+                            widget.post.image,
 
-                          loadingBuilder: (BuildContext context, Widget child,
-                              ImageChunkEvent? loadingProgress) {
-                            if (loadingProgress == null) return child;
-                            return SizedBox(
-                              height: 150,
-                              child: Center(
-                                child: CircularProgressIndicator(
-                                  value: loadingProgress.expectedTotalBytes !=
-                                          null
-                                      ? loadingProgress.cumulativeBytesLoaded /
-                                          loadingProgress.expectedTotalBytes!
-                                      : null,
+                            loadingBuilder: (BuildContext context, Widget child,
+                                ImageChunkEvent? loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return SizedBox(
+                                height: 150,
+                                child: Center(
+                                  child: CircularProgressIndicator(
+                                    value: loadingProgress.expectedTotalBytes !=
+                                            null
+                                        ? loadingProgress
+                                                .cumulativeBytesLoaded /
+                                            loadingProgress.expectedTotalBytes!
+                                        : null,
+                                  ),
                                 ),
-                              ),
-                            );
-                          },
-                          errorBuilder: (context, error, stackTrace) {
-                            print(error);
-                            return (const Center(
-                              child: Text('This Image is Invalid'),
-                            ));
-                          },
-                          // width: double.infinity,
-                          // height: double.maxFinite,
-                          fit: BoxFit.cover,
+                              );
+                            },
+                            errorBuilder: (context, error, stackTrace) {
+                              print(error);
+                              return (const Center(
+                                child: Text('This Image is Invalid'),
+                              ));
+                            },
+                            // width: double.infinity,
+                            // height: double.maxFinite,
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                     ),
@@ -130,20 +153,20 @@ class _GenericPostWidgetState extends State<GenericPostWidget> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               GestureDetector(
-                                onTap: () {},
+                                onTap: () {
+                                  like();
+                                },
                                 child: Padding(
                                   padding: const EdgeInsets.all(2.0),
-                                  child: widget.post.likes.contains(user!.uid)
+                                  child: isLiked
                                       ? Icon(Icons.favorite)
                                       : Icon(Icons.favorite_outline),
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.all(2.0),
-                                child: widget.post.likes.contains(user!.uid)
-                                    ? Text(widget.post.likes.length.toString())
-                                    : Text('0'),
-                              )
+                                  padding: const EdgeInsets.all(2.0),
+                                  child:
+                                      Text(widget.post.likes.length.toString()))
                             ],
                           ),
                           Icon(Icons.comment_outlined),
