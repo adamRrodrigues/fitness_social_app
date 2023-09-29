@@ -56,13 +56,34 @@ class _UserProfileState extends State<UserProfile> {
       FirebaseFirestore.instance.collection('generic_posts');
 
   @override
+  void initState() {
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.thisUser.uid)
+        .collection('followers')
+        .count()
+        .get()
+        .then(
+          (value) => followers = value.count,
+        );
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.thisUser.uid)
+        .collection('following')
+        .count()
+        .get()
+        .then(
+          (value) => following = value.count,
+        );
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final currentUser = FirebaseAuth.instance.currentUser;
 
     ImageProvider profileImage =
         Image.network(widget.thisUser.profileUrl).image;
-
-    Uint8List? image;
 
     Utils imagePicker = Utils();
 
@@ -133,6 +154,7 @@ class _UserProfileState extends State<UserProfile> {
                                 setState(() {
                                   UserServices()
                                       .unfollowUser(widget.thisUser.uid);
+                                  followers++;
                                 });
                               },
                               child:
@@ -144,6 +166,7 @@ class _UserProfileState extends State<UserProfile> {
                                   print(followers);
                                   UserServices()
                                       .followUser(widget.thisUser.uid);
+                                  followers--;
                                 });
                               },
                               child: const CustomButton(buttonText: "Follow"));
@@ -157,32 +180,22 @@ class _UserProfileState extends State<UserProfile> {
             Divider(
               color: Theme.of(context).colorScheme.primary,
             ),
-            StreamBuilder(
-                stream: getFollowage(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    return Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          CountWidget(
-                              amount: widget.thisUser.posts.length.toString(),
-                              type: 'posts'),
-                          CountWidget(
-                              amount: followers.toString(), type: 'followers'),
-                          CountWidget(
-                              amount: following.toString(), type: 'following'),
-                        ],
-                      ),
-                    );
-                  } else {
-                    return CircularProgressIndicator();
-                  }
-                }),
+            Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  CountWidget(
+                      amount: widget.thisUser.posts.length.toString(),
+                      type: 'posts'),
+                  CountWidget(amount: followers.toString(), type: 'followers'),
+                  CountWidget(amount: following.toString(), type: 'following'),
+                ],
+              ),
+            ),
             Expanded(
               child: StreamBuilder(
                 stream: posts
-                    .where('uid', isEqualTo: widget.thisUser.uid)
+                    .where('uid', isEqualTo: widget.thisUser.uid).orderBy('createdAt', descending: false)
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.active) {

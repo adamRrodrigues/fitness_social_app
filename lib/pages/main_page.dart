@@ -16,6 +16,8 @@ class MainPage extends StatefulWidget {
 class MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
 
+  PageController pageController = PageController();
+
   List<Widget> pages = const [
     HomePage(),
     DiscoverPage(),
@@ -30,7 +32,11 @@ class MainPageState extends State<MainPage> {
     return SafeArea(
       child: Scaffold(
           backgroundColor: Theme.of(context).colorScheme.background,
-          body: pages[_selectedIndex],
+          body: PageView(
+            controller: pageController,
+            children: pages,
+            physics: NeverScrollableScrollPhysics(),
+          ),
           bottomNavigationBar: Container(
               decoration: BoxDecoration(
                 border: Border(
@@ -80,6 +86,7 @@ class MainPageState extends State<MainPage> {
                     onTabChange: (index) {
                       setState(() {
                         _selectedIndex = index;
+                        pageController.jumpToPage(_selectedIndex);
                       });
                     },
                   ),

@@ -14,35 +14,44 @@ class DiscoverPage extends StatefulWidget {
   _DiscoverPageState createState() => _DiscoverPageState();
 }
 
-class _DiscoverPageState extends State<DiscoverPage> {
+class _DiscoverPageState extends State<DiscoverPage>
+    with AutomaticKeepAliveClientMixin {
   CollectionReference users = FirebaseFirestore.instance.collection('users');
   final user = FirebaseAuth.instance.currentUser;
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(title: Text("Discover"), backgroundColor: Theme.of(context).colorScheme.background, elevation: 0,),
+          appBar: AppBar(
+            title: Text("Discover"),
+            backgroundColor: Theme.of(context).colorScheme.background,
+            elevation: 0,
+          ),
           body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: FutureBuilder(
-          future: users.get(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              return ListView(
-                  children: snapshot.data!.docs
-                      .where((element) => element.id != user!.uid)
-                      .map((e) {
-                // Map<String, dynamic> data = e as Map<String, dynamic>;
-                UserModel thisUser = UserServices().mapDocUser(e);
+            padding: const EdgeInsets.all(8.0),
+            child: FutureBuilder(
+              future: users.get(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return ListView(
+                      children: snapshot.data!.docs
+                          .where((element) => element.id != user!.uid)
+                          .map((e) {
+                    // Map<String, dynamic> data = e as Map<String, dynamic>;
+                    UserModel thisUser = UserServices().mapDocUser(e);
 
-                return MiniProfie(user: thisUser);
-              }).toList());
-            } else {
-              return Center(child: CircularProgressIndicator());
-            }
-          },
-        ),
-      )),
+                    return MiniProfie(user: thisUser);
+                  }).toList());
+                } else {
+                  return Center(child: CircularProgressIndicator());
+                }
+              },
+            ),
+          )),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

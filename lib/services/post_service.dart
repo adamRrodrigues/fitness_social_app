@@ -2,7 +2,6 @@ import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fitness_social_app/models/comment_model.dart';
 import 'package:fitness_social_app/models/generic_post_model.dart';
 import 'package:fitness_social_app/services/storage_services.dart';
 
@@ -41,8 +40,8 @@ class GenericPostServices {
     final thisPost = GenericPost(
         postName: data['postName'],
         uid: data['uid'],
-        likes: List.from(data['likes']),
         comments: List.from(data['comments']),
+        likes: List.from(data['likes']),
         image: data['image'],
         createdAt: data['createdAt']);
     print(thisPost);

@@ -46,6 +46,7 @@ class GenericPost {
       'uid': uid,
       'image': image,
       'likes': likes,
+      'comments': comments,
       'createdAt': createdAt,
     };
   }
@@ -56,38 +57,11 @@ class GenericPost {
       uid: map['uid'] as String,
       image: map['image'] as String,
       likes: List<String>.from((map['likes'] as List<dynamic>)),
-      createdAt: map['createdAt'],
       comments: List<dynamic>.from((map['comments'] as List<dynamic>)),
+      createdAt: map['createdAt'],
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory GenericPost.fromJson(String source) =>
-      GenericPost.fromMap(json.decode(source) as Map<String, dynamic>);
-
-  @override
-  String toString() {
-    return 'GenericPost(postName: $postName, uid: $uid, image: $image, likes: $likes, createdAt: $createdAt)';
-  }
-
-  @override
-  bool operator ==(covariant GenericPost other) {
-    if (identical(this, other)) return true;
-
-    return other.postName == postName &&
-        other.uid == uid &&
-        other.image == image &&
-        listEquals(other.likes, likes) &&
-        other.createdAt == createdAt;
-  }
-
-  @override
-  int get hashCode {
-    return postName.hashCode ^
-        uid.hashCode ^
-        image.hashCode ^
-        likes.hashCode ^
-        createdAt.hashCode;
-  }
 }

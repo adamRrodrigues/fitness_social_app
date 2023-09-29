@@ -1,10 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easy_image_viewer/easy_image_viewer.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_social_app/models/generic_post_model.dart';
 import 'package:fitness_social_app/routing/route_constants.dart';
 import 'package:fitness_social_app/services/post_service.dart';
 import 'package:fitness_social_app/services/user_services.dart';
+import 'package:fitness_social_app/widgets/image_widget.dart';
+import 'package:fitness_social_app/widgets/mini_profie.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -25,21 +28,28 @@ class _GenericPostWidgetState extends State<GenericPostWidget> {
   GenericPostServices genericPostServices = GenericPostServices();
 
   bool isLiked = false;
+  int likeCount = 0;
 
   @override
   void initState() {
     isLiked = widget.post.likes.contains(user!.uid);
+    likeCount = widget.post.likes.length;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    ImageProvider thumbnail = Image.network(widget.post.image).image;
     void like() {
-      setState(() {
-        genericPostServices.likePost(widget.postId, user!.uid, isLiked);
-        isLiked = !isLiked;
-      });
+      // setState(() {
+      genericPostServices.likePost(widget.postId, user!.uid, isLiked);
+      isLiked = !isLiked;
+
+      if (isLiked) {
+        likeCount++;
+      } else {
+        likeCount--;
+      }
+      // });
     }
 
     return GestureDetector(
@@ -73,69 +83,35 @@ class _GenericPostWidgetState extends State<GenericPostWidget> {
                           .doc(widget.post.uid)
                           .get(),
                       builder: (context, snapshot) {
-                        if (snapshot.hasData) {
+                        if (snapshot.hasData &&
+                            snapshot.connectionState == ConnectionState.done) {
                           Map<String, dynamic> data =
                               snapshot.data!.data() as Map<String, dynamic>;
 
                           final thisUser = UserServices().mapSingleUser(data);
 
-                          return Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              CircleAvatar(
-                                backgroundImage:
-                                    NetworkImage(thisUser.profileUrl),
-                              ),
-                              Text("  ${thisUser.username}"),
-                            ],
-                          );
+                          return MiniProfie(user: thisUser);
+                        } else if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return SizedBox(
+                              height: 50,
+                              child: Text(
+                                'loading...',
+                              ));
                         } else {
-                          return Text('error');
+                          return Text('Error Loading');
                         }
                       },
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 5,
                     ),
-                    GestureDetector(
-                      onTap: () => showImageViewer(context, thumbnail),
-                      child: SizedBox(
-                        height: 300,
-                        width: double.infinity,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Image.network(
-                            widget.post.image,
-
-                            loadingBuilder: (BuildContext context, Widget child,
-                                ImageChunkEvent? loadingProgress) {
-                              if (loadingProgress == null) return child;
-                              return SizedBox(
-                                height: 150,
-                                child: Center(
-                                  child: CircularProgressIndicator(
-                                    value: loadingProgress.expectedTotalBytes !=
-                                            null
-                                        ? loadingProgress
-                                                .cumulativeBytesLoaded /
-                                            loadingProgress.expectedTotalBytes!
-                                        : 10,
-                                  ),
-                                ),
-                              );
-                            },
-                            errorBuilder: (context, error, stackTrace) {
-                              print(error);
-                              return (const Center(
-                                child: Text('This Image is Invalid'),
-                              ));
-                            },
-                            // width: double.infinity,
-                            // height: double.maxFinite,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
+                    SizedBox(
+                      height: 300,
+                      width: double.infinity,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: ImageWidget(url: widget.post.image),
                       ),
                     ),
                     SizedBox(
@@ -159,15 +135,14 @@ class _GenericPostWidgetState extends State<GenericPostWidget> {
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 2.0),
                                 child: isLiked
-                                    ? Icon(Icons.favorite)
+                                    ? Icon(Icons.favorite, color: Theme.of(context).colorScheme.primary,)
                                     : Icon(Icons.favorite_outline),
                               ),
                             ),
                             Padding(
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 2.0),
-                                child:
-                                    Text(widget.post.likes.length.toString()))
+                                child: Text(likeCount.toString()))
                           ],
                         ),
                         Row(

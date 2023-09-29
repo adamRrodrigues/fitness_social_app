@@ -96,8 +96,6 @@ class _CreatePostState extends State<CreatePost> {
                           try {
                             await GenericPostServices()
                                 .publishPost(postNameController.text, image!);
-                            postNameController.text = '';
-                            image = null;
                           } catch (e) {
                             AlertDialog(
                               title: Text('crashed for some reason'),
@@ -105,9 +103,7 @@ class _CreatePostState extends State<CreatePost> {
                           }
                           Navigator.pop(context);
                           postNameController.text = '';
-                          setState(() {
-                            image = null;
-                          });
+                          image = null;
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
                             Auth().snackBarMessage(

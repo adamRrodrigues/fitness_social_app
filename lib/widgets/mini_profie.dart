@@ -12,12 +12,12 @@ class MiniProfie extends StatelessWidget {
       onTap: () {
         context.pushNamed(RouteConstants.userPage, extra: user);
       },
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
+      child: SizedBox(
+        height: 50,
         child: Row(
           children: [
             CircleAvatar(
-              backgroundImage: NetworkImage(user.profileUrl),
+              foregroundImage: NetworkImage(user.profileUrl),
             ),
             Text('  ${user.username}'),
           ],
