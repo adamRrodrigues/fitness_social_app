@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/models/comment_model.dart';
 import 'package:fitness_social_app/models/generic_post_model.dart';
 import 'package:fitness_social_app/services/post_service.dart';
@@ -11,24 +12,28 @@ import 'package:fitness_social_app/widgets/image_widget.dart';
 import 'package:fitness_social_app/widgets/mini_profie.dart';
 import 'package:fitness_social_app/widgets/text_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ViewPost extends StatefulWidget {
+class ViewPost extends ConsumerStatefulWidget {
   const ViewPost({Key? key, required this.post, required this.postId})
       : super(key: key);
   final GenericPost post;
   final String postId;
 
   @override
-  State<ViewPost> createState() => _ViewPostState();
+  _ViewPostState createState() => _ViewPostState();
 }
 
-class _ViewPostState extends State<ViewPost> {
-  final user = FirebaseAuth.instance.currentUser;
+class _ViewPostState extends ConsumerState<ViewPost> {
+  User? user;
 
   bool isLiked = false;
   int likeCount = 0;
+  GenericPostServices? genericPostServices;
   @override
   void initState() {
+    user = ref.read(userProvider);
+    genericPostServices = ref.read(genericPostServicesProvider);
     isLiked = widget.post.likes.contains(user!.uid);
     likeCount = widget.post.likes.length;
     super.initState();
@@ -41,11 +46,9 @@ class _ViewPostState extends State<ViewPost> {
 
     TextEditingController commentField = TextEditingController();
 
-    GenericPostServices genericPostServices = GenericPostServices();
-
     void like() {
       setState(() {
-        genericPostServices.likePost(widget.postId, user!.uid, isLiked);
+        genericPostServices!.likePost(widget.postId, user!.uid, isLiked);
         isLiked = !isLiked;
 
         if (isLiked) {
@@ -126,8 +129,8 @@ class _ViewPostState extends State<ViewPost> {
                               },
                             );
                             if (commentField.text.isNotEmpty) {
-                              await genericPostServices.comment(widget.postId,
-                                  user!.uid, commentField.text);
+                              await genericPostServices!.comment(
+                                  widget.postId, user!.uid, commentField.text);
                             } else {}
 
                             Navigator.pop(context);
@@ -233,8 +236,7 @@ class _ViewPostState extends State<ViewPost> {
                       child: Row(
                         children: [
                           const Padding(
-                            padding:
-                                EdgeInsets.symmetric(horizontal: 2.0),
+                            padding: EdgeInsets.symmetric(horizontal: 2.0),
                             child: Icon(Icons.comment_outlined),
                           ),
                           Padding(

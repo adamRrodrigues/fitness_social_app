@@ -1,26 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fitness_social_app/models/generic_post_model.dart';
+import 'package:fitness_social_app/services/user_services.dart';
 
 class FeedServices {
-  // final postQuery = FirebaseFirestore.instance
-  //     .collection('generic_posts')
-  //     .orderBy('createdAt', descending: true)
-  //     .withConverter(
-  //       fromFirestore: (snapshot, _) => GenericPost.fromMap(snapshot.data()!),
-  //       toFirestore: (post, _) => post.toMap(),
-  //     );
+  List<String> following = [];
 
   Query<GenericPost> fetchPosts(uid) {
-    final postQuery = FirebaseFirestore.instance
+    final postQuery;
+    postQuery = FirebaseFirestore.instance
         .collection('generic_posts')
-        .orderBy('uid')
+        .where('uid', whereIn: following)
         .orderBy('createdAt', descending: true)
-        .where('uid', isNotEqualTo: uid)
         .withConverter(
           fromFirestore: (snapshot, _) => GenericPost.fromMap(snapshot.data()!),
           toFirestore: (post, _) => post.toMap(),
         );
-
     return postQuery;
   }
 
@@ -35,5 +29,9 @@ class FeedServices {
         );
 
     return postQuery;
+  }
+
+  Stream fetchFollowing(uid) async* {
+    following = await UserServices().fetchFollowing(uid);
   }
 }

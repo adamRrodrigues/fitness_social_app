@@ -122,14 +122,24 @@ class _UserProfileState extends ConsumerState<UserProfile> {
                     },
                     child: CircleAvatar(
                       backgroundImage: NetworkImage(widget.thisUser.profileUrl),
-                      radius: 48,
+                      radius: 38,
                     ),
                   ),
                   const SizedBox(height: 10),
-                  Text(
-                    "Full Name",
-                    style: Theme.of(context).textTheme.titleLarge,
-                  )
+                  Builder(builder: (context) {
+                    if (widget.thisUser.firstName.isNotEmpty &&
+                        widget.thisUser.lastName.isNotEmpty) {
+                      return Text(
+                        "${widget.thisUser.firstName} ${widget.thisUser.lastName}",
+                        style: Theme.of(context).textTheme.titleLarge,
+                      );
+                    } else {
+                      return Text(
+                        widget.thisUser.username,
+                        style: Theme.of(context).textTheme.titleLarge,
+                      );
+                    }
+                  })
                 ],
               ),
               const SizedBox(

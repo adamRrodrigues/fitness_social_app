@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/models/generic_post_model.dart';
 import 'package:fitness_social_app/routing/route_constants.dart';
 import 'package:fitness_social_app/services/post_service.dart';
@@ -7,9 +8,10 @@ import 'package:fitness_social_app/services/user_services.dart';
 import 'package:fitness_social_app/widgets/image_widget.dart';
 import 'package:fitness_social_app/widgets/mini_profie.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class GenericPostWidget extends StatefulWidget {
+class GenericPostWidget extends ConsumerStatefulWidget {
   const GenericPostWidget({Key? key, required this.post, required this.postId})
       : super(key: key);
 
@@ -20,18 +22,20 @@ class GenericPostWidget extends StatefulWidget {
   _GenericPostWidgetState createState() => _GenericPostWidgetState();
 }
 
-class _GenericPostWidgetState extends State<GenericPostWidget> {
-  final user = FirebaseAuth.instance.currentUser;
+class _GenericPostWidgetState extends ConsumerState<GenericPostWidget> {
+  User? user;
 
-  GenericPostServices genericPostServices = GenericPostServices();
+  GenericPostServices? genericPostServices;
 
   bool isLiked = false;
   int likeCount = 0;
 
   @override
   void initState() {
-    isLiked = widget.post.likes.contains(user!.uid);
+    user = ref.read(userProvider);
+    genericPostServices = ref.read(genericPostServicesProvider);
     likeCount = widget.post.likes.length;
+    isLiked = widget.post.likes.contains(user!.uid);
     super.initState();
   }
 
@@ -39,7 +43,7 @@ class _GenericPostWidgetState extends State<GenericPostWidget> {
   Widget build(BuildContext context) {
     void like() {
       // setState(() {
-      genericPostServices.likePost(widget.postId, user!.uid, isLiked);
+      genericPostServices!.likePost(widget.postId, user!.uid, isLiked);
       isLiked = !isLiked;
 
       if (isLiked) {
@@ -54,6 +58,9 @@ class _GenericPostWidgetState extends State<GenericPostWidget> {
       onTap: () {
         context.pushNamed(RouteConstants.viewPostScreen,
             extra: widget.post, pathParameters: {'id': widget.postId});
+      },
+      onLongPress: () {
+        genericPostServices!.deletePost(widget.postId, user!.uid);
       },
       child: Padding(
         padding: const EdgeInsets.all(14.0),
@@ -75,31 +82,40 @@ class _GenericPostWidgetState extends State<GenericPostWidget> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    FutureBuilder(
-                      future: FirebaseFirestore.instance
-                          .collection('users')
-                          .doc(widget.post.uid)
-                          .get(),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData &&
-                            snapshot.connectionState == ConnectionState.done) {
-                          Map<String, dynamic> data =
-                              snapshot.data!.data() as Map<String, dynamic>;
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        FutureBuilder(
+                          future: FirebaseFirestore.instance
+                              .collection('users')
+                              .doc(widget.post.uid)
+                              .get(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData &&
+                                snapshot.connectionState ==
+                                    ConnectionState.done) {
+                              Map<String, dynamic> data =
+                                  snapshot.data!.data() as Map<String, dynamic>;
 
-                          final thisUser = UserServices().mapSingleUser(data);
+                              final thisUser =
+                                  UserServices().mapSingleUser(data);
 
-                          return MiniProfie(user: thisUser);
-                        } else if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const SizedBox(
-                              height: 50,
-                              child: Text(
-                                'loading...',
-                              ));
-                        } else {
-                          return const Text('Error Loading');
-                        }
-                      },
+                              return MiniProfie(user: thisUser);
+                            } else if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const SizedBox(
+                                  height: 50,
+                                  child: Text(
+                                    'loading...',
+                                  ));
+                            } else {
+                              return const Text('Error Loading');
+                            }
+                          },
+                        ),
+                        Text(
+                            '${widget.post.createdAt.toDate().day.toString()}/${widget.post.createdAt.toDate().month.toString()}/${widget.post.createdAt.toDate().year.toString()}')
+                      ],
                     ),
                     const SizedBox(
                       height: 5,
@@ -133,7 +149,12 @@ class _GenericPostWidgetState extends State<GenericPostWidget> {
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 2.0),
                                 child: isLiked
-                                    ? Icon(Icons.favorite, color: Theme.of(context).colorScheme.primary,)
+                                    ? Icon(
+                                        Icons.favorite,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                      )
                                     : const Icon(Icons.favorite_outline),
                               ),
                             ),
@@ -146,8 +167,7 @@ class _GenericPostWidgetState extends State<GenericPostWidget> {
                         Row(
                           children: [
                             const Padding(
-                              padding:
-                                  EdgeInsets.symmetric(horizontal: 2.0),
+                              padding: EdgeInsets.symmetric(horizontal: 2.0),
                               child: Icon(Icons.comment_outlined),
                             ),
                             Padding(

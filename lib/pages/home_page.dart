@@ -15,11 +15,19 @@ class HomePage extends ConsumerStatefulWidget {
 class _HomePageState extends ConsumerState<HomePage>
     with AutomaticKeepAliveClientMixin {
   User? user;
+  FeedServices? feedServices;
+
+  void getFollowing() async {
+    await feedServices!.fetchFollowing(user!.uid);
+    print(feedServices!.following);
+  }
+
   @override
   void initState() {
-    super.initState();
-    // "ref" can be used in all life-cycles of a StatefulWidget.
     user = ref.read(userProvider);
+    feedServices = ref.read(feedServicesProvider);
+    getFollowing();
+    super.initState();
   }
 
   @override
@@ -34,8 +42,24 @@ class _HomePageState extends ConsumerState<HomePage>
                 },
               );
             },
-            child: PostFeedWidget(
-                postQuery: FeedServices().fetchPosts(user!.uid))));
+            child: StreamBuilder(
+                stream: feedServices!.fetchFollowing(user!.uid),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    if (feedServices!.following.isNotEmpty) {
+                      return PostFeedWidget(
+                          postQuery: feedServices!.fetchPosts(user!.uid));
+                    } else {
+                      return Center(
+                        child: Text('You Are Not Following Any users'),
+                      );
+                    }
+                  } else {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                })));
   }
 
   @override

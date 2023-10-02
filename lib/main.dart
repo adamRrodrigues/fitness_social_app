@@ -7,6 +7,7 @@ import 'package:fitness_social_app/services/post_service.dart';
 import 'package:fitness_social_app/services/user_services.dart';
 import 'package:fitness_social_app/themes/dark_theme.dart';
 import 'package:fitness_social_app/themes/light_theme.dart';
+import 'package:fitness_social_app/utlis/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -14,6 +15,7 @@ final userProvider = Provider((ref) => FirebaseAuth.instance.currentUser);
 final userServicesProvider = Provider((ref) => UserServices());
 final genericPostServicesProvider = Provider((ref) => GenericPostServices());
 final feedServicesProvider = Provider((ref) => FeedServices());
+final utilProvider = Provider((ref) => Utils());
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(

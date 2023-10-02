@@ -6,12 +6,14 @@ class UserServices {
   CollectionReference users = FirebaseFirestore.instance.collection('users');
   final user = FirebaseAuth.instance.currentUser;
   Future fetchSpecificUser(String id) async {
-   await users.doc(id).get();
+    await users.doc(id).get();
   }
 
   UserModel mapSingleUser(Map<String, dynamic> data) {
     final thisUser = UserModel(
         username: data['username'],
+        firstName: data['firstName'],
+        lastName: data['lastName'],
         uid: data['uid'],
         posts: data['posts'],
         profileUrl: data['profileUrl']);
@@ -22,6 +24,8 @@ class UserServices {
   UserModel mapDocUser(QueryDocumentSnapshot<Object?> data) {
     final thisUser = UserModel(
         username: data['username'],
+        firstName: data['firstName'],
+        lastName: data['lastName'],
         uid: data['uid'],
         posts: data['posts'],
         profileUrl: data['profileUrl']);
@@ -63,5 +67,29 @@ class UserServices {
         .collection('following')
         .doc(uid)
         .delete();
+  }
+
+  Future<List<String>> fetchFollowers(uid) async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .collection('followers')
+        .get();
+
+    List<String> followers = querySnapshot.docs.map((e) => e.id).toList();
+
+    return followers;
+  }
+
+  Future<List<String>> fetchFollowing(uid) async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .collection('following')
+        .get();
+
+    List<String> following = querySnapshot.docs.map((e) => e.id).toList();
+
+    return following;
   }
 }

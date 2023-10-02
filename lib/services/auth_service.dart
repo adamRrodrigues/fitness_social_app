@@ -22,6 +22,8 @@ class Auth {
             .doc(user.user!.uid)
             .set(UserModel(
               username: username,
+              firstName: '',
+              lastName: '',
               profileUrl:
                   'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
               uid: user.user!.uid,

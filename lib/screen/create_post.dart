@@ -1,30 +1,32 @@
 import 'dart:typed_data';
 
+import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/services/auth_service.dart';
 import 'package:fitness_social_app/services/post_service.dart';
 import 'package:fitness_social_app/utlis/utils.dart';
 import 'package:fitness_social_app/widgets/custom_button.dart';
 import 'package:fitness_social_app/widgets/text_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
-class CreatePost extends StatefulWidget {
+class CreatePost extends ConsumerStatefulWidget {
   const CreatePost({Key? key}) : super(key: key);
 
   @override
   _CreatePostState createState() => _CreatePostState();
 }
 
-class _CreatePostState extends State<CreatePost> {
+class _CreatePostState extends ConsumerState<CreatePost> {
   TextEditingController postNameController = TextEditingController();
 
   Uint8List? image;
 
-  Utils imagePicker = Utils();
+  Utils? imagePicker;
 
   void selectImage() async {
     try {
-      Uint8List file = await imagePicker.pickImage(ImageSource.gallery);
+      Uint8List file = await imagePicker!.pickImage(ImageSource.gallery);
 
       setState(() {
         image = file;
@@ -32,6 +34,12 @@ class _CreatePostState extends State<CreatePost> {
     } catch (e) {
       print(e);
     }
+  }
+
+  @override
+  void initState() {
+    imagePicker = ref.read(utilProvider);
+    super.initState();
   }
 
   @override
