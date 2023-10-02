@@ -2,9 +2,6 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fitness_social_app/models/comment_model.dart';
-import 'package:fitness_social_app/models/user_model.dart';
-import 'package:flutter/foundation.dart';
 
 class GenericPost {
   final String postName;

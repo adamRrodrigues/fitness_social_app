@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 ThemeData lightTheme = ThemeData(
     brightness: Brightness.light,
-    scaffoldBackgroundColor: Color(0xffEBEDEF),
-    iconTheme: IconThemeData(color: Colors.black),
+    scaffoldBackgroundColor: const Color(0xffEBEDEF),
+    iconTheme: const IconThemeData(color: Colors.black),
     appBarTheme: const AppBarTheme(
         color: Colors.black, iconTheme: IconThemeData(color: Colors.black)),
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(

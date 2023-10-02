@@ -53,7 +53,7 @@ class _CreatePostState extends State<CreatePost> {
             body: Column(
               children: [
                 Padding(
-                  padding: EdgeInsets.all(14),
+                  padding: const EdgeInsets.all(14),
                   child: Container(
                     height: 300,
                     width: double.infinity,
@@ -82,7 +82,7 @@ class _CreatePostState extends State<CreatePost> {
                     hintText: 'Give Your Post A Title'),
                 const Spacer(),
                 Padding(
-                  padding: EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: GestureDetector(
                       onTap: () async {
                         if (postNameController.text != '' && image != null) {
@@ -90,14 +90,14 @@ class _CreatePostState extends State<CreatePost> {
                             barrierDismissible: false,
                             context: context,
                             builder: (context) {
-                              return Center(child: CircularProgressIndicator());
+                              return const Center(child: CircularProgressIndicator());
                             },
                           );
                           try {
                             await GenericPostServices()
                                 .publishPost(postNameController.text, image!);
                           } catch (e) {
-                            AlertDialog(
+                            const AlertDialog(
                               title: Text('crashed for some reason'),
                             );
                           }
@@ -111,9 +111,9 @@ class _CreatePostState extends State<CreatePost> {
                           );
                         }
                       },
-                      child: CustomButton(buttonText: 'Post')),
+                      child: const CustomButton(buttonText: 'Post')),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
               ],

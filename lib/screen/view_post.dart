@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:draggable_bottom_sheet/draggable_bottom_sheet.dart';
 import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -59,8 +58,8 @@ class _ViewPostState extends State<ViewPost> {
 
     void showComments() {
       showModalBottomSheet(
+        enableDrag: false,
         useSafeArea: true,
-
         context: context,
         builder: (context) {
           return Container(
@@ -68,7 +67,7 @@ class _ViewPostState extends State<ViewPost> {
                 color: Theme.of(context).colorScheme.background,
                 border:
                     Border.all(color: Theme.of(context).colorScheme.primary),
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(20),
                     topRight: Radius.circular(20))),
             child: Column(
@@ -90,82 +89,57 @@ class _ViewPostState extends State<ViewPost> {
                         child: ListView.builder(
                           itemCount: widget.post.comments.length,
                           itemBuilder: (context, index) {
-                            String comment =
-                                widget.post.comments[index]['comment'];
-                            return FutureBuilder(
-                              future: FirebaseFirestore.instance
-                                  .collection('users')
-                                  .doc(widget.post.comments[index]['uid'])
-                                  .get(),
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.done) {
-                                  Map<String, dynamic> data = snapshot.data!
-                                      .data() as Map<String, dynamic>;
-
-                                  final thisUser =
-                                      UserServices().mapSingleUser(data);
-
-                                  return Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Column(
-                                        children: [
-                                          MiniProfie(user: thisUser),
-                                          Text(comment)
-                                        ],
-                                      ));
-                                } else {
-                                  return Center(
-                                      // child: Text('Loading Comment'),
-                                      );
-                                }
-                              },
+                            CommentModel comment = CommentModel(
+                                uid: widget.post.comments[index]['uid'],
+                                comment: widget.post.comments[index]
+                                    ['comment']);
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: CommentWidget(commentModel: comment),
                             );
                           },
                         ),
                       )
-                    : Center(
+                    : const Center(
                         child: Text('No Comments on This Post'),
                       ),
                 Align(
                   alignment: Alignment.bottomCenter,
-                  child: Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: CustomTextField(
-                                textController: commentField,
-                                hintText: 'Add a Comment to this post'),
-                          ),
-                          GestureDetector(
-                            onTap: () async {
-                              showDialog(
-                                barrierDismissible: false,
-                                context: context,
-                                builder: (context) {
-                                  return Center(
-                                    child: CircularProgressIndicator(),
-                                  );
-                                },
-                              );
-                              if (commentField.text.isNotEmpty) {
-                                await genericPostServices.comment(widget.postId,
-                                    widget.post.uid, commentField.text);
-                              } else {}
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: CustomTextField(
+                              textController: commentField,
+                              hintText: 'Add a Comment to this post'),
+                        ),
+                        GestureDetector(
+                          onTap: () async {
+                            showDialog(
+                              barrierDismissible: false,
+                              context: context,
+                              builder: (context) {
+                                return const Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              },
+                            );
+                            if (commentField.text.isNotEmpty) {
+                              await genericPostServices.comment(widget.postId,
+                                  user!.uid, commentField.text);
+                            } else {}
 
-                              Navigator.pop(context);
-                              commentField.text = '';
-                            },
-                            child: Icon(
-                              Icons.post_add_rounded,
-                              size: 32,
-                              color: Theme.of(context).colorScheme.secondary,
-                            ),
-                          )
-                        ],
-                      ),
+                            Navigator.pop(context);
+                            commentField.text = '';
+                          },
+                          child: Icon(
+                            Icons.post_add_rounded,
+                            size: 32,
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
+                        )
+                      ],
                     ),
                   ),
                 )
@@ -212,8 +186,8 @@ class _ViewPostState extends State<ViewPost> {
                     showImageViewerPager(context, imageProvier);
                   },
                   child: Padding(
-                    padding: EdgeInsets.all(8),
-                    child: Container(
+                    padding: const EdgeInsets.all(8),
+                    child: SizedBox(
                       height: 300,
                       width: double.infinity,
                       child: ClipRRect(
@@ -243,7 +217,7 @@ class _ViewPostState extends State<ViewPost> {
                                     color:
                                         Theme.of(context).colorScheme.primary,
                                   )
-                                : Icon(Icons.favorite_outline),
+                                : const Icon(Icons.favorite_outline),
                           ),
                         ),
                         Padding(
@@ -258,9 +232,9 @@ class _ViewPostState extends State<ViewPost> {
                       },
                       child: Row(
                         children: [
-                          Padding(
+                          const Padding(
                             padding:
-                                const EdgeInsets.symmetric(horizontal: 2.0),
+                                EdgeInsets.symmetric(horizontal: 2.0),
                             child: Icon(Icons.comment_outlined),
                           ),
                           Padding(
@@ -271,7 +245,7 @@ class _ViewPostState extends State<ViewPost> {
                         ],
                       ),
                     ),
-                    Icon(Icons.share_outlined),
+                    const Icon(Icons.share_outlined),
                   ],
                 ),
               ],

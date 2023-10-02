@@ -1,30 +1,38 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/routing/route_constants.dart';
 import 'package:fitness_social_app/services/auth_service.dart';
-import 'package:fitness_social_app/services/post_service.dart';
 import 'package:fitness_social_app/services/user_services.dart';
 import 'package:fitness_social_app/widgets/user_profile.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class ProfilePage extends StatefulWidget {
+class ProfilePage extends ConsumerStatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
 
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage>
+class _ProfilePageState extends ConsumerState<ProfilePage>
     with AutomaticKeepAliveClientMixin {
-  final user = FirebaseAuth.instance.currentUser!;
+  User? user;
+
+  @override
+  void initState() {
+    user = ref.read(userProvider);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     CollectionReference users = FirebaseFirestore.instance.collection('users');
     return Scaffold(
       body: FutureBuilder(
-        future: users.doc(user.uid).get(),
+        future: users.doc(user!.uid).get(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             Map<String, dynamic> data =
@@ -69,7 +77,7 @@ class _ProfilePageState extends State<ProfilePage>
                               onPressed: () {
                                 context.pushNamed(RouteConstants.createPost);
                               },
-                              child: Icon((Icons.add)),
+                              child: const Icon((Icons.add)),
                             ),
                           ),
                         )

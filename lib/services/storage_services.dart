@@ -40,9 +40,9 @@ class StorageServices {
         .child(postId)
         .listAll()
         .then((value) {
-      value.items.forEach((element) {
+      for (var element in value.items) {
         FirebaseStorage.instance.ref(element.fullPath).delete();
-      });
+      }
     });
   }
 }

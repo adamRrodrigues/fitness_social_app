@@ -1,11 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_social_app/models/user_model.dart';
-import 'package:fitness_social_app/routing/route_constants.dart';
 import 'package:fitness_social_app/services/user_services.dart';
 import 'package:fitness_social_app/widgets/mini_profie.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class DiscoverPage extends StatefulWidget {
   const DiscoverPage({Key? key}) : super(key: key);
@@ -24,7 +22,7 @@ class _DiscoverPageState extends State<DiscoverPage>
     return SafeArea(
       child: Scaffold(
           appBar: AppBar(
-            title: Text("Discover"),
+            title: const Text("Discover"),
             backgroundColor: Theme.of(context).colorScheme.background,
             elevation: 0,
           ),
@@ -44,7 +42,7 @@ class _DiscoverPageState extends State<DiscoverPage>
                     return MiniProfie(user: thisUser);
                   }).toList());
                 } else {
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 }
               },
             ),

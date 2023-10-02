@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_social_app/models/generic_post_model.dart';
 import 'package:fitness_social_app/routing/route_constants.dart';
@@ -7,7 +6,6 @@ import 'package:fitness_social_app/services/post_service.dart';
 import 'package:fitness_social_app/services/user_services.dart';
 import 'package:fitness_social_app/widgets/image_widget.dart';
 import 'package:fitness_social_app/widgets/mini_profie.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -93,13 +91,13 @@ class _GenericPostWidgetState extends State<GenericPostWidget> {
                           return MiniProfie(user: thisUser);
                         } else if (snapshot.connectionState ==
                             ConnectionState.waiting) {
-                          return SizedBox(
+                          return const SizedBox(
                               height: 50,
                               child: Text(
                                 'loading...',
                               ));
                         } else {
-                          return Text('Error Loading');
+                          return const Text('Error Loading');
                         }
                       },
                     ),
@@ -114,11 +112,11 @@ class _GenericPostWidgetState extends State<GenericPostWidget> {
                         child: ImageWidget(url: widget.post.image),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                     Text(widget.post.postName),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                     Row(
@@ -136,7 +134,7 @@ class _GenericPostWidgetState extends State<GenericPostWidget> {
                                     const EdgeInsets.symmetric(horizontal: 2.0),
                                 child: isLiked
                                     ? Icon(Icons.favorite, color: Theme.of(context).colorScheme.primary,)
-                                    : Icon(Icons.favorite_outline),
+                                    : const Icon(Icons.favorite_outline),
                               ),
                             ),
                             Padding(
@@ -147,9 +145,9 @@ class _GenericPostWidgetState extends State<GenericPostWidget> {
                         ),
                         Row(
                           children: [
-                            Padding(
+                            const Padding(
                               padding:
-                                  const EdgeInsets.symmetric(horizontal: 2.0),
+                                  EdgeInsets.symmetric(horizontal: 2.0),
                               child: Icon(Icons.comment_outlined),
                             ),
                             Padding(
@@ -160,7 +158,7 @@ class _GenericPostWidgetState extends State<GenericPostWidget> {
                             ),
                           ],
                         ),
-                        Icon(Icons.share_outlined),
+                        const Icon(Icons.share_outlined),
                       ],
                     )
                   ],

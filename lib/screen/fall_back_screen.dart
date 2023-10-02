@@ -23,7 +23,7 @@ class _FallBackScreenState extends State<FallBackScreen> {
                     FallbackService().updatePost();
                   });
                 },
-                child: CustomButton(buttonText: 'UpdatePosts')),
+                child: const CustomButton(buttonText: 'UpdatePosts')),
           )
         ],
       ),

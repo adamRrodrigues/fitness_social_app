@@ -26,16 +26,16 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
+                const Icon(
                   Icons.file_copy_outlined,
                   size: 128,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 70,
                 ),
                 CustomTextField(
                     textController: emailController, hintText: 'email'),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 CustomTextField(
@@ -43,7 +43,7 @@ class _LoginPageState extends State<LoginPage> {
                   hintText: 'password',
                   obscure: true,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 50,
                 ),
                 GestureDetector(
@@ -56,8 +56,8 @@ class _LoginPageState extends State<LoginPage> {
                       auth.signIn(context, emailController.text,
                           passwordContoller.text);
                     },
-                    child: CustomButton(buttonText: 'Sign In')),
-                SizedBox(
+                    child: const CustomButton(buttonText: 'Sign In')),
+                const SizedBox(
                   height: 20,
                 ),
                 Row(

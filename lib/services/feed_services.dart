@@ -13,7 +13,21 @@ class FeedServices {
   Query<GenericPost> fetchPosts(uid) {
     final postQuery = FirebaseFirestore.instance
         .collection('generic_posts')
-        // .where('uid', isNotEqualTo: uid).orderBy('uid', )
+        .orderBy('uid')
+        .orderBy('createdAt', descending: true)
+        .where('uid', isNotEqualTo: uid)
+        .withConverter(
+          fromFirestore: (snapshot, _) => GenericPost.fromMap(snapshot.data()!),
+          toFirestore: (post, _) => post.toMap(),
+        );
+
+    return postQuery;
+  }
+
+  Query<GenericPost> fetchUserPosts(uid) {
+    final postQuery = FirebaseFirestore.instance
+        .collection('generic_posts')
+        .where('uid', isEqualTo: uid)
         .orderBy('createdAt', descending: true)
         .withConverter(
           fromFirestore: (snapshot, _) => GenericPost.fromMap(snapshot.data()!),

@@ -1,17 +1,26 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:fitness_social_app/firebase_options.dart';
 import 'package:fitness_social_app/routing/page_router.dart';
+import 'package:fitness_social_app/services/feed_services.dart';
+import 'package:fitness_social_app/services/post_service.dart';
+import 'package:fitness_social_app/services/user_services.dart';
 import 'package:fitness_social_app/themes/dark_theme.dart';
 import 'package:fitness_social_app/themes/light_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+final userProvider = Provider((ref) => FirebaseAuth.instance.currentUser);
+final userServicesProvider = Provider((ref) => UserServices());
+final genericPostServicesProvider = Provider((ref) => GenericPostServices());
+final feedServicesProvider = Provider((ref) => FeedServices());
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(const MyApp());
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -25,7 +34,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: lightTheme,
       darkTheme: darkTheme,
-      themeMode: ThemeMode.dark,
+      themeMode: ThemeMode.system,
       //
       routerDelegate: appRouter.routerDelegate,
       routeInformationParser: appRouter.routeInformationParser,

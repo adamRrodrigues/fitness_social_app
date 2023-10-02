@@ -32,7 +32,7 @@ final GoRouter appRouter = GoRouter(routes: <GoRoute>[
           path: 'createPage',
           name: RouteConstants.createPost,
           pageBuilder: (context, state) {
-            return CupertinoPage(child: CreatePost());
+            return const CupertinoPage(child: CreatePost());
           },
         ),
         GoRoute(

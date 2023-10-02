@@ -34,8 +34,8 @@ class MainPageState extends State<MainPage> {
           backgroundColor: Theme.of(context).colorScheme.background,
           body: PageView(
             controller: pageController,
+            physics: const NeverScrollableScrollPhysics(),
             children: pages,
-            physics: NeverScrollableScrollPhysics(),
           ),
           bottomNavigationBar: Container(
               decoration: BoxDecoration(
@@ -56,8 +56,8 @@ class MainPageState extends State<MainPage> {
                         .bottomNavigationBarTheme
                         .unselectedItemColor,
                     iconSize: 24,
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                    duration: Duration(milliseconds: 400),
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    duration: const Duration(milliseconds: 400),
                     tabBackgroundColor: Theme.of(context)
                         .bottomNavigationBarTheme
                         .selectedItemColor!,

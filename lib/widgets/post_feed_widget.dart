@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:fitness_social_app/models/generic_post_model.dart';
 import 'package:fitness_social_app/widgets/generic_post_widget.dart';
@@ -15,9 +14,9 @@ class PostFeedWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser;
     return FirestoreListView<GenericPost>(
       pageSize: 5,
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       emptyBuilder: (context) {
         return const Center(
           child: Text('No Posts'),
@@ -27,18 +26,15 @@ class PostFeedWidget extends StatelessWidget {
         return const Center(child: CircularProgressIndicator());
       },
       errorBuilder: (context, error, stackTrace) {
-        return Center(
+        return const Center(
           child: Text('There was a problem loading the feed please try again'),
         );
       },
       query: postQuery,
       itemBuilder: (context, doc) {
+
         final post = doc.data();
-        if (post.uid != user!.uid) {
-          return GenericPostWidget(post: post, postId: doc.id);
-        } else {
-          return Container();
-        }
+        return GenericPostWidget(post: post, postId: doc.id);
       },
     );
   }

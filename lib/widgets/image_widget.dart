@@ -15,7 +15,7 @@ class ImageWidget extends StatelessWidget {
       url,
       cache: true,
       // handleLoadingProgress: true,
-      filterQuality: FilterQuality.medium,
+      filterQuality: FilterQuality.none,
       fit: BoxFit.cover,
       loadStateChanged: (ExtendedImageState state) {
         switch (state.extendedImageLoadState) {
