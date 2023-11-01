@@ -3,6 +3,7 @@ import 'package:fitness_social_app/models/generic_post_model.dart';
 import 'package:fitness_social_app/models/user_model.dart';
 import 'package:fitness_social_app/routing/route_constants.dart';
 import 'package:fitness_social_app/screen/create_post.dart';
+import 'package:fitness_social_app/screen/create_workout_post.dart';
 // import 'package:fitness_social_app/screen/fall_back_screen.dart';
 import 'package:fitness_social_app/screen/user_page.dart';
 import 'package:fitness_social_app/screen/view_post.dart';
@@ -33,6 +34,13 @@ final GoRouter appRouter = GoRouter(routes: <GoRoute>[
           name: RouteConstants.createPost,
           pageBuilder: (context, state) {
             return const CupertinoPage(child: CreatePost());
+          },
+        ),
+        GoRoute(
+          path: 'createWorkoutPage',
+          name: RouteConstants.createWorkout,
+          pageBuilder: (context, state) {
+            return const CupertinoPage(child: CreateWorkoutPost());
           },
         ),
         GoRoute(

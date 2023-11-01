@@ -34,12 +34,18 @@ class WorkoutWidget extends StatelessWidget {
                     scrollDirection: Axis.horizontal,
                     itemCount: workoutModel.categories.length,
                     itemBuilder: (context, index) {
-                      return Expanded(
-                        child: PillWidget(
-                            name: workoutModel.categories[index], active: true),
-                      );
+                      return PillWidget(
+                          name: workoutModel.categories[index], active: true);
                     },
                   ),
+                ),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: 2,
+                  itemBuilder: (context, index) {
+                    return Text('data');
+                  },
                 ),
               )
             ],

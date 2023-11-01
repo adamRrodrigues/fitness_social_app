@@ -1,6 +1,8 @@
 import 'package:fitness_social_app/models/workout_post_model.dart';
+import 'package:fitness_social_app/routing/route_constants.dart';
 import 'package:fitness_social_app/widgets/workout_widgets/workout_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class FitnesstrackerPage extends StatefulWidget {
   const FitnesstrackerPage({Key? key}) : super(key: key);
@@ -28,7 +30,9 @@ class _FitnesstrackerPageState extends State<FitnesstrackerPage> {
             child: Align(
               alignment: Alignment.bottomRight,
               child: FloatingActionButton(
-                onPressed: () {},
+                onPressed: () {
+                  context.pushNamed(RouteConstants.createWorkout);
+                },
                 child: const Icon(Icons.add),
               ),
             ),

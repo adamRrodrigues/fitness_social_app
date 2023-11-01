@@ -3,5 +3,5 @@ class RouteConstants {
   static String userPage = 'userPage';
   static String viewPostScreen = 'viewPostScreen';
   static String follBackPage = 'fallBackPage';
-  // static String edit = 'edit';
+  static String createWorkout = 'createWorkoutPage';
 }

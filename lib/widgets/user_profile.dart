@@ -173,7 +173,6 @@ class _UserProfileState extends ConsumerState<UserProfile> {
                             return GestureDetector(
                                 onTap: () {
                                   setState(() {
-                                    print(followers);
                                     userServices!
                                         .followUser(widget.thisUser.uid);
                                   });

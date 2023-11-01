@@ -52,7 +52,14 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: GestureDetector(
-                        onTap: () => Auth().signOut(),
+                        onTap: () {
+                          Auth().signOut();
+                          ref.invalidate(userProvider);
+                          ref.invalidate(genericPostServicesProvider);
+                          ref.invalidate(feedServicesProvider);
+                          ref.invalidate(userServicesProvider);
+                          ref.invalidate(utilProvider);
+                        },
                         child: const Icon(Icons.logout_outlined),
                       ),
                     )

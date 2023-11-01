@@ -18,8 +18,12 @@ class PostFeedWidget extends StatelessWidget {
       pageSize: 5,
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       emptyBuilder: (context) {
-        return const Center(
-          child: Text('No Posts'),
+        return ListView(
+          children: [
+            const Center(
+              child: Text('No Posts'),
+            ),
+          ],
         );
       },
       loadingBuilder: (context) {

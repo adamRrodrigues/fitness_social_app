@@ -50,8 +50,16 @@ class _HomePageState extends ConsumerState<HomePage>
                       return PostFeedWidget(
                           postQuery: feedServices!.fetchPosts(user!.uid));
                     } else {
-                      return Center(
-                        child: Text('You Are Not Following Any users'),
+                      return Expanded(
+                        child: Center(
+                          child: ListView(
+                            children: [
+                              Center(
+                                child: Text('You Are Not Following Any users'),
+                              ),
+                            ],
+                          ),
+                        ),
                       );
                     }
                   } else {
