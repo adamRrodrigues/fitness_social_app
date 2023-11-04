@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/services/feed_services.dart';
-import 'package:fitness_social_app/widgets/post_feed_widget.dart';
+import 'package:fitness_social_app/feed/post_feed_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -18,7 +18,7 @@ class _HomePageState extends ConsumerState<HomePage>
   FeedServices? feedServices;
 
   void getFollowing() async {
-    await feedServices!.fetchFollowing(user!.uid);
+    feedServices!.fetchFollowing(user!.uid);
     print(feedServices!.following);
   }
 

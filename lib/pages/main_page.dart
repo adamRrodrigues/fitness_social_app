@@ -54,7 +54,7 @@ class MainPageState extends State<MainPage> {
                     gap: 8,
                     activeColor: Theme.of(context)
                         .bottomNavigationBarTheme
-                        .unselectedItemColor,
+                        .backgroundColor,
                     iconSize: 24,
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                     duration: const Duration(milliseconds: 400),
@@ -62,8 +62,7 @@ class MainPageState extends State<MainPage> {
                         .bottomNavigationBarTheme
                         .selectedItemColor!,
                     color: Theme.of(context)
-                        .bottomNavigationBarTheme
-                        .selectedItemColor,
+                        .bottomNavigationBarTheme.unselectedItemColor,
                     tabs: const [
                       GButton(
                         icon: Icons.home_outlined,

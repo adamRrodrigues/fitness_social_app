@@ -49,6 +49,7 @@ class _CreatePostState extends ConsumerState<CreatePost> {
         body: NestedScrollView(
             headerSliverBuilder: (context, innerBoxIsScrolled) => [
                   SliverAppBar(
+                    
                     title: Text(
                       'Create a Post',
                       style: Theme.of(context).textTheme.titleLarge,

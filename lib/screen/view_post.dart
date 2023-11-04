@@ -155,7 +155,8 @@ class _ViewPostState extends ConsumerState<ViewPost> {
 
     return Scaffold(
         appBar: AppBar(
-          title: Text(widget.post.postName),
+          title: Text(widget.post.postName, style: Theme.of(context).textTheme.titleLarge,),
+          backgroundColor: Theme.of(context).colorScheme.background,
           elevation: 0,
         ),
         body: SafeArea(

@@ -1,7 +1,9 @@
 import 'package:fitness_social_app/auth/auth_state.dart';
+import 'package:fitness_social_app/models/exercise_model.dart';
 import 'package:fitness_social_app/models/generic_post_model.dart';
 import 'package:fitness_social_app/models/user_model.dart';
 import 'package:fitness_social_app/routing/route_constants.dart';
+import 'package:fitness_social_app/screen/create_exercise.dart';
 import 'package:fitness_social_app/screen/create_post.dart';
 import 'package:fitness_social_app/screen/create_workout_post.dart';
 // import 'package:fitness_social_app/screen/fall_back_screen.dart';
@@ -41,6 +43,14 @@ final GoRouter appRouter = GoRouter(routes: <GoRoute>[
           name: RouteConstants.createWorkout,
           pageBuilder: (context, state) {
             return const CupertinoPage(child: CreateWorkoutPost());
+          },
+        ),
+        GoRoute(
+          path: 'createExercisePage',
+          name: RouteConstants.createExercise,
+          pageBuilder: (context, state) {
+            List<ExerciseModel> exercises = state.extra as List<ExerciseModel>;
+            return  CupertinoPage(child: CreateExercise(exercises: exercises,));
           },
         ),
         GoRoute(

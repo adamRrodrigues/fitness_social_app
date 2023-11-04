@@ -2,7 +2,9 @@ import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fitness_social_app/models/exercise_model.dart';
 import 'package:fitness_social_app/models/generic_post_model.dart';
+import 'package:fitness_social_app/models/workout_post_model.dart';
 import 'package:fitness_social_app/services/storage_services.dart';
 
 class GenericPostServices {
@@ -82,6 +84,35 @@ class GenericPostServices {
       'comments': FieldValue.arrayUnion([
         {'uid': uid, 'comment': comment}
       ])
+    });
+  }
+}
+
+class WorkoutPostServices {
+  final thisUser = FirebaseAuth.instance.currentUser;
+
+  CollectionReference workoutPosts =
+      FirebaseFirestore.instance.collection('workout_posts');
+  CollectionReference users = FirebaseFirestore.instance.collection('users');
+
+  Future postWorkout(WorkoutModel workoutModel, Uint8List image,
+      List<ExerciseModel> exercises) async {
+    await workoutPosts.add(workoutModel.toMap()).then((value) async {
+      await users.doc(thisUser!.uid).update({
+        'posts': FieldValue.arrayUnion([value.id])
+      });
+
+      for (int i = 0; i < exercises.length; i++) {
+        Map<String, dynamic> exercise = exercises[i].toMap();
+        await workoutPosts.doc(value.id).update({
+          'exercises': FieldValue.arrayUnion([exercise])
+        });
+      }
+
+      String thumbnail = await StorageServices()
+          .postThumbnail('workoutPostImages', value.id, image);
+
+      await workoutPosts.doc(value.id).update({'imageUrl': thumbnail});
     });
   }
 }

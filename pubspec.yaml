@@ -49,6 +49,8 @@ dependencies:
   extended_image: ^8.1.1
   flutter_riverpod: ^2.4.1
   riverpod: ^2.4.1
+  numberpicker: ^2.1.2
+  modals: ^1.0.0+1
 
 dev_dependencies:
   flutter_test:

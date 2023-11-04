@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:fitness_social_app/firebase_options.dart';
 import 'package:fitness_social_app/routing/page_router.dart';
+import 'package:fitness_social_app/services/drafts.dart';
 import 'package:fitness_social_app/services/feed_services.dart';
 import 'package:fitness_social_app/services/post_service.dart';
 import 'package:fitness_social_app/services/user_services.dart';
@@ -16,6 +17,7 @@ final userServicesProvider = Provider((ref) => UserServices());
 final genericPostServicesProvider = Provider((ref) => GenericPostServices());
 final feedServicesProvider = Provider((ref) => FeedServices());
 final utilProvider = Provider((ref) => Utils());
+final draftProvider = Provider((ref) => WorkoutDraft());
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -36,7 +38,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: lightTheme,
       darkTheme: darkTheme,
-      themeMode: ThemeMode.system,
+      themeMode: ThemeMode.dark,
       //
       routerDelegate: appRouter.routerDelegate,
       routeInformationParser: appRouter.routeInformationParser,

@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fitness_social_app/feed/workout_feed.dart';
 import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/models/user_model.dart';
 import 'package:fitness_social_app/services/feed_services.dart';
@@ -12,7 +13,7 @@ import 'package:fitness_social_app/services/user_services.dart';
 import 'package:fitness_social_app/utlis/utils.dart';
 import 'package:fitness_social_app/widgets/count_widget.dart';
 import 'package:fitness_social_app/widgets/custom_button.dart';
-import 'package:fitness_social_app/widgets/post_feed_widget.dart';
+import 'package:fitness_social_app/feed/post_feed_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -29,7 +30,7 @@ class UserProfile extends ConsumerStatefulWidget {
   _UserProfileState createState() => _UserProfileState();
 }
 
-class _UserProfileState extends ConsumerState<UserProfile> {
+class _UserProfileState extends ConsumerState<UserProfile>{
   int followers = 0;
   int following = 0;
   User? user;
@@ -95,17 +96,11 @@ class _UserProfileState extends ConsumerState<UserProfile> {
       }
     }
 
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: RefreshIndicator(
-          onRefresh: () async {
-            Future(
-              () {
-                setState(() {});
-              },
-            );
-          },
+    return DefaultTabController(
+      length: 2,
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -222,14 +217,29 @@ class _UserProfileState extends ConsumerState<UserProfile> {
                       }
                     }),
               ),
+              const TabBar(
+                tabs: [
+                  Tab(icon: Icon(Icons.post_add)),
+                  Tab(icon: Icon(Icons.run_circle_outlined)),
+                ],
+              ),
               Expanded(
-                  child: PostFeedWidget(
-                      postQuery:
-                          feedServices!.fetchUserPosts(widget.thisUser.uid)))
+                child: TabBarView(
+                  children: [
+                    PostFeedWidget(
+                        postQuery:
+                            feedServices!.fetchUserPosts(widget.thisUser.uid)),
+                    WorkoutFeed(
+                      uid: user!.uid,
+                    )
+                  ],
+                ),
+              )
             ],
           ),
         ),
       ),
     );
   }
+
 }
