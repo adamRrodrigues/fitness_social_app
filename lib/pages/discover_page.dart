@@ -31,7 +31,10 @@ class _DiscoverPageState extends ConsumerState<DiscoverPage>
     return SafeArea(
       child: Scaffold(
           appBar: AppBar(
-            title: const Text("Discover"),
+            title: Text(
+              "Discover",
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
             backgroundColor: Theme.of(context).colorScheme.background,
             elevation: 0,
           ),
@@ -48,7 +51,10 @@ class _DiscoverPageState extends ConsumerState<DiscoverPage>
                     // Map<String, dynamic> data = e as Map<String, dynamic>;
                     UserModel thisUser = UserServices().mapDocUser(e);
 
-                    return MiniProfie(user: thisUser);
+                    return Container(
+                      padding: const EdgeInsets.all(8.0),
+                      child: MiniProfie(user: thisUser),
+                    );
                   }).toList());
                 } else {
                   return const Center(child: CircularProgressIndicator());

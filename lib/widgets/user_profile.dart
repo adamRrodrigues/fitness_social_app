@@ -30,7 +30,7 @@ class UserProfile extends ConsumerStatefulWidget {
   _UserProfileState createState() => _UserProfileState();
 }
 
-class _UserProfileState extends ConsumerState<UserProfile>{
+class _UserProfileState extends ConsumerState<UserProfile> {
   int followers = 0;
   int following = 0;
   User? user;
@@ -217,20 +217,22 @@ class _UserProfileState extends ConsumerState<UserProfile>{
                       }
                     }),
               ),
-              const TabBar(
+              TabBar(
+                indicatorColor: Theme.of(context).colorScheme.primary,
                 tabs: [
-                  Tab(icon: Icon(Icons.post_add)),
-                  Tab(icon: Icon(Icons.run_circle_outlined)),
+                  Tab(icon: Icon(Icons.post_add, color: Theme.of(context).colorScheme.primary,)),
+                  Tab(icon: Icon(Icons.run_circle_outlined, color: Theme.of(context).colorScheme.primary,)),
                 ],
               ),
               Expanded(
                 child: TabBarView(
                   children: [
-                    PostFeedWidget(
-                        postQuery:
-                            feedServices!.fetchUserPosts(widget.thisUser.uid)),
+                    PostFeedWidget(profileView: true,
+                        postQuery: feedServices!
+                            .fetchUserPosts(widget.thisUser.uid)),
                     WorkoutFeed(
-                      uid: user!.uid,
+                      profileView: true,
+                      uid: widget.thisUser.uid,
                     )
                   ],
                 ),
@@ -241,5 +243,4 @@ class _UserProfileState extends ConsumerState<UserProfile>{
       ),
     );
   }
-
 }

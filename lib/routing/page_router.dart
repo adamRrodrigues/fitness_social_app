@@ -2,6 +2,7 @@ import 'package:fitness_social_app/auth/auth_state.dart';
 import 'package:fitness_social_app/models/exercise_model.dart';
 import 'package:fitness_social_app/models/generic_post_model.dart';
 import 'package:fitness_social_app/models/user_model.dart';
+import 'package:fitness_social_app/models/workout_post_model.dart';
 import 'package:fitness_social_app/routing/route_constants.dart';
 import 'package:fitness_social_app/screen/create_exercise.dart';
 import 'package:fitness_social_app/screen/create_post.dart';
@@ -9,6 +10,7 @@ import 'package:fitness_social_app/screen/create_workout_post.dart';
 // import 'package:fitness_social_app/screen/fall_back_screen.dart';
 import 'package:fitness_social_app/screen/user_page.dart';
 import 'package:fitness_social_app/screen/view_post.dart';
+import 'package:fitness_social_app/screen/view_workout.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
 
@@ -63,6 +65,19 @@ final GoRouter appRouter = GoRouter(routes: <GoRoute>[
                 child: ViewPost(
               post: post,
               postId: postId!,
+            ));
+          },
+        ),
+        GoRoute(
+          path: 'viewWorkoutScreen/:id',
+          name: RouteConstants.viewWorkoutScreen,
+          pageBuilder: (context, state) {
+            WorkoutModel post = state.extra as WorkoutModel;
+            final  postId = state.pathParameters['id'];
+            return CupertinoPage(
+                child: ViewWorkout(
+                  workoutModel: post,
+                  postId: postId!,
             ));
           },
         ),

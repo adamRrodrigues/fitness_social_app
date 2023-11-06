@@ -115,4 +115,15 @@ class WorkoutPostServices {
       await workoutPosts.doc(value.id).update({'imageUrl': thumbnail});
     });
   }
+
+  Future deletePost(id, userId) async {
+    await StorageServices().deleteImages('workoutPostImages', id);
+    await FirebaseFirestore.instance
+        .collection('workout_posts')
+        .doc(id)
+        .delete();
+    await FirebaseFirestore.instance.collection('users').doc(userId).update({
+      'posts': FieldValue.arrayRemove([id])
+    });
+  }
 }

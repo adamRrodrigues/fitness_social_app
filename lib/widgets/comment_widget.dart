@@ -7,17 +7,18 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class CommentWidget extends StatelessWidget {
-  const CommentWidget(
-      {Key? key, required this.commentModel})
-      : super(key: key);
+  const CommentWidget({Key? key, required this.commentModel}) : super(key: key);
   final CommentModel commentModel;
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: FirebaseFirestore.instance.collection('users').doc(commentModel.uid).get(),
+    return StreamBuilder(
+      stream: FirebaseFirestore.instance
+          .collection('users')
+          .doc(commentModel.uid)
+          .snapshots(),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
+        if (snapshot.connectionState == ConnectionState.active) {
           Map<String, dynamic> data =
               snapshot.data!.data() as Map<String, dynamic>;
 
@@ -31,8 +32,8 @@ class CommentWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                MiniProfie(user: thisUser),
-                Text(commentModel.comment)
+                MiniProfie(
+                    user: thisUser, optionalSubText: commentModel.comment),
               ],
             ),
           );

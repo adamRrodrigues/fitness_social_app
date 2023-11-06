@@ -47,7 +47,7 @@ class _HomePageState extends ConsumerState<HomePage>
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
                     if (feedServices!.following.isNotEmpty) {
-                      return PostFeedWidget(
+                      return PostFeedWidget( profileView: false,
                           postQuery: feedServices!.fetchPosts(user!.uid));
                     } else {
                       return Expanded(

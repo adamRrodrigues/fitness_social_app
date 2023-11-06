@@ -38,7 +38,7 @@ class _FitnesstrackerPageState extends State<FitnesstrackerPage> {
       query: FeedServices().fetchUserWorkouts(user!.uid),
       itemBuilder: (context, doc) {
         final post = doc.data();
-        return WorkoutWidget(workoutModel: post);
+        return WorkoutWidget(workoutModel: post, postId: doc.id, mini: false,);
       },
     );
   }

@@ -1,25 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 ThemeData lightTheme = ThemeData(
     brightness: Brightness.light,
-    scaffoldBackgroundColor: const Color(0xffE6E9EA),
+    fontFamily: GoogleFonts.roboto().toString(),
+    scaffoldBackgroundColor: const Color(0xffE3E3E3),
     iconTheme: const IconThemeData(color: Colors.black),
-    appBarTheme:  const AppBarTheme(
+    appBarTheme: const AppBarTheme(
         color: Colors.black,
+        titleTextStyle: TextStyle(color: Colors.black),
         iconTheme: IconThemeData(color: Colors.black)),
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-      backgroundColor: Color(0xffE6E9EA),
-      selectedItemColor: Color(0xffFF69B4),
-      unselectedItemColor: Color(0xffE6E9EA),
+      backgroundColor: Color(0xffE3E3E3),
+      selectedItemColor: Color(0xff00ADB5),
+      unselectedItemColor: Colors.black,
     ),
     colorScheme: const ColorScheme.light(
-      background: Color(0xffE6E9EA),
-      primary: Color(0xffFF69B4),
-      secondary: Color(0xffffffff),
+      background: Color(0xffE3E3E3),
+      primary: Color(0xff00ADB5),
+      secondary: Color(0xffF2F3F3),
     ),
-    textTheme: const TextTheme(
+    textTheme: TextTheme(
       titleLarge: TextStyle(color: Colors.black),
       titleMedium: TextStyle(color: Colors.black),
-      bodyMedium: TextStyle(color: Colors.black),
-      bodySmall: TextStyle(color: Colors.black),
+      bodyMedium: TextStyle(color: Colors.black87),
+      bodySmall: TextStyle(color: Colors.black87),
     ));

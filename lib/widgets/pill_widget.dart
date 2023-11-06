@@ -22,8 +22,10 @@ class PillWidget extends StatelessWidget {
               color: active
                   ? Theme.of(context).colorScheme.secondary
                   : Theme.of(context).colorScheme.primary),
-          borderRadius: BorderRadius.circular(15),
-          color: Theme.of(context).colorScheme.secondary),
+          borderRadius: BorderRadius.circular(10),
+          color: active
+              ? Theme.of(context).colorScheme.primary
+              : Theme.of(context).colorScheme.secondary),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12.0),
         child: Row(
@@ -32,16 +34,19 @@ class PillWidget extends StatelessWidget {
             Center(
               child: Text(
                 name.toUpperCase(),
-                style: Theme.of(context)
-                    .textTheme
-                    .bodySmall!
-                    .copyWith(fontWeight: FontWeight.bold),
+                style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: active
+                        ? Theme.of(context).colorScheme.secondary
+                        : Theme.of(context).colorScheme.primary),
                 // textAlign: TextAlign.center,
               ),
             ),
             editable
                 ? GestureDetector(
-                    onTap: (){delete();},
+                    onTap: () {
+                      delete();
+                    },
                     child: Center(
                         child: Text(
                       '  X',

@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
 class WorkoutModel {
@@ -10,6 +11,7 @@ class WorkoutModel {
   final String uid;
   final String privacy;
   final String imageUrl;
+  final Timestamp createdAt;
   WorkoutModel({
     required this.workoutName,
     required this.categories,
@@ -17,6 +19,7 @@ class WorkoutModel {
     required this.uid,
     required this.privacy,
     required this.imageUrl,
+    required this.createdAt,
   });
 
   WorkoutModel copyWith({
@@ -26,6 +29,7 @@ class WorkoutModel {
     String? uid,
     String? privacy,
     String? imageUrl,
+    Timestamp? createdAt,
   }) {
     return WorkoutModel(
       workoutName: workoutName ?? this.workoutName,
@@ -34,6 +38,7 @@ class WorkoutModel {
       uid: uid ?? this.uid,
       privacy: privacy ?? this.privacy,
       imageUrl: imageUrl ?? this.imageUrl,
+      createdAt: createdAt ?? this.createdAt,
     );
   }
 
@@ -45,6 +50,7 @@ class WorkoutModel {
       'uid': uid,
       'privacy': privacy,
       'imageUrl': imageUrl,
+      'createdAt': createdAt,
     };
   }
 
@@ -56,6 +62,7 @@ class WorkoutModel {
       uid: map['uid'] as String,
       privacy: map['privacy'] as String,
       imageUrl: map['imageUrl'] as String,
+      createdAt: map['createdAt'],
     );
   }
 
@@ -66,7 +73,7 @@ class WorkoutModel {
 
   @override
   String toString() {
-    return 'WorkoutModel(workoutName: $workoutName, categories: $categories, exercises: $exercises, uid: $uid, privacy: $privacy, imageUrl: $imageUrl)';
+    return 'WorkoutModel(workoutName: $workoutName, categories: $categories, exercises: $exercises, uid: $uid, privacy: $privacy, imageUrl: $imageUrl, createdAt: $createdAt)';
   }
 
   @override
@@ -78,7 +85,8 @@ class WorkoutModel {
         listEquals(other.exercises, exercises) &&
         other.uid == uid &&
         other.privacy == privacy &&
-        other.imageUrl == imageUrl;
+        other.imageUrl == imageUrl &&
+        other.createdAt == createdAt;
   }
 
   @override
@@ -88,6 +96,7 @@ class WorkoutModel {
         exercises.hashCode ^
         uid.hashCode ^
         privacy.hashCode ^
-        imageUrl.hashCode;
+        imageUrl.hashCode ^
+        createdAt.hashCode;
   }
 }

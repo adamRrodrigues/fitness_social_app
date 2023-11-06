@@ -31,120 +31,141 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
   Widget build(BuildContext context) {
     CollectionReference users = FirebaseFirestore.instance.collection('users');
     return Scaffold(
-      body: FutureBuilder(
-        future: users.doc(user!.uid).get(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            Map<String, dynamic> data =
-                snapshot.data!.data() as Map<String, dynamic>;
-
-            final thisUser = UserServices().mapSingleUser(data);
-
-            return NestedScrollView(
-              headerSliverBuilder: (context, innerBoxIsScrolled) => [
-                SliverAppBar(
-                  title: Text(
-                    thisUser.username,
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-
-                  actions: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: GestureDetector(
-                        onTap: () {
-                          Auth().signOut();
-                          ref.invalidate(userProvider);
-                          ref.invalidate(genericPostServicesProvider);
-                          ref.invalidate(feedServicesProvider);
-                          ref.invalidate(userServicesProvider);
-                          ref.invalidate(utilProvider);
-                          ref.invalidate(draftProvider);
-                        },
-                        child: const Icon(Icons.logout_outlined),
-                      ),
-                    )
-                  ],
-                  backgroundColor: Theme.of(context).colorScheme.background,
-                  // snap: true,
-                  floating: true,
-                )
-              ],
-              body: Column(
-                children: [
-                  Expanded(
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        UserProfile(thisUser: thisUser),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Align(
-                            alignment: Alignment.bottomRight,
-                            child: FloatingActionButton.small(
-                              onPressed: () {
-                                // context.pushNamed(RouteConstants.createPost);
-                                showModal(ModalEntry.aligned(context,
-                                    tag: 'containerModal',
-                                    barrierDismissible: true,
-                                    alignment: Alignment.center,
-                                    // removeOnPop: true,
-
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .background,
-                                          border: Border.all(
-                                              width: 2,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .primary),
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                      width: 300,
-                                      height: 200,
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          GestureDetector(
-                                              onTap: () {
-                                                context.pushNamed(
-                                                    RouteConstants.createPost);
-                                                // context.pop();
-                                                removeAllModals();
-                                              },
-                                              child: CustomButton(
-                                                  buttonText: 'generic post')),
-                                          GestureDetector(
-                                              onTap: () {
-                                                context.pushNamed(RouteConstants
-                                                    .createWorkout);
-                                                removeAllModals();
-                                              },
-                                              child: CustomButton(
-                                                  buttonText: 'workout post'))
-                                        ],
-                                      ),
-                                    )));
-                              },
-                              child: const Icon((Icons.add)),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            );
-          } else {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
+      body: RefreshIndicator(
+        notificationPredicate: (notification) {
+          // with NestedScrollView local(depth == 2) OverscrollNotification are not sent
+          return notification.depth == 2;
         },
+        onRefresh: () async {
+          Future.delayed(
+            Duration(seconds: 0),
+            () {
+              setState(() {});
+            },
+          );
+        },
+        child: FutureBuilder(
+          future: users.doc(user!.uid).get(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              Map<String, dynamic> data =
+                  snapshot.data!.data() as Map<String, dynamic>;
+
+              final thisUser = UserServices().mapSingleUser(data);
+
+              return NestedScrollView(
+                headerSliverBuilder: (context, innerBoxIsScrolled) => [
+                  SliverAppBar(
+                    title: Text(
+                      thisUser.username,
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+
+                    actions: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: GestureDetector(
+                          onTap: () {
+                            Auth().signOut();
+                            ref.invalidate(userProvider);
+                            ref.invalidate(genericPostServicesProvider);
+                            ref.invalidate(feedServicesProvider);
+                            ref.invalidate(userServicesProvider);
+                            ref.invalidate(utilProvider);
+                            ref.invalidate(draftProvider);
+                          },
+                          child: const Icon(Icons.logout_outlined),
+                        ),
+                      )
+                    ],
+                    backgroundColor: Theme.of(context).colorScheme.background,
+                    // snap: true,
+                    floating: true,
+                  )
+                ],
+                body: Column(
+                  children: [
+                    Expanded(
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          UserProfile(thisUser: thisUser),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Align(
+                              alignment: Alignment.bottomRight,
+                              child: FloatingActionButton.small(
+                                backgroundColor: Theme.of(context).colorScheme.secondary,
+                                onPressed: () {
+                                  // context.pushNamed(RouteConstants.createPost);
+                                  showModal(ModalEntry.aligned(context,
+                                      tag: 'containerModal',
+                                      barrierDismissible: true,
+                                      alignment: Alignment.center,
+                                      // removeOnPop: true,
+
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .background,
+                                            border: Border.all(
+                                                width: 2,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .primary),
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
+                                        width: 300,
+                                        height: 200,
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            GestureDetector(
+                                                onTap: () {
+                                                  context.pushNamed(
+                                                      RouteConstants
+                                                          .createPost);
+                                                  // context.pop();
+                                                  removeAllModals();
+                                                },
+                                                child: CustomButton(
+                                                    buttonText:
+                                                        'generic post')),
+                                            GestureDetector(
+                                                onTap: () {
+                                                  context.pushNamed(
+                                                      RouteConstants
+                                                          .createWorkout);
+                                                  removeAllModals();
+                                                },
+                                                child: CustomButton(
+                                                    buttonText: 'workout post'))
+                                          ],
+                                        ),
+                                      )));
+                                },
+                                child: Icon(
+                                  (Icons.add),
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            } else {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+          },
+        ),
       ),
     );
   }

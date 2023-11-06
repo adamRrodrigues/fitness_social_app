@@ -28,81 +28,88 @@ class _CreateExerciseState extends State<CreateExercise> {
         backgroundColor: Theme.of(context).colorScheme.background,
         elevation: 0,
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          CustomTextField(
-              textController: nameController, hintText: 'exercise name'),
-          SizedBox(
-            height: 10,
-          ),
-          CustomTextField(
-              textController: descriptionController, hintText: 'description'),
-          SizedBox(
-            height: 10,
-          ),
-          NumberPicker(
-            itemHeight: 35,
-            itemWidth: 40,
-            minValue: 0,
-            maxValue: 100,
-            value: weightValue.toInt(),
-            onChanged: (value) {
-              setState(() {
-                weightValue = value.toDouble();
-              });
-            },
-          ),
-          Text('Weight: $weightValue' 'kgs'),
-          SizedBox(
-            height: 20,
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Column(
-                  children: [
-                    NumberPicker(
-                      itemHeight: 35,
-                      itemWidth: 40,
-                      minValue: 0,
-                      maxValue: 100,
-                      value: repValue,
-                      onChanged: (value) {
-                        setState(() {
-                          repValue = value;
-                        });
-                      },
-                    ),
-                    Text('Reps: $repValue'),
-                  ],
-                ),
-                Column(
-                  children: [
-                    NumberPicker(
-                      itemHeight: 35,
-                      itemWidth: 40,
-                      minValue: 0,
-                      maxValue: 100,
-                      value: setValue,
-                      onChanged: (value) {
-                        setState(() {
-                          setValue = value;
-                        });
-                      },
-                    ),
-                    Text('Sets: $setValue'),
-                  ],
-                ),
-              ],
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            CustomTextField(
+                textController: nameController, hintText: 'exercise name'),
+            SizedBox(
+              height: 10,
             ),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-        ],
+            CustomTextField(
+                textController: descriptionController, hintText: 'description'),
+            SizedBox(
+              height: 10,
+            ),
+            NumberPicker(
+              itemHeight: 50,
+              itemWidth: 50,
+              minValue: 0,
+              maxValue: 100,
+              value: weightValue.toInt(),
+                        selectedTextStyle: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: 38),
+      
+              onChanged: (value) {
+                setState(() {
+                  weightValue = value.toDouble();
+                });
+              },
+            ),
+            Text('Weight: $weightValue' 'kgs'),
+            SizedBox(
+              height: 20,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Column(
+                    children: [
+                      NumberPicker(
+                        itemHeight: 50,
+                        itemWidth: 50,
+                        minValue: 0,
+                        maxValue: 100,
+                        selectedTextStyle: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: 38),
+                        value: repValue,
+                        onChanged: (value) {
+                          setState(() {
+                            repValue = value;
+                          });
+                        },
+                      ),
+                      Text('Reps: $repValue'),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      NumberPicker(
+                        itemHeight: 50,
+                        itemWidth: 50,
+                        minValue: 0,
+                        maxValue: 100,
+                        selectedTextStyle: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: 38),
+      
+                        value: setValue,
+                        onChanged: (value) {
+                          setState(() {
+                            setValue = value;
+                          });
+                        },
+                      ),
+                      Text('Sets: $setValue'),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+          ],
+        ),
       ),
       bottomNavigationBar: BottomAppBar(
         height: 60,

@@ -8,9 +8,11 @@ class PostFeedWidget extends StatelessWidget {
   const PostFeedWidget({
     super.key,
     required this.postQuery,
+    this.profileView,
   });
 
   final Query<GenericPost> postQuery;
+  final bool? profileView;
 
   @override
   Widget build(BuildContext context) {
@@ -36,9 +38,15 @@ class PostFeedWidget extends StatelessWidget {
       },
       query: postQuery,
       itemBuilder: (context, doc) {
-
         final post = doc.data();
-        return GenericPostWidget(post: post, postId: doc.id);
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: GenericPostWidget(
+            post: post,
+            postId: doc.id,
+            mini: profileView,
+          ),
+        );
       },
     );
   }

@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_social_app/commons/commons.dart';
 import 'package:fitness_social_app/main.dart';
@@ -76,7 +77,10 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
         child: Scaffold(
           appBar: AppBar(
             elevation: 0,
-            title: Text("Create a Workout"),
+            title: Text(
+              "Create a Workout",
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
             backgroundColor: Theme.of(context).colorScheme.background,
             actions: [
               GestureDetector(
@@ -90,6 +94,7 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                         exercises: List.empty(),
                         uid: user!.uid,
                         imageUrl: '',
+                        createdAt: Timestamp.now(),
                         privacy: 'public');
 
                     print(workoutDraft!.exercises.length);
@@ -209,14 +214,20 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceEvenly,
                                     children: [
-                                      CustomTextField(textController: categoryController, hintText: 'add a category'),
-                                      GestureDetector(onTap: () {
-                                        setState(() {
-                                          workoutDraft!.categories.add(categoryController.text);
-                                          categoryController.text = '';
-                                        });
-                                        removeAllModals();
-                                      }, child: CustomButton(buttonText: 'Add'))
+                                      CustomTextField(
+                                          textController: categoryController,
+                                          hintText: 'add a category'),
+                                      GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              workoutDraft!.categories
+                                                  .add(categoryController.text);
+                                              categoryController.text = '';
+                                            });
+                                            removeAllModals();
+                                          },
+                                          child:
+                                              CustomButton(buttonText: 'Add'))
                                     ],
                                   ),
                                 ),

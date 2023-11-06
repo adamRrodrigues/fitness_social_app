@@ -29,68 +29,66 @@ class MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-          backgroundColor: Theme.of(context).colorScheme.background,
-          body: PageView(
-            controller: pageController,
-            physics: const NeverScrollableScrollPhysics(),
-            children: pages,
-          ),
-          bottomNavigationBar: Container(
-              decoration: BoxDecoration(
-                border: Border(
-                    top: BorderSide(
-                        color: Theme.of(context).colorScheme.primary)),
-                color: Theme.of(context).colorScheme.background,
-              ),
-              child: SafeArea(
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 15.0, vertical: 4),
-                  child: GNav(
-                    rippleColor: Theme.of(context).colorScheme.secondary,
-                    hoverColor: Theme.of(context).colorScheme.primary,
-                    gap: 8,
-                    activeColor: Theme.of(context)
-                        .bottomNavigationBarTheme
-                        .backgroundColor,
-                    iconSize: 24,
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                    duration: const Duration(milliseconds: 400),
-                    tabBackgroundColor: Theme.of(context)
-                        .bottomNavigationBarTheme
-                        .selectedItemColor!,
-                    color: Theme.of(context)
-                        .bottomNavigationBarTheme.unselectedItemColor,
-                    tabs: const [
-                      GButton(
-                        icon: Icons.home_outlined,
-                        text: 'Home',
-                      ),
-                      GButton(
-                        icon: Icons.explore_outlined,
-                        text: 'Discover',
-                      ),
-                      GButton(
-                        icon: Icons.monitor_heart_outlined,
-                        text: 'My Fitness',
-                      ),
-                      GButton(
-                        icon: Icons.person_2_outlined,
-                        text: 'Profile',
-                      ),
-                    ],
-                    selectedIndex: _selectedIndex,
-                    onTabChange: (index) {
-                      setState(() {
-                        _selectedIndex = index;
-                        pageController.jumpToPage(_selectedIndex);
-                      });
-                    },
-                  ),
+    return Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.background,
+        body: PageView(
+          controller: pageController,
+          physics: const NeverScrollableScrollPhysics(),
+          children: pages,
+        ),
+        bottomNavigationBar: Container(
+            decoration: BoxDecoration(
+              border: Border(
+                  top: BorderSide(
+                      color: Theme.of(context).colorScheme.primary)),
+              color: Theme.of(context).colorScheme.background,
+            ),
+            child: SafeArea(
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 15.0, vertical: 4),
+                child: GNav(
+                  rippleColor: Theme.of(context).colorScheme.secondary,
+                  hoverColor: Theme.of(context).colorScheme.primary,
+                  gap: 8,
+                  activeColor: Theme.of(context)
+                      .bottomNavigationBarTheme
+                      .backgroundColor,
+                  iconSize: 24,
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  duration: const Duration(milliseconds: 400),
+                  tabBackgroundColor: Theme.of(context)
+                      .bottomNavigationBarTheme
+                      .selectedItemColor!,
+                  color: Theme.of(context)
+                      .bottomNavigationBarTheme.unselectedItemColor,
+                  tabs: const [
+                    GButton(
+                      icon: Icons.home_outlined,
+                      // text: 'Home',
+                    ),
+                    GButton(
+                      icon: Icons.explore_outlined,
+                      // text: 'Discover',
+                    ),
+                    GButton(
+                      icon: Icons.monitor_heart_outlined,
+                      // text: 'My Fitness',
+                    ),
+                    GButton(
+                      icon: Icons.person_2_outlined,
+                      // text: 'Profile',
+                    ),
+                  ],
+                  selectedIndex: _selectedIndex,
+                  onTabChange: (index) {
+                    setState(() {
+                      _selectedIndex = index;
+                      pageController.jumpToPage(_selectedIndex);
+                    });
+                  },
                 ),
-              ))),
-    );
+              ),
+            )));
   }
 }

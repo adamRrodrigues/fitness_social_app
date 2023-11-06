@@ -12,11 +12,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 class GenericPostWidget extends ConsumerStatefulWidget {
-  const GenericPostWidget({Key? key, required this.post, required this.postId})
+  const GenericPostWidget(
+      {Key? key, required this.post, required this.postId, this.mini})
       : super(key: key);
 
   final GenericPost post;
   final String postId;
+  final bool? mini;
 
   @override
   _GenericPostWidgetState createState() => _GenericPostWidgetState();
@@ -50,6 +52,7 @@ class _GenericPostWidgetState extends ConsumerState<GenericPostWidget> {
       likeCount--;
     }
     // });
+    print('object');
   }
 
   @override
@@ -62,13 +65,16 @@ class _GenericPostWidgetState extends ConsumerState<GenericPostWidget> {
       onLongPress: () {
         genericPostServices!.deletePost(widget.postId, user!.uid);
       },
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
+      child: Material(
+        borderRadius: BorderRadius.circular(10),
+        elevation: 4,
         child: Container(
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(
-                  color: Theme.of(context).colorScheme.primary, width: 2),
+              // borderRadius: BorderRadius.circular(10),
+              border: Border(
+                bottom:
+                    BorderSide(color: Theme.of(context).colorScheme.primary),
+              ),
               color: Theme.of(context).colorScheme.secondary),
           child: SizedBox(
             // height: 250,
@@ -77,47 +83,61 @@ class _GenericPostWidgetState extends ConsumerState<GenericPostWidget> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    FutureBuilder(
-                      future: FirebaseFirestore.instance
+                widget.mini == false
+                    ? StreamBuilder(
+                      stream: FirebaseFirestore.instance
                           .collection('users')
                           .doc(widget.post.uid)
-                          .get(),
+                          .snapshots(),
                       builder: (context, snapshot) {
                         if (snapshot.hasData &&
-                            snapshot.connectionState == ConnectionState.done) {
-                          Map<String, dynamic> data =
-                              snapshot.data!.data() as Map<String, dynamic>;
+                            snapshot.connectionState ==
+                                ConnectionState.active) {
+                          Map<String, dynamic> data = snapshot.data!
+                              .data() as Map<String, dynamic>;
 
-                          final thisUser = UserServices().mapSingleUser(data);
+                          final thisUser =
+                              UserServices().mapSingleUser(data);
 
                           return Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: MiniProfie(user: thisUser),
+                            child: MiniProfie(
+                                user: thisUser,
+                                optionalSubText:
+                                    '${widget.post.createdAt.toDate().day.toString()}/${widget.post.createdAt.toDate().month.toString()}/${widget.post.createdAt.toDate().year.toString()} '),
                           );
                         } else if (snapshot.connectionState ==
                             ConnectionState.waiting) {
-                          return const SizedBox(
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: SizedBox(
                               height: 50,
-                              child: Text(
-                                'loading...',
-                              ));
+                              child: Row(
+                                children: [
+                                  CircleAvatar(
+                                      backgroundColor: Theme.of(context)
+                                          .colorScheme
+                                          .secondary),
+                                  Text('user'),
+                                ],
+                              ),
+                            ),
+                          );
                         } else {
                           return const Text('Error Loading');
                         }
                       },
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                          '${widget.post.createdAt.toDate().day.toString()}/${widget.post.createdAt.toDate().month.toString()}/${widget.post.createdAt.toDate().year.toString()}'),
                     )
-                  ],
-                ),
-                const SizedBox(
-                  height: 5,
+                    : Container(),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    widget.post.postName,
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium!
+                        .copyWith(fontWeight: FontWeight.bold),
+                  ),
                 ),
                 SizedBox(
                   height: 300,
@@ -128,14 +148,7 @@ class _GenericPostWidgetState extends ConsumerState<GenericPostWidget> {
                   ),
                 ),
                 const SizedBox(
-                  height: 10,
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(widget.post.postName),
-                ),
-                const SizedBox(
-                  height: 10,
+                  height: 5,
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -145,10 +158,8 @@ class _GenericPostWidgetState extends ConsumerState<GenericPostWidget> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          GestureDetector(
-                            onTap: () {
-                              like();
-                            },
+                          InkWell(
+                            onTap: like,
                             child: Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 2.0),
