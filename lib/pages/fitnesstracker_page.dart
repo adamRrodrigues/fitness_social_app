@@ -1,8 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
-import 'package:fitness_social_app/models/workout_post_model.dart';
-import 'package:fitness_social_app/services/feed_services.dart';
-import 'package:fitness_social_app/widgets/workout_widgets/workout_widget.dart';
 import 'package:flutter/material.dart';
 
 class FitnesstrackerPage extends StatefulWidget {
@@ -12,34 +8,83 @@ class FitnesstrackerPage extends StatefulWidget {
 }
 
 class _FitnesstrackerPageState extends State<FitnesstrackerPage> {
+  DateTime now = DateTime.now();
+  int currentDay = 3;
+  DateTime today = DateTime.now();
+  List<DateTime> dates = [];
+  List<String> days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', "SAT"];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    currentDay = now.weekday;
+    DateTime firstDayOfWeek = now.subtract(Duration(days: currentDay));
+    today = now;
+
+    for (int i = 0; i < 7; i++) {
+      final day = firstDayOfWeek.add(Duration(days: i));
+      dates.add(day);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     User? user = FirebaseAuth.instance.currentUser;
-    return FirestoreListView<WorkoutModel>(
-      pageSize: 5,
-      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-      emptyBuilder: (context) {
-        return ListView(
-          children: [
-            const Center(
-              child: Text('No Posts'),
-            ),
-          ],
-        );
-      },
-      loadingBuilder: (context) {
-        return const Center(child: CircularProgressIndicator());
-      },
-      errorBuilder: (context, error, stackTrace) {
-        return const Center(
-          child: Text('There was a problem loading the feed please try again'),
-        );
-      },
-      query: FeedServices().fetchUserWorkouts(user!.uid),
-      itemBuilder: (context, doc) {
-        final post = doc.data();
-        return WorkoutWidget(workoutModel: post, postId: doc.id, mini: false,);
-      },
+    return Scaffold(
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
+            padding: const EdgeInsets.all(8.0),
+            child: SizedBox(
+                height: 90,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
+                  width: double.infinity,
+                  child: Center(
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      shrinkWrap: true,
+                      itemCount: days.length,
+                      itemBuilder: (context, index) {
+                        print(currentDay);
+                        return Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                days[index],
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                              Text(
+                                dates[index].day.toString(),
+                                style: dates[index].day == today.day
+                                    ? Theme.of(context)
+                                        .textTheme
+                                        .titleLarge!
+                                        .copyWith(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary,
+                                            fontSize: 36)
+                                    : Theme.of(context).textTheme.titleLarge,
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                )),
+          )
+        ],
+      ),
     );
   }
 }

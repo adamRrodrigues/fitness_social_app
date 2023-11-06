@@ -8,9 +8,9 @@ class CustomButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 275,
+      width: double.infinity,
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(10),
           border: Border.all(
               color: Theme.of(context).colorScheme.primary, width: 3)),
       child: Padding(

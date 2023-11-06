@@ -1,5 +1,6 @@
 import 'package:fitness_social_app/models/exercise_model.dart';
 import 'package:fitness_social_app/models/workout_post_model.dart';
+import 'package:fitness_social_app/widgets/custom_button.dart';
 import 'package:fitness_social_app/widgets/image_widget.dart';
 import 'package:fitness_social_app/widgets/pill_widget.dart';
 import 'package:fitness_social_app/widgets/workout_widgets/exercise_widget.dart';
@@ -81,6 +82,14 @@ class ViewWorkout extends StatelessWidget {
                 : Text('Any exercises you add will appear here')
           ],
         ),
+      ),
+      bottomNavigationBar: BottomAppBar(
+        height: 60,
+        padding: EdgeInsets.all(8),
+        color: Colors.transparent,
+        elevation: 0,
+        child: GestureDetector(
+            child: CustomButton(buttonText: 'Save This Workout')),
       ),
     );
   }

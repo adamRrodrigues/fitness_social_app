@@ -4,10 +4,12 @@ import 'package:fitness_social_app/models/workout_post_model.dart';
 import 'package:fitness_social_app/routing/route_constants.dart';
 import 'package:fitness_social_app/services/post_service.dart';
 import 'package:fitness_social_app/services/user_services.dart';
+import 'package:fitness_social_app/widgets/custom_start_widget.dart';
 import 'package:fitness_social_app/widgets/image_widget.dart';
 import 'package:fitness_social_app/widgets/mini_profie.dart';
 import 'package:fitness_social_app/widgets/pill_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:go_router/go_router.dart';
 
 class WorkoutWidget extends StatelessWidget {
@@ -34,12 +36,15 @@ class WorkoutWidget extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: Material(
           elevation: 4,
-          borderRadius: BorderRadius.circular(10),
+          color: Theme.of(context).colorScheme.secondary,
+          // borderRadius: BorderRadius.circular(10),
           child: Container(
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.secondary,
-              borderRadius: BorderRadius.circular(10),
-            ),
+                color: Theme.of(context).colorScheme.secondary,
+                // borderRadius: BorderRadius.circular(10),
+                border: Border(
+                    bottom: BorderSide(
+                        color: Theme.of(context).colorScheme.primary))),
             // height: 500,
             child: Padding(
               padding: const EdgeInsets.all(2.0),
@@ -94,7 +99,7 @@ class WorkoutWidget extends StatelessWidget {
                               editable: false,
                               name: workoutModel.categories[index],
                               delete: () {},
-                              active: true),
+                              active: false),
                         );
                       },
                     ),
@@ -104,12 +109,11 @@ class WorkoutWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            padding: const EdgeInsets.all(4.0),
                             child: Text(
                               workoutModel.workoutName,
                               style: Theme.of(context)
@@ -119,8 +123,7 @@ class WorkoutWidget extends StatelessWidget {
                             ),
                           ),
                           Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            padding: const EdgeInsets.all(4.0),
                             child: Text(
                               '${workoutModel.exercises.length.toString()} exercises',
                               style: Theme.of(context)
@@ -129,6 +132,10 @@ class WorkoutWidget extends StatelessWidget {
                                   .copyWith(fontWeight: FontWeight.bold),
                             ),
                           ),
+                          Padding(
+                            padding: EdgeInsets.all(4),
+                            child: CustomStarWidget(starValue: 4.5),
+                          )
                         ],
                       ),
                       SizedBox(

@@ -25,7 +25,7 @@ class PillWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
           color: active
               ? Theme.of(context).colorScheme.primary
-              : Theme.of(context).colorScheme.secondary),
+              : Theme.of(context).colorScheme.background),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12.0),
         child: Row(

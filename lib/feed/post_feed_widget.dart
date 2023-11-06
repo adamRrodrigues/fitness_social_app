@@ -8,7 +8,7 @@ class PostFeedWidget extends StatelessWidget {
   const PostFeedWidget({
     super.key,
     required this.postQuery,
-    this.profileView,
+    this.profileView = false,
   });
 
   final Query<GenericPost> postQuery;

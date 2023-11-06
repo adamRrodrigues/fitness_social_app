@@ -52,6 +52,7 @@ dependencies:
   numberpicker: ^2.1.2
   modals: ^1.0.0+1
   google_fonts: ^6.1.0
+  flutter_rating_stars: ^1.0.3+4
 
 dev_dependencies:
   flutter_test:

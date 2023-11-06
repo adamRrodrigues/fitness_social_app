@@ -36,6 +36,8 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
 
   Utils? imagePicker;
 
+  FocusNode focusNode = FocusNode();
+
   void selectImage() async {
     try {
       Uint8List file = await imagePicker!.pickImage(ImageSource.gallery);
@@ -190,6 +192,7 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                         mini: true,
                         backgroundColor: Theme.of(context).colorScheme.primary,
                         onPressed: () {
+                          focusNode.requestFocus();
                           showModal(ModalEntry.aligned(context,
                               tag: 'containerModal',
                               barrierDismissible: true,
@@ -215,6 +218,7 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                                         MainAxisAlignment.spaceEvenly,
                                     children: [
                                       CustomTextField(
+                                          focusNode: focusNode,
                                           textController: categoryController,
                                           hintText: 'add a category'),
                                       GestureDetector(
@@ -227,7 +231,10 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                                             removeAllModals();
                                           },
                                           child:
-                                              CustomButton(buttonText: 'Add'))
+                                              Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: CustomButton(buttonText: 'Add'),
+                                              ))
                                     ],
                                   ),
                                 ),

@@ -166,30 +166,22 @@ class _ViewPostState extends ConsumerState<ViewPost> {
                     padding: const EdgeInsets.all(8.0),
                     child: GestureDetector(
                       onTap: () async {
-                        showDialog(
-                          barrierDismissible: false,
-                          context: context,
-                          builder: (context) {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          },
-                        );
                         if (commentField.text.isNotEmpty) {
-                          await genericPostServices!.comment(
-                              widget.postId, user!.uid, commentField.text);
-
                           setState(() {
                             widget.post.comments.add({
                               'uid': user!.uid,
                               'comment': commentField.text
                             });
                           });
+                          FocusManager.instance.primaryFocus?.unfocus();
+                          await genericPostServices!.comment(
+                              widget.postId, user!.uid, commentField.text);
+
                         } else {
-                          Commons().snackBarMessage(
-                              'comment cannot be empty', Colors.red);
+                          ScaffoldMessenger.of(context).showSnackBar(Commons()
+                              .snackBarMessage(
+                                  'comment cannot be empty', Colors.red));
                         }
-                        Navigator.pop(context);
                         commentField.text = '';
                       },
                       child: Icon(
