@@ -220,19 +220,29 @@ class _UserProfileState extends ConsumerState<UserProfile> {
               TabBar(
                 indicatorColor: Theme.of(context).colorScheme.primary,
                 tabs: [
-                  Tab(icon: Icon(Icons.post_add, color: Theme.of(context).colorScheme.primary,)),
-                  Tab(icon: Icon(Icons.run_circle_outlined, color: Theme.of(context).colorScheme.primary,)),
+                  Tab(
+                      icon: Icon(
+                    Icons.post_add,
+                    color: Theme.of(context).colorScheme.primary,
+                  )),
+                  Tab(
+                      icon: Icon(
+                    Icons.run_circle_outlined,
+                    color: Theme.of(context).colorScheme.primary,
+                  )),
                 ],
               ),
               Expanded(
                 child: TabBarView(
                   children: [
-                    PostFeedWidget(profileView: true,
-                        postQuery: feedServices!
-                            .fetchUserPosts(widget.thisUser.uid)),
+                    PostFeedWidget(
+                        profileView: true,
+                        postQuery:
+                            feedServices!.fetchUserPosts(widget.thisUser.uid)),
                     WorkoutFeed(
                       profileView: true,
                       uid: widget.thisUser.uid,
+                      postQuery: FeedServices().fetchUserWorkouts(user!.uid),
                     )
                   ],
                 ),

@@ -7,9 +7,10 @@ import 'package:fitness_social_app/routing/route_constants.dart';
 import 'package:fitness_social_app/screen/create_exercise.dart';
 import 'package:fitness_social_app/screen/create_post.dart';
 import 'package:fitness_social_app/screen/create_workout_post.dart';
-// import 'package:fitness_social_app/screen/fall_back_screen.dart';
+import 'package:fitness_social_app/screen/search_workouts.dart';
 import 'package:fitness_social_app/screen/user_page.dart';
 import 'package:fitness_social_app/screen/view_post.dart';
+import 'package:fitness_social_app/screen/view_routine.dart';
 import 'package:fitness_social_app/screen/view_workout.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
@@ -52,7 +53,25 @@ final GoRouter appRouter = GoRouter(routes: <GoRoute>[
           name: RouteConstants.createExercise,
           pageBuilder: (context, state) {
             List<ExerciseModel> exercises = state.extra as List<ExerciseModel>;
-            return  CupertinoPage(child: CreateExercise(exercises: exercises,));
+            return CupertinoPage(
+                child: CreateExercise(
+              exercises: exercises,
+            ));
+          },
+        ),
+        GoRoute(
+          path: 'viewRotinePage',
+          name: RouteConstants.viewRoutinePage,
+          pageBuilder: (context, state) {
+            return CupertinoPage(child: ViewRoutine());
+          },
+        ),
+        GoRoute(
+          path: 'searchWorkoutScreen',
+          name: RouteConstants.searchWorkoutScreen,
+          pageBuilder: (context, state) {
+            int number = state.extra as int;
+            return CupertinoPage(child: SearchWorkouts(number));
           },
         ),
         GoRoute(
@@ -60,7 +79,7 @@ final GoRouter appRouter = GoRouter(routes: <GoRoute>[
           name: RouteConstants.viewPostScreen,
           pageBuilder: (context, state) {
             GenericPost post = state.extra as GenericPost;
-            final  postId = state.pathParameters['id'];
+            final postId = state.pathParameters['id'];
             return CupertinoPage(
                 child: ViewPost(
               post: post,
@@ -73,11 +92,11 @@ final GoRouter appRouter = GoRouter(routes: <GoRoute>[
           name: RouteConstants.viewWorkoutScreen,
           pageBuilder: (context, state) {
             WorkoutModel post = state.extra as WorkoutModel;
-            final  postId = state.pathParameters['id'];
+            final postId = state.pathParameters['id'];
             return CupertinoPage(
                 child: ViewWorkout(
-                  workoutModel: post,
-                  postId: postId!,
+              workoutModel: post,
+              postId: postId!,
             ));
           },
         ),

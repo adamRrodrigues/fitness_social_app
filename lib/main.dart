@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:fitness_social_app/firebase_options.dart';
+import 'package:fitness_social_app/models/routine_model.dart';
 import 'package:fitness_social_app/routing/page_router.dart';
 import 'package:fitness_social_app/services/drafts.dart';
 import 'package:fitness_social_app/services/feed_services.dart';
@@ -18,6 +19,7 @@ final genericPostServicesProvider = Provider((ref) => GenericPostServices());
 final feedServicesProvider = Provider((ref) => FeedServices());
 final utilProvider = Provider((ref) => Utils());
 final draftProvider = Provider((ref) => WorkoutDraft());
+final routineProvider = Provider((ref) => Routine());
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
