@@ -60,10 +60,14 @@ final GoRouter appRouter = GoRouter(routes: <GoRoute>[
           },
         ),
         GoRoute(
-          path: 'viewRotinePage',
+          path: 'viewRotinePage/:id',
           name: RouteConstants.viewRoutinePage,
           pageBuilder: (context, state) {
-            return CupertinoPage(child: ViewRoutine());
+            final uid = state.pathParameters['id'];
+            return CupertinoPage(
+                child: ViewRoutine(
+              uid: uid!,
+            ));
           },
         ),
         GoRoute(

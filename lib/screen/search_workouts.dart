@@ -39,9 +39,10 @@ class _SearchWorkoutsState extends ConsumerState<SearchWorkouts> {
         children: [
           Expanded(
               child: WorkoutFeed(
+                selection: true,
             day: widget.index,
             uid: user!.uid,
-            postQuery: FeedServices().fetchWorkouts(user.uid),
+            postQuery: FeedServices().fetchWorkouts(),
             profileView: false,
           ))
         ],

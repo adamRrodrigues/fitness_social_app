@@ -1,10 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fitness_social_app/models/routine_model.dart';
 import 'package:fitness_social_app/models/user_model.dart';
 import 'package:flutter/material.dart';
 
 class Auth {
   bool created = false;
+
+  CollectionReference routines =
+      FirebaseFirestore.instance.collection('routines');
 
   Future signUp(BuildContext context, String email, String username,
       String password) async {
@@ -39,6 +43,18 @@ class Auth {
             .doc(user.user!.uid)
             .collection('following')
             .add({});
+
+        await routines
+            .doc(user.user!.uid)
+            .set(OnlineRoutine(uid: user.user!.uid).toMap());
+        for (int i = 0; i < 7; i++) {
+          await routines.doc(user.user!.uid).collection('day $i').add({});
+          await routines
+              .doc(user.user!.uid)
+              .collection('day $i')
+              .doc('workouts')
+              .set({'workouts': List.empty()});
+        }
 
         created = true;
       } catch (e) {

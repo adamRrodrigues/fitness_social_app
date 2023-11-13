@@ -105,6 +105,7 @@ class WorkoutPostServices {
       for (int i = 0; i < exercises.length; i++) {
         Map<String, dynamic> exercise = exercises[i].toMap();
         await workoutPosts.doc(value.id).update({
+          'postId': value.id,
           'exercises': FieldValue.arrayUnion([exercise])
         });
       }

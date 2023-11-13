@@ -9,6 +9,7 @@ class WorkoutModel {
   final List<String> categories;
   final List<dynamic> exercises;
   final String uid;
+  final String postId;
   final String privacy;
   final String imageUrl;
   final Timestamp createdAt;
@@ -17,6 +18,7 @@ class WorkoutModel {
     required this.categories,
     required this.exercises,
     required this.uid,
+    required this.postId,
     required this.privacy,
     required this.imageUrl,
     required this.createdAt,
@@ -27,6 +29,7 @@ class WorkoutModel {
     List<String>? categories,
     List<dynamic>? exercises,
     String? uid,
+    String? postId,
     String? privacy,
     String? imageUrl,
     Timestamp? createdAt,
@@ -36,6 +39,7 @@ class WorkoutModel {
       categories: categories ?? this.categories,
       exercises: exercises ?? this.exercises,
       uid: uid ?? this.uid,
+      postId: postId ?? this.postId,
       privacy: privacy ?? this.privacy,
       imageUrl: imageUrl ?? this.imageUrl,
       createdAt: createdAt ?? this.createdAt,
@@ -48,6 +52,7 @@ class WorkoutModel {
       'categories': categories,
       'exercises': exercises,
       'uid': uid,
+      'postId': postId,
       'privacy': privacy,
       'imageUrl': imageUrl,
       'createdAt': createdAt,
@@ -60,6 +65,7 @@ class WorkoutModel {
       categories: List<String>.from((map['categories'] as List<dynamic>)),
       exercises: List<dynamic>.from((map['exercises'] as List<dynamic>)),
       uid: map['uid'] as String,
+      postId: map['postId'] as String,
       privacy: map['privacy'] as String,
       imageUrl: map['imageUrl'] as String,
       createdAt: map['createdAt'],
@@ -73,7 +79,7 @@ class WorkoutModel {
 
   @override
   String toString() {
-    return 'WorkoutModel(workoutName: $workoutName, categories: $categories, exercises: $exercises, uid: $uid, privacy: $privacy, imageUrl: $imageUrl, createdAt: $createdAt)';
+    return 'WorkoutModel(workoutName: $workoutName, categories: $categories, exercises: $exercises, uid: $uid , postId: $postId, privacy: $privacy, imageUrl: $imageUrl, createdAt: $createdAt)';
   }
 
   @override

@@ -1,3 +1,5 @@
+import 'package:easy_image_viewer/easy_image_viewer.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:fitness_social_app/models/exercise_model.dart';
 import 'package:fitness_social_app/models/workout_post_model.dart';
 import 'package:fitness_social_app/widgets/custom_button.dart';
@@ -14,6 +16,8 @@ class ViewWorkout extends StatelessWidget {
   final String postId;
   @override
   Widget build(BuildContext context) {
+    final imageProvider = MultiImageProvider(
+        [ExtendedImage.network(workoutModel.imageUrl).image]);
     return Scaffold(
       appBar: AppBar(
         title: Text(workoutModel.workoutName),
@@ -32,7 +36,11 @@ class ViewWorkout extends StatelessWidget {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: ImageWidget(url: workoutModel.imageUrl)),
+                  child: GestureDetector(
+                      onTap: () {
+                        showImageViewerPager(context, imageProvider);
+                      },
+                      child: ImageWidget(url: workoutModel.imageUrl))),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),

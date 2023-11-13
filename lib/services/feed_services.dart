@@ -32,7 +32,7 @@ class FeedServices {
     return postQuery;
   }
 
-  Query<WorkoutModel> fetchWorkouts(uid) {
+  Query<WorkoutModel> fetchWorkouts() {
     final postQuery;
     postQuery =
         FirebaseFirestore.instance.collection('workout_posts').withConverter(
@@ -58,5 +58,11 @@ class FeedServices {
 
   Stream fetchFollowing(uid) async* {
     following = await UserServices().fetchFollowing(uid);
+  }
+
+  Stream fetchUserRoutine(String uid, int day) async*{
+     FirebaseFirestore.instance
+        .collection('routines')
+        .doc(uid).collection('day $day').doc('workouts').snapshots();
   }
 }

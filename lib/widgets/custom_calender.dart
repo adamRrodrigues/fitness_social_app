@@ -3,14 +3,12 @@ import 'package:flutter/material.dart';
 class CustomCalender extends StatefulWidget {
   const CustomCalender({
     super.key,
-    required this.days,
     required this.currentDay,
     required this.dates,
     required this.today,
     required this.func(int data),
   });
 
-  final List<String> days;
   final int currentDay;
   final List<DateTime> dates;
   final DateTime today;
@@ -22,6 +20,8 @@ class CustomCalender extends StatefulWidget {
 
 class _CustomeCalenderState extends State<CustomCalender> {
   DateTime changeAbleToday = DateTime.now();
+
+  List<String> days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', "SAT"];
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -43,7 +43,7 @@ class _CustomeCalenderState extends State<CustomCalender> {
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     shrinkWrap: true,
-                    itemCount: widget.days.length,
+                    itemCount: days.length,
                     itemBuilder: (context, index) {
                       return GestureDetector(
                         onTap: () {
@@ -58,7 +58,7 @@ class _CustomeCalenderState extends State<CustomCalender> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                widget.days[index],
+                                days[index],
                                 style: Theme.of(context).textTheme.bodySmall,
                               ),
                               Text(

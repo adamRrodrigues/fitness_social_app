@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_social_app/feed/workout_feed.dart';
 import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/models/user_model.dart';
+import 'package:fitness_social_app/routing/route_constants.dart';
 import 'package:fitness_social_app/services/feed_services.dart';
 import 'package:fitness_social_app/services/post_service.dart';
 import 'package:fitness_social_app/services/storage_services.dart';
@@ -16,6 +17,7 @@ import 'package:fitness_social_app/widgets/custom_button.dart';
 import 'package:fitness_social_app/feed/post_feed_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
 class UserProfile extends ConsumerStatefulWidget {
@@ -181,6 +183,12 @@ class _UserProfileState extends ConsumerState<UserProfile> {
                       });
                 }
               }),
+              GestureDetector(
+                  onTap: () {
+                    context.pushNamed(RouteConstants.viewRoutinePage,
+                        pathParameters: {'id': widget.thisUser.uid});
+                  },
+                  child: CustomButton(buttonText: 'view routine')),
               Divider(
                 color: Theme.of(context).colorScheme.primary,
               ),
@@ -242,7 +250,8 @@ class _UserProfileState extends ConsumerState<UserProfile> {
                     WorkoutFeed(
                       profileView: true,
                       uid: widget.thisUser.uid,
-                      postQuery: FeedServices().fetchUserWorkouts(user!.uid),
+                      postQuery:
+                          FeedServices().fetchUserWorkouts(widget.thisUser.uid),
                     )
                   ],
                 ),

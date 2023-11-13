@@ -96,6 +96,7 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                         exercises: List.empty(),
                         uid: user!.uid,
                         imageUrl: '',
+                        postId: '',
                         createdAt: Timestamp.now(),
                         privacy: 'public');
 
