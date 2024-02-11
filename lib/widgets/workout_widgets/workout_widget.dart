@@ -65,40 +65,42 @@ class WorkoutWidget extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   mini == false
-                      ? StreamBuilder(
-                          stream: FirebaseFirestore.instance
-                              .collection('users')
-                              .doc(workoutModel.uid)
-                              .snapshots(),
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData &&
-                                snapshot.connectionState ==
-                                    ConnectionState.active) {
-                              Map<String, dynamic> data =
-                                  snapshot.data!.data() as Map<String, dynamic>;
+                      ?
+                      // ? StreamBuilder(
+                      //     stream: FirebaseFirestore.instance
+                      //         .collection('users')
+                      //         .doc(workoutModel.uid)
+                      //         .snapshots(),
+                      //     builder: (context, snapshot) {
+                      //       if (snapshot.hasData &&
+                      //           snapshot.connectionState ==
+                      //               ConnectionState.active) {
+                      //         Map<String, dynamic> data =
+                      //             snapshot.data!.data() as Map<String, dynamic>;
 
-                              final thisUser =
-                                  UserServices().mapSingleUser(data);
+                      //         final thisUser =
+                      //             UserServices().mapSingleUser(data);
 
-                              return Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: MiniProfie(
-                                    user: thisUser,
-                                    optionalSubText:
-                                        '${workoutModel.createdAt.toDate().day.toString()}/${workoutModel.createdAt.toDate().month.toString()}/${workoutModel.createdAt.toDate().year.toString()} '),
-                              );
-                            } else if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const SizedBox(
-                                  height: 50,
-                                  child: Text(
-                                    'loading...',
-                                  ));
-                            } else {
-                              return const Text('Error Loading');
-                            }
-                          },
-                        )
+                      //         return Padding(
+                      //           padding: const EdgeInsets.all(8.0),
+                      //           child: MiniProfie(
+                      //               user: thisUser,
+                      //               optionalSubText:
+                      //                   '${workoutModel.createdAt.toDate().day.toString()}/${workoutModel.createdAt.toDate().month.toString()}/${workoutModel.createdAt.toDate().year.toString()} '),
+                      //         );
+                      //       } else if (snapshot.connectionState ==
+                      //           ConnectionState.waiting) {
+                      //         return const SizedBox(
+                      //             height: 50,
+                      //             child: Text(
+                      //               'loading...',
+                      //             ));
+                      //       } else {
+                      //         return const Text('Error Loading');
+                      //       }
+                      //     },
+                      //   )
+                      Container()
                       : Container(),
                   SizedBox(
                     height: 35,

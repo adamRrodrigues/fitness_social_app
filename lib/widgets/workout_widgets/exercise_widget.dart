@@ -21,7 +21,7 @@ class ExerciseWidget extends StatelessWidget {
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [Text(exerciseModel.name), Text(exerciseModel.description)],
+            children: [Text(exerciseModel.name), SizedBox(width: 220, child: Text(exerciseModel.description, overflow: TextOverflow.ellipsis,))],
           ),
           Text('Sets: ${exerciseModel.sets.toString()}x')
         ]),

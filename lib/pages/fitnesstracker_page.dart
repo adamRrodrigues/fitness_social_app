@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/models/routine_model.dart';
+import 'package:fitness_social_app/models/workout_post_model.dart';
 import 'package:fitness_social_app/routing/route_constants.dart';
 import 'package:fitness_social_app/widgets/custom_button.dart';
 import 'package:fitness_social_app/widgets/custom_calender.dart';
@@ -22,12 +23,17 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage> {
   int currentDay = 0;
   DateTime today = DateTime.now();
   List<DateTime> dates = [];
+  List<WorkoutModel> workouts = [];
   Routine routine = Routine();
 
   @override
   void initState() {
     super.initState();
     currentDay = now.weekday;
+    if (currentDay == 7) {
+      currentDay = 0;
+    }
+    print("day $currentDay");
     DateTime firstDayOfWeek = now.subtract(Duration(days: currentDay));
     today = now;
     routine = ref.read(routineProvider);
@@ -134,7 +140,7 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage> {
             GestureDetector(
               onTap: () {
                 context.pushNamed(RouteConstants.viewRoutinePage,
-                    pathParameters: {'id': user.uid});
+                    pathParameters: {'id': user.uid}, extra: currentDay);
               },
               child: const Padding(
                 padding: EdgeInsets.all(8.0),
@@ -151,7 +157,10 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage> {
                   .titleMedium!
                   .copyWith(color: Colors.grey[400]),
             ),
-            OnlineRoutineWidget(uid: user.uid, currentDay: currentDay)
+            OnlineRoutineWidget(
+              uid: user.uid,
+              currentDay: currentDay,
+            )
           ],
         ),
       ),
@@ -163,7 +172,7 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage> {
         child: GestureDetector(
             onTap: () {
               context.pushNamed(RouteConstants.viewRoutinePage,
-                  pathParameters: {'id': user.uid});
+                  pathParameters: {'id': user.uid}, extra: currentDay);
             },
             child: const CustomButton(buttonText: 'Begin Routine')),
       ),

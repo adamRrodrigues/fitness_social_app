@@ -8,6 +8,7 @@ class GenericPost {
   final String uid;
   final String image;
   final List<String> likes;
+  final int likeCount;
   final List<dynamic> comments;
   final Timestamp createdAt;
   GenericPost({
@@ -15,6 +16,7 @@ class GenericPost {
     required this.uid,
     required this.image,
     required this.likes,
+    required this.likeCount,
     required this.comments,
     required this.createdAt,
   });
@@ -24,6 +26,7 @@ class GenericPost {
     String? uid,
     String? image,
     List<String>? likes,
+    int? likeCount,
     List<dynamic>? comments,
     Timestamp? createdAt,
   }) {
@@ -32,6 +35,7 @@ class GenericPost {
       uid: uid ?? this.uid,
       image: image ?? this.image,
       likes: likes ?? this.likes,
+      likeCount: likeCount?? this.likeCount,
       createdAt: createdAt ?? this.createdAt,
       comments: comments ?? this.comments,
     );
@@ -43,6 +47,7 @@ class GenericPost {
       'uid': uid,
       'image': image,
       'likes': likes,
+      'likeCount': likeCount,
       'comments': comments,
       'createdAt': createdAt,
     };
@@ -54,6 +59,7 @@ class GenericPost {
       uid: map['uid'] as String,
       image: map['image'] as String,
       likes: List<String>.from((map['likes'] as List<dynamic>)),
+      likeCount: map['likeCount'] as int,
       comments: List<dynamic>.from((map['comments'] as List<dynamic>)),
       createdAt: map['createdAt'],
     );

@@ -64,9 +64,11 @@ final GoRouter appRouter = GoRouter(routes: <GoRoute>[
           name: RouteConstants.viewRoutinePage,
           pageBuilder: (context, state) {
             final uid = state.pathParameters['id'];
+            int currentDay = state.extra as int;
             return CupertinoPage(
                 child: ViewRoutine(
               uid: uid!,
+              currentDay: currentDay,
             ));
           },
         ),
