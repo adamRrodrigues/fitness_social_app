@@ -10,8 +10,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 class ViewRoutine extends ConsumerStatefulWidget {
-  const ViewRoutine({Key? key, required this.uid}) : super(key: key);
+  const ViewRoutine({Key? key, required this.uid, required this.currentDay})
+      : super(key: key);
   final String uid;
+  final int currentDay;
   @override
   _ViewRoutineState createState() => _ViewRoutineState();
 }
@@ -19,7 +21,7 @@ class ViewRoutine extends ConsumerStatefulWidget {
 class _ViewRoutineState extends ConsumerState<ViewRoutine>
     with AutomaticKeepAliveClientMixin {
   DateTime now = DateTime.now();
-  int currentDay = 2;
+  int currentDay = 0;
   List<DateTime> dates = [];
 
   Routine routine = Routine();
@@ -27,7 +29,7 @@ class _ViewRoutineState extends ConsumerState<ViewRoutine>
   @override
   void initState() {
     super.initState();
-    currentDay = now.weekday;
+    currentDay = widget.currentDay;
     DateTime firstDayOfWeek = now.subtract(Duration(days: currentDay));
     routine = ref.read(routineProvider);
     for (int i = 0; i < 7; i++) {

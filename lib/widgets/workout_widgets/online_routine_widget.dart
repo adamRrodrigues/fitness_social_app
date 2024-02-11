@@ -21,12 +21,13 @@ class OnlineRoutineWidget extends StatelessWidget {
       stream: FirebaseFirestore.instance
           .collection('routines')
           .doc(uid)
-          .collection('day ${currentDay.toString()}')
+          .collection('day $currentDay')
           .doc('workouts')
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasData &&
             snapshot.connectionState == ConnectionState.active) {
+              print(currentDay);
           List<String> workouts = [];
           Map<String, dynamic> data =
               snapshot.data!.data() as Map<String, dynamic>;

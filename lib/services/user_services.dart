@@ -12,7 +12,7 @@ class UserServices {
   UserModel mapSingleUser(Map<String, dynamic> data) {
     final thisUser = UserModel(
         username: data['username'],
-        firstName: data['firstName'],
+        firstName: "",
         lastName: data['lastName'],
         uid: data['uid'],
         posts: data['posts'],

@@ -30,40 +30,31 @@ class _GenericPostWidgetState extends ConsumerState<GenericPostWidget> {
   GenericPostServices? genericPostServices;
 
   bool isLiked = false;
-  int likeCount = 0;
 
   @override
   void initState() {
     user = ref.read(userProvider);
     genericPostServices = ref.read(genericPostServicesProvider);
-    likeCount = widget.post.likes.length;
     isLiked = widget.post.likes.contains(user!.uid);
     super.initState();
   }
 
-  void like() {
-    // setState(() {
-    genericPostServices!.likePost(widget.postId, user!.uid, isLiked);
-    isLiked = !isLiked;
-
-    if (isLiked) {
-      likeCount++;
-    } else {
-      likeCount--;
-    }
-    // });
-    print('object');
-  }
-
   @override
   Widget build(BuildContext context) {
+    void like() {
+      genericPostServices!.likePost(widget.postId, user!.uid, isLiked);
+      isLiked = !isLiked;
+    }
+
     return GestureDetector(
       onTap: () {
         context.pushNamed(RouteConstants.viewPostScreen,
             extra: widget.post, pathParameters: {'id': widget.postId});
       },
       onLongPress: () {
-        genericPostServices!.deletePost(widget.postId, user!.uid);
+        if (widget.post.uid == user!.uid) {
+          genericPostServices!.deletePost(widget.postId, user!.uid);
+        }
       },
       child: Material(
         borderRadius: BorderRadius.circular(10),
@@ -85,49 +76,48 @@ class _GenericPostWidgetState extends ConsumerState<GenericPostWidget> {
               children: [
                 widget.mini == false
                     ? StreamBuilder(
-                      stream: FirebaseFirestore.instance
-                          .collection('users')
-                          .doc(widget.post.uid)
-                          .snapshots(),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData &&
-                            snapshot.connectionState ==
-                                ConnectionState.active) {
-                          Map<String, dynamic> data = snapshot.data!
-                              .data() as Map<String, dynamic>;
+                        stream: FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(widget.post.uid)
+                            .snapshots(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData &&
+                              snapshot.connectionState ==
+                                  ConnectionState.active) {
+                            Map<String, dynamic> data =
+                                snapshot.data!.data() as Map<String, dynamic>;
 
-                          final thisUser =
-                              UserServices().mapSingleUser(data);
+                            final thisUser = UserServices().mapSingleUser(data);
 
-                          return Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: MiniProfie(
-                                user: thisUser,
-                                optionalSubText:
-                                    '${widget.post.createdAt.toDate().day.toString()}/${widget.post.createdAt.toDate().month.toString()}/${widget.post.createdAt.toDate().year.toString()} '),
-                          );
-                        } else if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: SizedBox(
-                              height: 50,
-                              child: Row(
-                                children: [
-                                  CircleAvatar(
-                                      backgroundColor: Theme.of(context)
-                                          .colorScheme
-                                          .secondary),
-                                  Text('user'),
-                                ],
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: MiniProfie(
+                                  user: thisUser,
+                                  optionalSubText:
+                                      '${widget.post.createdAt.toDate().day.toString()}/${widget.post.createdAt.toDate().month.toString()}/${widget.post.createdAt.toDate().year.toString()} '),
+                            );
+                          } else if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: SizedBox(
+                                height: 50,
+                                child: Row(
+                                  children: [
+                                    CircleAvatar(
+                                        backgroundColor: Theme.of(context)
+                                            .colorScheme
+                                            .secondary),
+                                    Text('user'),
+                                  ],
+                                ),
                               ),
-                            ),
-                          );
-                        } else {
-                          return const Text('Error Loading');
-                        }
-                      },
-                    )
+                            );
+                          } else {
+                            return const Text('Error Loading');
+                          }
+                        },
+                      )
                     : Container(),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -175,7 +165,7 @@ class _GenericPostWidgetState extends ConsumerState<GenericPostWidget> {
                           Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 2.0),
-                              child: Text(likeCount.toString()))
+                              child: Text(widget.post.likeCount.toString()))
                         ],
                       ),
                       Row(

@@ -22,6 +22,7 @@ class GenericPostServices {
                 postName: postName,
                 uid: thisUser!.uid,
                 likes: List.empty(),
+                likeCount: 0,
                 comments: List.empty(),
                 image: '',
                 createdAt: Timestamp.now())
@@ -44,6 +45,7 @@ class GenericPostServices {
         uid: data['uid'],
         comments: List.from(data['comments']),
         likes: List.from(data['likes']),
+        likeCount: data['likeCount'] ?? 0,
         image: data['image'],
         createdAt: data['createdAt']);
     print(thisPost);
@@ -67,14 +69,16 @@ class GenericPostServices {
           .collection('generic_posts')
           .doc(postId)
           .update({
-        'likes': FieldValue.arrayRemove([uid])
+        'likes': FieldValue.arrayRemove([uid]),
+        'likeCount': FieldValue.increment(-1)
       });
     } else {
       await FirebaseFirestore.instance
           .collection('generic_posts')
           .doc(postId)
           .update({
-        'likes': FieldValue.arrayUnion([uid])
+        'likes': FieldValue.arrayUnion([uid]),
+        'likeCount': FieldValue.increment(1)
       });
     }
   }

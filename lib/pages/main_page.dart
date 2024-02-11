@@ -19,9 +19,9 @@ class MainPageState extends State<MainPage> {
   PageController pageController = PageController();
 
   List<Widget> pages = const [
-    HomePage(),
-    DiscoverPage(),
     FitnesstrackerPage(),
+    DiscoverPage(),
+    HomePage(),
     ProfilePage()
   ];
 
@@ -41,8 +41,8 @@ class MainPageState extends State<MainPage> {
         bottomNavigationBar: Container(
             decoration: BoxDecoration(
               border: Border(
-                  top: BorderSide(
-                      color: Theme.of(context).colorScheme.primary)),
+                  top:
+                      BorderSide(color: Theme.of(context).colorScheme.primary)),
               color: Theme.of(context).colorScheme.background,
             ),
             child: SafeArea(
@@ -57,16 +57,18 @@ class MainPageState extends State<MainPage> {
                       .bottomNavigationBarTheme
                       .backgroundColor,
                   iconSize: 24,
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                   duration: const Duration(milliseconds: 400),
                   tabBackgroundColor: Theme.of(context)
                       .bottomNavigationBarTheme
                       .selectedItemColor!,
                   color: Theme.of(context)
-                      .bottomNavigationBarTheme.unselectedItemColor,
+                      .bottomNavigationBarTheme
+                      .unselectedItemColor,
                   tabs: const [
                     GButton(
-                      icon: Icons.home_outlined,
+                      icon: Icons.monitor_heart_outlined,
                       // text: 'Home',
                     ),
                     GButton(
@@ -74,7 +76,7 @@ class MainPageState extends State<MainPage> {
                       // text: 'Discover',
                     ),
                     GButton(
-                      icon: Icons.monitor_heart_outlined,
+                      icon: Icons.feed_outlined,
                       // text: 'My Fitness',
                     ),
                     GButton(
