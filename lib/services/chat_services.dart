@@ -63,4 +63,8 @@ class ChatService {
         .orderBy("timestamp", descending: false)
         .snapshots();
   }
+
+  User? getCurrentUser() {
+    return _auth.currentUser;
+  }
 }
