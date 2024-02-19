@@ -46,8 +46,8 @@ class OnlineRoutineWidget extends StatelessWidget {
                   itemBuilder: (context, index) {
                     return FutureBuilder(
                         future: FirebaseFirestore.instance
-                            .collection('workout_posts')
-                            .doc(data['workouts'][index])
+                            .collection('user_workouts_demo')
+                            .doc(data['workouts'][index]['userWorkoutId'])
                             .get(),
                         builder: (context, snapshot) {
                           if (snapshot.hasData &&

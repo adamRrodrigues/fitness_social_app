@@ -111,11 +111,14 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                     );
 
                     try {
+                      // await WorkoutPostServices()
+                      //     .postTemplate(workoutModel, workoutDraft!.exercises);
                       await WorkoutPostServices().postWorkout(
                           workoutModel, image!, workoutDraft!.exercises);
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
                           Commons().snackBarMessage(e.toString(), Colors.red));
+                      print(e);
                     }
                     Navigator.pop(context);
                     ref.invalidate(draftProvider);
@@ -231,11 +234,11 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                                             });
                                             removeAllModals();
                                           },
-                                          child:
-                                              Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: CustomButton(buttonText: 'Add'),
-                                              ))
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child:
+                                                CustomButton(buttonText: 'Add'),
+                                          ))
                                     ],
                                   ),
                                 ),

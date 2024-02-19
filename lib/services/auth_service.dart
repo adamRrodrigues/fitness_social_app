@@ -44,17 +44,7 @@ class Auth {
             .collection('following')
             .add({});
 
-        await routines
-            .doc(user.user!.uid)
-            .set(OnlineRoutine(uid: user.user!.uid).toMap());
-        for (int i = 0; i < 7; i++) {
-          await routines.doc(user.user!.uid).collection('day $i').add({});
-          await routines
-              .doc(user.user!.uid)
-              .collection('day $i')
-              .doc('workouts')
-              .set({'workouts': List.empty()});
-        }
+       
 
         created = true;
       } catch (e) {

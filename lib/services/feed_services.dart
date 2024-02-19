@@ -35,7 +35,7 @@ class FeedServices {
   Query<WorkoutModel> fetchWorkouts() {
     final postQuery;
     postQuery =
-        FirebaseFirestore.instance.collection('workout_posts').withConverter(
+        FirebaseFirestore.instance.collection('workout_templates_demo').withConverter(
               fromFirestore: (snapshot, _) =>
                   WorkoutModel.fromMap(snapshot.data()!),
               toFirestore: (post, _) => post.toMap(),
