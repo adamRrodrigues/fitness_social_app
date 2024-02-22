@@ -8,4 +8,5 @@ class RouteConstants {
   static String createWorkout = 'createWorkoutPage';
   static String createExercise = 'createExerciseScreen';
   static String viewRoutinePage = 'viewRoutinePage';
+  static String runRoutineScreen = 'runRoutineScreen';
 }

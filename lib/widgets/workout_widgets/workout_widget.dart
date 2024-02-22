@@ -34,10 +34,10 @@ class WorkoutWidget extends ConsumerWidget {
         if (selection) {
           routine.addToRoutine(day, workoutModel);
           String newWorkoutId = "";
-          await WorkoutPostServices()
-              .templateToWorkout(workoutModel, newWorkoutId);
+          String futureString =
+              await WorkoutPostServices().templateToWorkout(workoutModel);
           RoutineServices()
-              .updateRoutine(user!.uid, day, workoutModel.postId, newWorkoutId);
+              .updateRoutine(user!.uid, day, futureString, workoutModel.postId);
           print(routine.routines[day].workouts);
           if (context.mounted) {
             context.pop();

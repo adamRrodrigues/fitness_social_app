@@ -7,7 +7,7 @@ class RoutineServices {
   CollectionReference routines =
       FirebaseFirestore.instance.collection('routines');
   final user = FirebaseAuth.instance.currentUser;
-  void createRoutine() async {
+  Future createRoutine() async {
     await routines.doc(user!.uid).set(OnlineRoutine(uid: user!.uid).toMap());
     for (int i = 0; i < 7; i++) {
       await routines.doc(user!.uid).collection('day $i').add({});

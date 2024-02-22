@@ -112,7 +112,7 @@ class WorkoutPostServices {
       for (int i = 0; i < exercises.length; i++) {
         Map<String, dynamic> exercise = exercises[i].toMap();
         await workoutPosts.doc(value.id).update({
-          'postvalue.id': value.id,
+          'postId': value.id,
           'exercises': FieldValue.arrayUnion([exercise])
         });
       }
@@ -121,7 +121,6 @@ class WorkoutPostServices {
           .postThumbnail('workoutPostImages', value.id, image);
 
       await workoutPosts.doc(value.id).update({'imageUrl': thumbnail});
-      await workoutTemplates.doc(value.id).update({'imageUrl': thumbnail});
 
       print(value.id);
 
@@ -137,13 +136,17 @@ class WorkoutPostServices {
           });
         }
       });
+
+      await workoutTemplates.doc(value.id).update({'imageUrl': thumbnail});
     });
   }
 
-  Future templateToWorkout(WorkoutModel workoutModel, String newId) async {
+  Future<String> templateToWorkout(WorkoutModel workoutModel) async {
+    String id = "";
     await workoutPosts.add(workoutModel.toMap()).then((value) async {
-      newId = value.id;
+      id = value.id;
     });
+    return id;
   }
 
   Future deletePost(id, userId) async {

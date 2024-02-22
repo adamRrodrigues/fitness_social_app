@@ -27,7 +27,7 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage> {
   List<DateTime> dates = [];
   List<WorkoutModel> workouts = [];
   Routine routine = Routine();
-  bool routineExists = false;
+  bool routineExists = true;
 
   final user = FirebaseAuth.instance.currentUser;
 
