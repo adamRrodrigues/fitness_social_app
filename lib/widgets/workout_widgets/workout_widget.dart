@@ -1,14 +1,12 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/models/routine_model.dart';
 import 'package:fitness_social_app/models/workout_post_model.dart';
 import 'package:fitness_social_app/routing/route_constants.dart';
+import 'package:fitness_social_app/services/post_service.dart';
 import 'package:fitness_social_app/services/routine_services.dart';
-import 'package:fitness_social_app/services/user_services.dart';
 import 'package:fitness_social_app/widgets/custom_start_widget.dart';
 import 'package:fitness_social_app/widgets/image_widget.dart';
-import 'package:fitness_social_app/widgets/mini_profie.dart';
 import 'package:fitness_social_app/widgets/pill_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -32,10 +30,14 @@ class WorkoutWidget extends ConsumerWidget {
 
     User? user = FirebaseAuth.instance.currentUser;
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
         if (selection) {
           routine.addToRoutine(day, workoutModel);
-          RoutineServices().updateRoutine(user!.uid, day, workoutModel.postId);
+          String newWorkoutId = "";
+          String futureString =
+              await WorkoutPostServices().templateToWorkout(workoutModel);
+          RoutineServices()
+              .updateRoutine(user!.uid, day, futureString, workoutModel.postId);
           print(routine.routines[day].workouts);
           if (context.mounted) {
             context.pop();

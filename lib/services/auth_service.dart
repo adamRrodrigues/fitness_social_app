@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_social_app/models/routine_model.dart';
 import 'package:fitness_social_app/models/user_model.dart';
+import 'package:fitness_social_app/services/routine_services.dart';
 import 'package:flutter/material.dart';
 
 class Auth {
@@ -44,17 +45,7 @@ class Auth {
             .collection('following')
             .add({});
 
-        await routines
-            .doc(user.user!.uid)
-            .set(OnlineRoutine(uid: user.user!.uid).toMap());
-        for (int i = 0; i < 7; i++) {
-          await routines.doc(user.user!.uid).collection('day $i').add({});
-          await routines
-              .doc(user.user!.uid)
-              .collection('day $i')
-              .doc('workouts')
-              .set({'workouts': List.empty()});
-        }
+        await RoutineServices().createRoutine();
 
         created = true;
       } catch (e) {

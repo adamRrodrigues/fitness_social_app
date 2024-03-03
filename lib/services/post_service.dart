@@ -96,8 +96,11 @@ class WorkoutPostServices {
   final thisUser = FirebaseAuth.instance.currentUser;
 
   CollectionReference workoutPosts =
-      FirebaseFirestore.instance.collection('workout_posts');
+      FirebaseFirestore.instance.collection('user_workouts_demo');
+  CollectionReference workoutTemplates =
+      FirebaseFirestore.instance.collection('workout_templates_demo');
   CollectionReference users = FirebaseFirestore.instance.collection('users');
+  String id = "";
 
   Future postWorkout(WorkoutModel workoutModel, Uint8List image,
       List<ExerciseModel> exercises) async {
@@ -118,7 +121,32 @@ class WorkoutPostServices {
           .postThumbnail('workoutPostImages', value.id, image);
 
       await workoutPosts.doc(value.id).update({'imageUrl': thumbnail});
+
+      print(value.id);
+
+      await workoutTemplates
+          .doc(value.id)
+          .set(workoutModel.toMap())
+          .then((e) async {
+        for (int i = 0; i < exercises.length; i++) {
+          Map<String, dynamic> exercise = exercises[i].toMap();
+          await workoutTemplates.doc(value.id).update({
+            'postId': value.id,
+            'exercises': FieldValue.arrayUnion([exercise])
+          });
+        }
+      });
+
+      await workoutTemplates.doc(value.id).update({'imageUrl': thumbnail});
     });
+  }
+
+  Future<String> templateToWorkout(WorkoutModel workoutModel) async {
+    String id = "";
+    await workoutPosts.add(workoutModel.toMap()).then((value) async {
+      id = value.id;
+    });
+    return id;
   }
 
   Future deletePost(id, userId) async {

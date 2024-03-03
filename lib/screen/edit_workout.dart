@@ -19,14 +19,14 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:modals/modals.dart';
 
-class CreateWorkoutPost extends ConsumerStatefulWidget {
-  const CreateWorkoutPost({Key? key}) : super(key: key);
+class EditWorkout extends ConsumerStatefulWidget {
+  const EditWorkout({Key? key}) : super(key: key);
 
   @override
-  _CreateWorkoutPostState createState() => _CreateWorkoutPostState();
+  _EditWorkoutState createState() => _EditWorkoutState();
 }
 
-class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
+class _EditWorkoutState extends ConsumerState<EditWorkout> {
   TextEditingController titleController = TextEditingController();
   WorkoutDraft? workoutDraft;
   User? user;

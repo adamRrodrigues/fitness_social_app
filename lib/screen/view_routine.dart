@@ -47,20 +47,22 @@ class _ViewRoutineState extends ConsumerState<ViewRoutine>
           elevation: 0,
           title: const Text('My Routine'),
         ),
-        body: Column(
-          children: [
-            CustomCalender(
-              currentDay: currentDay,
-              dates: dates,
-              today: now,
-              func: (data) {
-                setState(() {
-                  currentDay = data;
-                });
-              },
-            ),
-            OnlineRoutineWidget(uid: widget.uid, currentDay: currentDay)
-          ],
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              CustomCalender(
+                currentDay: currentDay,
+                dates: dates,
+                today: now,
+                func: (data) {
+                  setState(() {
+                    currentDay = data;
+                  });
+                },
+              ),
+              OnlineRoutineWidget(uid: widget.uid, currentDay: currentDay)
+            ],
+          ),
         ),
         bottomNavigationBar: BottomAppBar(
             height: 60,
