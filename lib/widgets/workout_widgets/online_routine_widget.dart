@@ -27,7 +27,7 @@ class OnlineRoutineWidget extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.hasData &&
             snapshot.connectionState == ConnectionState.active) {
-              print(currentDay);
+          print(currentDay);
           List<String> workouts = [];
           Map<String, dynamic> data =
               snapshot.data!.data() as Map<String, dynamic>;
@@ -60,7 +60,7 @@ class OnlineRoutineWidget extends StatelessWidget {
                                 .mapSingleRoutineWorkout(thisWorkout);
                             return WorkoutWidget(workoutModel: mappedWorkout);
                           } else {
-                            return Text('loading');
+                            return CircularProgressIndicator();
                           }
                         });
                   },

@@ -45,7 +45,7 @@ class FeedServices {
 
   Query<WorkoutModel> fetchUserWorkouts(uid) {
     final postQuery = FirebaseFirestore.instance
-        .collection('workout_posts')
+        .collection('workout_templates_demo')
         .where('uid', isEqualTo: uid)
         .withConverter(
           fromFirestore: (snapshot, _) =>

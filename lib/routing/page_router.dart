@@ -1,13 +1,14 @@
 import 'package:fitness_social_app/auth/auth_state.dart';
 import 'package:fitness_social_app/models/exercise_model.dart';
 import 'package:fitness_social_app/models/generic_post_model.dart';
-import 'package:fitness_social_app/models/routine_model.dart';
 import 'package:fitness_social_app/models/user_model.dart';
 import 'package:fitness_social_app/models/workout_post_model.dart';
 import 'package:fitness_social_app/routing/route_constants.dart';
 import 'package:fitness_social_app/screen/create_exercise.dart';
 import 'package:fitness_social_app/screen/create_post.dart';
 import 'package:fitness_social_app/screen/create_workout_post.dart';
+import 'package:fitness_social_app/screen/edit_exercise.dart';
+import 'package:fitness_social_app/screen/edit_workout.dart';
 import 'package:fitness_social_app/screen/run_routine.dart';
 import 'package:fitness_social_app/screen/search_workouts.dart';
 import 'package:fitness_social_app/screen/user_page.dart';
@@ -51,6 +52,18 @@ final GoRouter appRouter = GoRouter(routes: <GoRoute>[
           },
         ),
         GoRoute(
+          path: 'editWorkoutPage',
+          name: RouteConstants.editWorkout,
+          pageBuilder: (context, state) {
+            // WorkoutModel post = state.extra as WorkoutModel;
+            final params = state.extra! as Map<String, dynamic>;
+
+            return CupertinoPage(
+                child: EditWorkout(
+                    workoutModel: params['workoutModel'], day: params["day"]));
+          },
+        ),
+        GoRoute(
           path: 'createExercisePage',
           name: RouteConstants.createExercise,
           pageBuilder: (context, state) {
@@ -59,6 +72,19 @@ final GoRouter appRouter = GoRouter(routes: <GoRoute>[
                 child: CreateExercise(
               exercises: exercises,
             ));
+          },
+        ),
+        GoRoute(
+          path: 'editExercisePage',
+          name: RouteConstants.editExercise,
+          pageBuilder: (context, state) {
+            // ExerciseModel exerciseModel = state.extra as ExerciseModel;
+            final exerciseParams = state.extra! as Map<String, dynamic>;
+            return CupertinoPage(
+                child: EditExercise(
+                    editingExercise: exerciseParams["editingExercise"],
+                    exercises: exerciseParams["exercises"],
+                    index: exerciseParams['index']));
           },
         ),
         GoRoute(
@@ -96,15 +122,15 @@ final GoRouter appRouter = GoRouter(routes: <GoRoute>[
           },
         ),
         GoRoute(
-          path: 'viewWorkoutScreen/:id',
+          path: 'viewWorkoutScreen',
           name: RouteConstants.viewWorkoutScreen,
           pageBuilder: (context, state) {
             WorkoutModel post = state.extra as WorkoutModel;
-            final postId = state.pathParameters['id'];
+            // final postId = state.pathParameters['id'];
             return CupertinoPage(
                 child: ViewWorkout(
               workoutModel: post,
-              postId: postId!,
+              // postId: postId!,
             ));
           },
         ),

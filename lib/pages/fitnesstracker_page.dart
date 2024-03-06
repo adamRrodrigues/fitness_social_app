@@ -34,7 +34,7 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage> {
   @override
   void initState() {
     super.initState();
-    checkRoutineExists();
+    // checkRoutineExists();
 
     currentDay = now.weekday;
     if (currentDay == 7) {

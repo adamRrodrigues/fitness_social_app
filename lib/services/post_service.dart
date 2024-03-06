@@ -141,12 +141,38 @@ class WorkoutPostServices {
     });
   }
 
-  Future<String> templateToWorkout(WorkoutModel workoutModel) async {
+  ExerciseModel mapExercise(dynamic exerciseModel) {
+    final exercise = ExerciseModel(
+        name: exerciseModel['name'],
+        description: exerciseModel['description'],
+        weight: exerciseModel['weight'],
+        reps: exerciseModel['reps'],
+        sets: exerciseModel['sets']);
+
+    return exercise;
+  }
+
+  Future<String> templateToWorkout(
+      WorkoutModel workoutModel, List<ExerciseModel> exercises) async {
     String id = "";
     await workoutPosts.add(workoutModel.toMap()).then((value) async {
       id = value.id;
+      for (int i = 0; i < exercises.length; i++) {
+        Map<String, dynamic> exercise = exercises[i].toMap();
+        await workoutPosts.doc(value.id).update({
+          'postId': value.id,
+          'exercises': FieldValue.arrayUnion([exercise]),
+        });
+      }
     });
     return id;
+  }
+
+  Future newImage(Uint8List image, String id) async {
+    String thumbnail =
+        await StorageServices().postThumbnail('workoutPostImages', id, image);
+
+    await workoutPosts.doc(id).update({'imageUrl': thumbnail});
   }
 
   Future deletePost(id, userId) async {

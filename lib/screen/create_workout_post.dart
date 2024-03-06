@@ -122,6 +122,9 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                     }
                     Navigator.pop(context);
                     ref.invalidate(draftProvider);
+                    if (context.mounted) {
+                      Navigator.pop(context);
+                    }
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                         Commons().snackBarMessage('not complete', Colors.red));
