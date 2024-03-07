@@ -136,6 +136,112 @@ class _ViewPostState extends ConsumerState<ViewPost> {
                   ],
                 ),
                 GestureDetector(
+                  onTap: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      shape: const RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.vertical(top: Radius.circular(6))),
+                      builder: (context) {
+                        return Padding(
+                          padding: EdgeInsets.only(
+                              bottom: MediaQuery.of(context).viewInsets.bottom),
+                          child: Container(
+                            height: 500,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Align(
+                                  alignment: Alignment.topCenter,
+                                  child: widget.post.comments.isNotEmpty
+                                      ? ListView.builder(
+                                          shrinkWrap: true,
+                                          // physics:
+                                          //     NeverScrollableScrollPhysics(),
+                                          itemCount:
+                                              widget.post.comments.length,
+                                          reverse: true,
+                                          itemBuilder: (context, index) {
+                                            CommentModel comment = CommentModel(
+                                                uid: widget.post.comments[index]
+                                                    ['uid'],
+                                                comment:
+                                                    widget.post.comments[index]
+                                                        ['comment']);
+                                            return Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: CommentWidget(
+                                                  commentModel: comment),
+                                            );
+                                          },
+                                        )
+                                      : const Center(
+                                          child:
+                                              Text('No Comments on This Post'),
+                                        ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 18.0),
+                                  child: Align(
+                                    alignment: Alignment.bottomCenter,
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Expanded(
+                                          child: CustomTextField(
+                                              textController: commentField,
+                                              hintText:
+                                                  'Add a Comment to this post'),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: GestureDetector(
+                                            onTap: () async {
+                                              if (commentField.text.isNotEmpty) {
+                                                setState(() {
+                                                  widget.post.comments.add({
+                                                    'uid': user!.uid,
+                                                    'comment': commentField.text
+                                                  });
+                                                });
+                                                FocusManager.instance.primaryFocus
+                                                    ?.unfocus();
+                                                await genericPostServices!
+                                                    .comment(
+                                                        widget.postId,
+                                                        user!.uid,
+                                                        commentField.text);
+                                              } else {
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(Commons()
+                                                        .snackBarMessage(
+                                                            'comment cannot be empty',
+                                                            Colors.red));
+                                              }
+                                              commentField.text = '';
+                                            },
+                                            child: Icon(
+                                              Icons.post_add_rounded,
+                                              size: 32,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary,
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
                   child: Row(
                     children: [
                       const Padding(
@@ -152,67 +258,9 @@ class _ViewPostState extends ConsumerState<ViewPost> {
                 const Icon(Icons.share_outlined),
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: CustomTextField(
-                        textController: commentField,
-                        hintText: 'Add a Comment to this post'),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: GestureDetector(
-                      onTap: () async {
-                        if (commentField.text.isNotEmpty) {
-                          setState(() {
-                            widget.post.comments.add({
-                              'uid': user!.uid,
-                              'comment': commentField.text
-                            });
-                          });
-                          FocusManager.instance.primaryFocus?.unfocus();
-                          await genericPostServices!.comment(
-                              widget.postId, user!.uid, commentField.text);
-
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(Commons()
-                              .snackBarMessage(
-                                  'comment cannot be empty', Colors.red));
-                        }
-                        commentField.text = '';
-                      },
-                      child: Icon(
-                        Icons.post_add_rounded,
-                        size: 32,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                    ),
-                  )
-                ],
-              ),
+            SizedBox(
+              height: 20,
             ),
-            widget.post.comments.isNotEmpty
-                ? ListView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: widget.post.comments.length,
-                    reverse: true,
-                    itemBuilder: (context, index) {
-                      CommentModel comment = CommentModel(
-                          uid: widget.post.comments[index]['uid'],
-                          comment: widget.post.comments[index]['comment']);
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: CommentWidget(commentModel: comment),
-                      );
-                    },
-                  )
-                : const Center(
-                    child: Text('No Comments on This Post'),
-                  ),
           ],
         ),
       ),

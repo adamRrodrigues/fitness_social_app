@@ -12,13 +12,13 @@ class CommentWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: FirebaseFirestore.instance
+    return FutureBuilder(
+      future: FirebaseFirestore.instance
           .collection('users')
           .doc(commentModel.uid)
-          .snapshots(),
+          .get(),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.active) {
+        if (snapshot.connectionState == ConnectionState.done) {
           Map<String, dynamic> data =
               snapshot.data!.data() as Map<String, dynamic>;
 
@@ -38,8 +38,37 @@ class CommentWidget extends StatelessWidget {
             ),
           );
         } else {
-          return const Center(
-            child: Text('Loading Comment'),
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  CircleAvatar(
+                    radius: 20,
+                    // foregroundImage: NetworkImage(user.profileUrl),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '@username',
+                          style: Theme.of(context).textTheme.titleSmall,
+                        ),
+                        commentModel.comment != null
+                            ? Text(
+                                commentModel.comment,
+                              )
+                            : Text(''),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
           );
         }
       },
