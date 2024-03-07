@@ -69,99 +69,112 @@ class _ViewPostState extends ConsumerState<ViewPost> {
         backgroundColor: Theme.of(context).colorScheme.background,
         elevation: 0,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            FutureBuilder(
-              future: FirebaseFirestore.instance
-                  .collection('users')
-                  .doc(widget.post.uid)
-                  .get(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  Map<String, dynamic> data =
-                      snapshot.data!.data() as Map<String, dynamic>;
+      body: Column(
+        children: [
+          FutureBuilder(
+            future: FirebaseFirestore.instance
+                .collection('users')
+                .doc(widget.post.uid)
+                .get(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                Map<String, dynamic> data =
+                    snapshot.data!.data() as Map<String, dynamic>;
 
-                  final thisUser = UserServices().mapSingleUser(data);
+                final thisUser = UserServices().mapSingleUser(data);
 
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: MiniProfie(user: thisUser),
-                  );
-                } else {
-                  return Container();
-                }
-              },
-            ),
-            GestureDetector(
-              onTap: () {
-                showImageViewerPager(context, imageProvier);
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: SizedBox(
-                  height: 300,
-                  width: double.infinity,
-                  child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: ImageWidget(
-                        url: widget.post.image,
-                      )),
-                ),
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: MiniProfie(user: thisUser),
+                );
+              } else {
+                return Container();
+              }
+            },
+          ),
+          GestureDetector(
+            onTap: () {
+              showImageViewerPager(context, imageProvier);
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: SizedBox(
+                height: 500,
+                width: double.infinity,
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: ImageWidget(
+                      url: widget.post.image,
+                    )),
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        like();
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 2.0),
-                        child: isLiked
-                            ? Icon(
-                                Icons.favorite,
-                                color: Theme.of(context).colorScheme.primary,
-                              )
-                            : const Icon(Icons.favorite_outline),
-                      ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      like();
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                      child: isLiked
+                          ? Icon(
+                              Icons.favorite,
+                              color: Theme.of(context).colorScheme.primary,
+                            )
+                          : const Icon(Icons.favorite_outline),
                     ),
-                    Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 2.0),
-                        child: Text(likeCount.toString()))
-                  ],
-                ),
-                GestureDetector(
-                  onTap: () {
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      shape: const RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.vertical(top: Radius.circular(6))),
-                      builder: (context) {
-                        return Padding(
-                          padding: EdgeInsets.only(
-                              bottom: MediaQuery.of(context).viewInsets.bottom),
-                          child: Container(
-                            height: 500,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Align(
-                                  alignment: Alignment.topCenter,
-                                  child: widget.post.comments.isNotEmpty
-                                      ? ListView.builder(
+                  ),
+                  Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                      child: Text(likeCount.toString()))
+                ],
+              ),
+              GestureDetector(
+                onTap: () {
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    shape: const RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.vertical(top: Radius.circular(6))),
+                    builder: (context) {
+                      return Padding(
+                        padding: EdgeInsets.only(
+                            bottom: MediaQuery.of(context).viewInsets.bottom),
+                        child: Container(
+                          height: 570,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                  height: 10,
+                                  width: 40,
+                                  decoration: BoxDecoration(
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(20))),
+                                ),
+                              ),
+                              Align(
+                                alignment: Alignment.topCenter,
+                                child: widget.post.comments.isNotEmpty
+                                    ? SizedBox(
+                                        height: 450,
+                                        child: ListView.builder(
                                           shrinkWrap: true,
                                           // physics:
                                           //     NeverScrollableScrollPhysics(),
                                           itemCount:
                                               widget.post.comments.length,
-                                          reverse: true,
+                                          // reverse: true,
                                           itemBuilder: (context, index) {
                                             CommentModel comment = CommentModel(
                                                 uid: widget.post.comments[index]
@@ -176,93 +189,92 @@ class _ViewPostState extends ConsumerState<ViewPost> {
                                                   commentModel: comment),
                                             );
                                           },
-                                        )
-                                      : const Center(
-                                          child:
-                                              Text('No Comments on This Post'),
                                         ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 18.0),
-                                  child: Align(
-                                    alignment: Alignment.bottomCenter,
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: [
-                                        Expanded(
-                                          child: CustomTextField(
-                                              textController: commentField,
-                                              hintText:
-                                                  'Add a Comment to this post'),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: GestureDetector(
-                                            onTap: () async {
-                                              if (commentField.text.isNotEmpty) {
-                                                setState(() {
-                                                  widget.post.comments.add({
-                                                    'uid': user!.uid,
-                                                    'comment': commentField.text
-                                                  });
+                                      )
+                                    : const Center(
+                                        child: Text('No Comments on This Post'),
+                                      ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 18.0),
+                                child: Align(
+                                  alignment: Alignment.bottomCenter,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        child: CustomTextField(
+                                            textController: commentField,
+                                            hintText:
+                                                'Add a Comment to this post'),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: GestureDetector(
+                                          onTap: () async {
+                                            if (commentField.text.isNotEmpty) {
+                                              setState(() {
+                                                widget.post.comments.add({
+                                                  'uid': user!.uid,
+                                                  'comment': commentField.text
                                                 });
-                                                FocusManager.instance.primaryFocus
-                                                    ?.unfocus();
-                                                await genericPostServices!
-                                                    .comment(
-                                                        widget.postId,
-                                                        user!.uid,
-                                                        commentField.text);
-                                              } else {
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(Commons()
-                                                        .snackBarMessage(
-                                                            'comment cannot be empty',
-                                                            Colors.red));
-                                              }
-                                              commentField.text = '';
-                                            },
-                                            child: Icon(
-                                              Icons.post_add_rounded,
-                                              size: 32,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .primary,
-                                            ),
+                                              });
+                                              FocusManager.instance.primaryFocus
+                                                  ?.unfocus();
+                                              await genericPostServices!
+                                                  .comment(
+                                                      widget.postId,
+                                                      user!.uid,
+                                                      commentField.text);
+                                            } else {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(Commons()
+                                                      .snackBarMessage(
+                                                          'comment cannot be empty',
+                                                          Colors.red));
+                                            }
+                                            commentField.text = '';
+                                          },
+                                          child: Icon(
+                                            Icons.post_add_rounded,
+                                            size: 32,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary,
                                           ),
-                                        )
-                                      ],
-                                    ),
+                                        ),
+                                      )
+                                    ],
                                   ),
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                        );
-                      },
-                    );
-                  },
-                  child: Row(
-                    children: [
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 2.0),
-                        child: Icon(Icons.comment_outlined),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 2.0),
-                        child: Text(widget.post.comments.length.toString()),
-                      ),
-                    ],
-                  ),
+                        ),
+                      );
+                    },
+                  );
+                },
+                child: Row(
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 2.0),
+                      child: Icon(Icons.comment_outlined),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                      child: Text(widget.post.comments.length.toString()),
+                    ),
+                  ],
                 ),
-                const Icon(Icons.share_outlined),
-              ],
-            ),
-            SizedBox(
-              height: 20,
-            ),
-          ],
-        ),
+              ),
+              const Icon(Icons.share_outlined),
+            ],
+          ),
+          SizedBox(
+            height: 20,
+          ),
+        ],
       ),
     );
   }

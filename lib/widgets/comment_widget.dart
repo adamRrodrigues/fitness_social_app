@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fitness_social_app/models/comment_model.dart';
+import 'package:fitness_social_app/models/user_model.dart';
 import 'package:fitness_social_app/routing/route_constants.dart';
 import 'package:fitness_social_app/services/user_services.dart';
 import 'package:fitness_social_app/widgets/mini_profie.dart';
@@ -12,6 +13,7 @@ class CommentWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    UserModel? user;
     return FutureBuilder(
       future: FirebaseFirestore.instance
           .collection('users')
@@ -22,18 +24,17 @@ class CommentWidget extends StatelessWidget {
           Map<String, dynamic> data =
               snapshot.data!.data() as Map<String, dynamic>;
 
-          final thisUser = UserServices().mapSingleUser(data);
+          user = UserServices().mapSingleUser(data);
 
           return GestureDetector(
             onTap: () {
-              context.pushNamed(RouteConstants.userPage, extra: thisUser);
+              context.pushNamed(RouteConstants.userPage, extra: user);
             },
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                MiniProfie(
-                    user: thisUser, optionalSubText: commentModel.comment),
+                MiniProfie(user: user!, optionalSubText: commentModel.comment),
               ],
             ),
           );
@@ -54,10 +55,15 @@ class CommentWidget extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          '@username',
-                          style: Theme.of(context).textTheme.titleSmall,
-                        ),
+                        user != null
+                            ? Text(
+                                '@${user!.username}',
+                                style: Theme.of(context).textTheme.titleSmall,
+                              )
+                            : Text(
+                                '@username',
+                                style: Theme.of(context).textTheme.titleSmall,
+                              ),
                         commentModel.comment != null
                             ? Text(
                                 commentModel.comment,

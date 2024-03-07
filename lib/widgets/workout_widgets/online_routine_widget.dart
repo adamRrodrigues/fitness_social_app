@@ -60,7 +60,7 @@ class OnlineRoutineWidget extends StatelessWidget {
                                 .mapSingleRoutineWorkout(thisWorkout);
                             return WorkoutWidget(workoutModel: mappedWorkout);
                           } else {
-                            return CircularProgressIndicator();
+                            return Center(child: CircularProgressIndicator());
                           }
                         });
                   },
