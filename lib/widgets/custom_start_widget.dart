@@ -21,7 +21,7 @@ class _CustomStarWidgetState extends State<CustomStarWidget> {
       value: widget.starValue,
       maxValueVisibility: false,
       valueLabelVisibility: false,
-      starColor: Theme.of(context).colorScheme.primary,
+      starColor: Theme.of(context).colorScheme.secondary,
       starSize: 15,
     );
   }

@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fitness_social_app/models/comment_model.dart';
 import 'package:fitness_social_app/models/exercise_model.dart';
 import 'package:fitness_social_app/models/generic_post_model.dart';
 import 'package:fitness_social_app/models/workout_post_model.dart';
@@ -88,6 +89,16 @@ class GenericPostServices {
       'comments': FieldValue.arrayUnion([
         {'uid': uid, 'comment': comment}
       ])
+    });
+  }
+
+  Future deleteComment(String postId, CommentModel comment) async {
+    Map<String, dynamic> exerciseDynamic = comment.toMap();
+    await FirebaseFirestore.instance
+        .collection('generic_posts')
+        .doc(postId)
+        .update({
+      'comments': FieldValue.arrayRemove([exerciseDynamic])
     });
   }
 }

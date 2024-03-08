@@ -140,8 +140,8 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                       String futureString = await WorkoutPostServices()
                           .templateToWorkout(
                               workoutModel, workoutDraft!.exercises);
-                      RoutineServices().updateRoutine(user!.uid, widget.day,
-                          futureString, workoutModel.postId);
+                      await RoutineServices().updateRoutine(user!.uid, widget.day,
+                          futureString, widget.workoutModel.postId);
                       if (image != null) {
                         await WorkoutPostServices()
                             .newImage(image!, futureString);

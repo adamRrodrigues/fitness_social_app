@@ -31,12 +31,14 @@ class _ViewPostState extends ConsumerState<ViewPost> {
   bool isLiked = false;
   int likeCount = 0;
   GenericPostServices? genericPostServices;
+  var comments = [];
   @override
   void initState() {
     user = ref.read(userProvider);
     genericPostServices = ref.read(genericPostServicesProvider);
     isLiked = widget.post.likes.contains(user!.uid);
-    likeCount = widget.post.likes.length;
+    likeCount = widget.post.likeCount;
+    comments = widget.post.comments.reversed.toList();
     super.initState();
   }
 
@@ -85,7 +87,7 @@ class _ViewPostState extends ConsumerState<ViewPost> {
 
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: MiniProfie(user: thisUser),
+                  child: MiniProfie(userId: thisUser.uid),
                 );
               } else {
                 return Container();
@@ -139,54 +141,57 @@ class _ViewPostState extends ConsumerState<ViewPost> {
                   showModalBottomSheet(
                     context: context,
                     isScrollControlled: true,
+                    showDragHandle: true,
+                    enableDrag: false,
                     shape: const RoundedRectangleBorder(
                         borderRadius:
-                            BorderRadius.vertical(top: Radius.circular(6))),
+                            BorderRadius.vertical(top: Radius.circular(20))),
                     builder: (context) {
                       return Padding(
                         padding: EdgeInsets.only(
                             bottom: MediaQuery.of(context).viewInsets.bottom),
                         child: Container(
-                          height: 570,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          height: 600,
+                          child: Stack(
+                            fit: StackFit.expand,
+                            clipBehavior: Clip.antiAlias,
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  height: 10,
-                                  width: 40,
-                                  decoration: BoxDecoration(
-                                      color:
-                                          Theme.of(context).colorScheme.primary,
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(20))),
-                                ),
-                              ),
                               Align(
                                 alignment: Alignment.topCenter,
-                                child: widget.post.comments.isNotEmpty
+                                child: comments.isNotEmpty
                                     ? SizedBox(
-                                        height: 450,
+                                        height: 520,
                                         child: ListView.builder(
                                           shrinkWrap: true,
                                           // physics:
                                           //     NeverScrollableScrollPhysics(),
-                                          itemCount:
-                                              widget.post.comments.length,
+
+                                          itemCount: comments.length,
                                           // reverse: true,
                                           itemBuilder: (context, index) {
                                             CommentModel comment = CommentModel(
-                                                uid: widget.post.comments[index]
-                                                    ['uid'],
-                                                comment:
-                                                    widget.post.comments[index]
-                                                        ['comment']);
+                                                uid: comments[index]['uid'],
+                                                comment: comments[index]
+                                                    ['comment']);
                                             return Padding(
                                               padding:
                                                   const EdgeInsets.all(8.0),
-                                              child: CommentWidget(
-                                                  commentModel: comment),
+                                              child: GestureDetector(
+                                                onLongPress: () {
+                                                  setState(() {
+                                                    if (comment.uid ==
+                                                        user!.uid) {
+                                                      GenericPostServices()
+                                                          .deleteComment(
+                                                              widget.postId,
+                                                              comment);
+                                                      comments.removeAt(index);
+                                                    }
+                                                  });
+                                                },
+                                                child: CommentWidget(
+                                                    commentModel: comment),
+                                              ),
                                             );
                                           },
                                         ),
@@ -195,10 +200,12 @@ class _ViewPostState extends ConsumerState<ViewPost> {
                                         child: Text('No Comments on This Post'),
                                       ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 18.0),
-                                child: Align(
-                                  alignment: Alignment.bottomCenter,
+                              Align(
+                                alignment: Alignment.bottomCenter,
+                                child: Container(
+                                  width: double.infinity,
+                                  color: Colors.transparent,
+                                  padding: const EdgeInsets.only(bottom: 22.0),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
@@ -214,7 +221,7 @@ class _ViewPostState extends ConsumerState<ViewPost> {
                                           onTap: () async {
                                             if (commentField.text.isNotEmpty) {
                                               setState(() {
-                                                widget.post.comments.add({
+                                                comments.insert(0, {
                                                   'uid': user!.uid,
                                                   'comment': commentField.text
                                                 });
@@ -263,7 +270,7 @@ class _ViewPostState extends ConsumerState<ViewPost> {
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 2.0),
-                      child: Text(widget.post.comments.length.toString()),
+                      child: Text(comments.length.toString()),
                     ),
                   ],
                 ),

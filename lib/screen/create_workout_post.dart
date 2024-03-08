@@ -40,7 +40,7 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
 
   void selectImage() async {
     try {
-      Uint8List file = await imagePicker!.pickImage(ImageSource.gallery);
+      Uint8List file = await imagePicker!.pickImage(ImageSource.camera);
 
       setState(() {
         image = file;

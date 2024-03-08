@@ -95,7 +95,8 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                             child: Align(
                               alignment: Alignment.bottomRight,
                               child: FloatingActionButton.small(
-                                backgroundColor: Theme.of(context).colorScheme.secondary,
+                                backgroundColor:
+                                    Theme.of(context).colorScheme.secondary,
                                 onPressed: () {
                                   // context.pushNamed(RouteConstants.createPost);
                                   showModal(ModalEntry.aligned(context,
@@ -128,7 +129,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                                       RouteConstants
                                                           .createPost);
                                                   // context.pop();
-                                                  removeAllModals();
+                                                  removeModal('containerModal');
                                                 },
                                                 child: CustomButton(
                                                     buttonText:
@@ -138,7 +139,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                                   context.pushNamed(
                                                       RouteConstants
                                                           .createWorkout);
-                                                  removeAllModals();
+                                                  removeModal('containerModal');
                                                 },
                                                 child: CustomButton(
                                                     buttonText: 'workout post'))
@@ -148,7 +149,8 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                 },
                                 child: Icon(
                                   (Icons.add),
-                                  color: Theme.of(context).colorScheme.primary,
+                                  color:
+                                      Theme.of(context).colorScheme.background,
                                 ),
                               ),
                             ),

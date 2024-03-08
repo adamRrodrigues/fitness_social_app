@@ -15,6 +15,7 @@ import 'package:fitness_social_app/screen/user_page.dart';
 import 'package:fitness_social_app/screen/view_post.dart';
 import 'package:fitness_social_app/screen/view_routine.dart';
 import 'package:fitness_social_app/screen/view_workout.dart';
+import 'package:fitness_social_app/services/camera_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
 
@@ -42,6 +43,13 @@ final GoRouter appRouter = GoRouter(routes: <GoRoute>[
           name: RouteConstants.createPost,
           pageBuilder: (context, state) {
             return const CupertinoPage(child: CreatePost());
+          },
+        ),
+        GoRoute(
+          path: 'cameraService',
+          name: RouteConstants.cameraService,
+          pageBuilder: (context, state) {
+            return const CupertinoPage(child: CameraService());
           },
         ),
         GoRoute(

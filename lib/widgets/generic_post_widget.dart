@@ -63,61 +63,19 @@ class _GenericPostWidgetState extends ConsumerState<GenericPostWidget> {
           elevation: 4,
           child: Container(
             decoration: BoxDecoration(
-                border:
-                    Border.all(color: Theme.of(context).colorScheme.primary),
                 borderRadius: BorderRadius.circular(10),
-                color: Theme.of(context).colorScheme.secondary),
+                color: Theme.of(context).colorScheme.surface),
             child: SizedBox(
-              // height: 250,
               width: double.infinity,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   widget.mini == false
-                      ? StreamBuilder(
-                          stream: FirebaseFirestore.instance
-                              .collection('users')
-                              .doc(widget.post.uid)
-                              .snapshots(),
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData &&
-                                snapshot.connectionState ==
-                                    ConnectionState.active) {
-                              Map<String, dynamic> data =
-                                  snapshot.data!.data() as Map<String, dynamic>;
-
-                              final thisUser =
-                                  UserServices().mapSingleUser(data);
-
-                              return Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: MiniProfie(
-                                    user: thisUser,
-                                    optionalSubText:
-                                        '${widget.post.createdAt.toDate().day.toString()}/${widget.post.createdAt.toDate().month.toString()}/${widget.post.createdAt.toDate().year.toString()} '),
-                              );
-                            } else if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: SizedBox(
-                                  height: 50,
-                                  child: Row(
-                                    children: [
-                                      CircleAvatar(
-                                          backgroundColor: Theme.of(context)
-                                              .colorScheme
-                                              .secondary),
-                                      Text('user'),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            } else {
-                              return const Text('Error Loading');
-                            }
-                          },
+                      ? MiniProfie(
+                          userId: widget.post.uid,
+                          optionalSubText:
+                              '${widget.post.createdAt.toDate().day.toString()}/${widget.post.createdAt.toDate().month.toString()}/${widget.post.createdAt.toDate().year.toString()}',
                         )
                       : Container(),
                   Padding(

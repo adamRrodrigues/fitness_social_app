@@ -29,7 +29,7 @@ class ProgressWidget extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    '${value.toString()}',
+                    '${value.toInt().toString()}',
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   Text(

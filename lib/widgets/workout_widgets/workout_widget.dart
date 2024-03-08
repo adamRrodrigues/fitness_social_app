@@ -29,22 +29,9 @@ class WorkoutWidget extends ConsumerWidget {
   final bool selection;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    Routine routine = ref.read(routineProvider);
-
-    User? user = FirebaseAuth.instance.currentUser;
     return GestureDetector(
       onTap: () async {
         if (selection) {
-          // routine.addToRoutine(day, workoutModel);
-          // String newWorkoutId = "";
-          // String futureString =
-          //     await WorkoutPostServices().templateToWorkout(workoutModel);
-          // RoutineServices()
-          //     .updateRoutine(user!.uid, day, futureString, workoutModel.postId);
-          // print(routine.routines[day].workouts);
-          // if (context.mounted) {
-          //   context.pop();
-          // }
           context.pushNamed(RouteConstants.editWorkout,
               extra: {"workoutModel": workoutModel, "day": day});
         } else {
@@ -54,123 +41,126 @@ class WorkoutWidget extends ConsumerWidget {
       },
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Material(
-          elevation: 4,
-          color: Theme.of(context).colorScheme.secondary,
-          // borderRadius: BorderRadius.circular(10),
-          child: Container(
-            decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.secondary,
-                // borderRadius: BorderRadius.circular(10),
-                border: Border(
-                    bottom: BorderSide(
-                        color: Theme.of(context).colorScheme.primary))),
-            // height: 500,
-            child: Padding(
-              padding: const EdgeInsets.all(2.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  mini == false
-                      ? StreamBuilder(
-                          stream: FirebaseFirestore.instance
-                              .collection('users')
-                              .doc(workoutModel.uid)
-                              .snapshots(),
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData &&
-                                snapshot.connectionState ==
-                                    ConnectionState.active) {
-                              Map<String, dynamic> data =
-                                  snapshot.data!.data() as Map<String, dynamic>;
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: Material(
+            elevation: 8,
+            color: Theme.of(context).colorScheme.surface,
+            // borderRadius: BorderRadius.circular(10),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              // height: 500,
+              child: Padding(
+                padding: const EdgeInsets.all(2.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    mini == false
+                        ? StreamBuilder(
+                            stream: FirebaseFirestore.instance
+                                .collection('users')
+                                .doc(workoutModel.uid)
+                                .snapshots(),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData &&
+                                  snapshot.connectionState ==
+                                      ConnectionState.active) {
+                                Map<String, dynamic> data = snapshot.data!
+                                    .data() as Map<String, dynamic>;
 
-                              final thisUser =
-                                  UserServices().mapSingleUser(data);
+                                final thisUser =
+                                    UserServices().mapSingleUser(data);
 
-                              return Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: MiniProfie(
-                                    user: thisUser,
-                                    optionalSubText:
-                                        '${workoutModel.createdAt.toDate().day.toString()}/${workoutModel.createdAt.toDate().month.toString()}/${workoutModel.createdAt.toDate().year.toString()} '),
-                              );
-                            } else if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const SizedBox(
-                                  height: 50,
-                                  child: Text(
-                                    'loading...',
-                                  ));
-                            } else {
-                              return const Text('Error Loading');
-                            }
-                          },
-                        )
-                      : Container(),
-                  SizedBox(
-                    height: 35,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: workoutModel.categories.length,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: PillWidget(
-                              editable: false,
-                              name: workoutModel.categories[index],
-                              delete: () {},
-                              active: false),
-                        );
-                      },
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            width: 240,
-                            padding: const EdgeInsets.all(4.0),
-                            child: Text(
-                              workoutModel.workoutName,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium!
-                                  .copyWith(fontWeight: FontWeight.bold, overflow: TextOverflow.ellipsis),
-                              
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: Text(
-                              '${workoutModel.exercises.length.toString()} exercises',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall!
-                                  .copyWith(fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.all(4),
-                            child: CustomStarWidget(starValue: 4.5),
+                                return Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: MiniProfie(
+                                      userId: thisUser.uid,
+                                      optionalSubText:
+                                          '${workoutModel.createdAt.toDate().day.toString()}/${workoutModel.createdAt.toDate().month.toString()}/${workoutModel.createdAt.toDate().year.toString()} '),
+                                );
+                              } else if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const SizedBox(
+                                    height: 50,
+                                    child: Text(
+                                      'loading...',
+                                    ));
+                              } else {
+                                return const Text('Error Loading');
+                              }
+                            },
                           )
-                        ],
+                        : Container(),
+                    SizedBox(
+                      height: 35,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: workoutModel.categories.length,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: PillWidget(
+                                editable: false,
+                                name: workoutModel.categories[index],
+                                delete: () {},
+                                active: false),
+                          );
+                        },
                       ),
-                      SizedBox(
-                        height: 150,
-                        width: 150,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: ImageWidget(url: workoutModel.imageUrl),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              // width: 220,
+                              height: 40,
+                              padding: const EdgeInsets.all(4.0),
+                              child: Text(
+                                workoutModel.workoutName,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleMedium!
+                                    .copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        overflow: TextOverflow.ellipsis),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: Text(
+                                '${workoutModel.exercises.length.toString()} exercises',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall!
+                                    .copyWith(fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.all(4),
+                              child: CustomStarWidget(starValue: 4.5),
+                            )
+                          ],
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                        SizedBox(
+                          height: 150,
+                          width: 150,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: ImageWidget(url: workoutModel.imageUrl),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

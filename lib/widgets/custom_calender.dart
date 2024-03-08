@@ -36,7 +36,7 @@ class _CustomeCalenderState extends State<CustomCalender> {
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: Theme.of(context).colorScheme.secondary,
+                  color: Theme.of(context).colorScheme.surface,
                 ),
                 width: double.infinity,
                 child: Center(
