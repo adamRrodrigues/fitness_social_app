@@ -10,8 +10,10 @@ class WorkoutModel {
   final List<dynamic> exercises;
   final String uid;
   final String postId;
+  final String templateId;
   final String privacy;
   final String imageUrl;
+  final double rating;
   final Timestamp createdAt;
   WorkoutModel({
     required this.workoutName,
@@ -19,8 +21,10 @@ class WorkoutModel {
     required this.exercises,
     required this.uid,
     required this.postId,
+    required this.templateId,
     required this.privacy,
     required this.imageUrl,
+    required this.rating,
     required this.createdAt,
   });
 
@@ -30,8 +34,10 @@ class WorkoutModel {
     List<dynamic>? exercises,
     String? uid,
     String? postId,
+    String? templateId,
     String? privacy,
     String? imageUrl,
+    double? rating,
     Timestamp? createdAt,
   }) {
     return WorkoutModel(
@@ -40,9 +46,11 @@ class WorkoutModel {
       exercises: exercises ?? this.exercises,
       uid: uid ?? this.uid,
       postId: postId ?? this.postId,
+      templateId: templateId ?? this.templateId,
       privacy: privacy ?? this.privacy,
       imageUrl: imageUrl ?? this.imageUrl,
       createdAt: createdAt ?? this.createdAt,
+      rating: rating ?? this.rating,
     );
   }
 
@@ -53,8 +61,10 @@ class WorkoutModel {
       'exercises': exercises,
       'uid': uid,
       'postId': postId,
+      'templateId': templateId,
       'privacy': privacy,
       'imageUrl': imageUrl,
+      'rating': rating,
       'createdAt': createdAt,
     };
   }
@@ -66,8 +76,10 @@ class WorkoutModel {
       exercises: List<dynamic>.from((map['exercises'] as List<dynamic>)),
       uid: map['uid'] as String,
       postId: map['postId'] as String,
+      templateId: map['templateId'] as String,
       privacy: map['privacy'] as String,
       imageUrl: map['imageUrl'] as String,
+      rating: map['rating'] as double,
       createdAt: map['createdAt'],
     );
   }
@@ -79,7 +91,7 @@ class WorkoutModel {
 
   @override
   String toString() {
-    return 'WorkoutModel(workoutName: $workoutName, categories: $categories, exercises: $exercises, uid: $uid , postId: $postId, privacy: $privacy, imageUrl: $imageUrl, createdAt: $createdAt)';
+    return 'WorkoutModel(workoutName: $workoutName, categories: $categories, exercises: $exercises, uid: $uid , postId: $postId, postId: $postId, privacy: $privacy, imageUrl: $imageUrl, rating: $rating , createdAt: $createdAt)';
   }
 
   @override
@@ -92,6 +104,7 @@ class WorkoutModel {
         other.uid == uid &&
         other.privacy == privacy &&
         other.imageUrl == imageUrl &&
+        other.rating == rating &&
         other.createdAt == createdAt;
   }
 
@@ -103,6 +116,7 @@ class WorkoutModel {
         uid.hashCode ^
         privacy.hashCode ^
         imageUrl.hashCode ^
+        rating.hashCode ^
         createdAt.hashCode;
   }
 }

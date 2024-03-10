@@ -98,10 +98,9 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                         imageUrl: '',
                         postId: '',
                         createdAt: Timestamp.now(),
+                        rating: 0,
+                        templateId: '',
                         privacy: 'public');
-
-                    print(workoutDraft!.exercises.length);
-
                     showDialog(
                       barrierDismissible: false,
                       context: context,
@@ -118,11 +117,10 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
                           Commons().snackBarMessage(e.toString(), Colors.red));
-                      print(e);
                     }
-                    Navigator.pop(context);
                     ref.invalidate(draftProvider);
                     if (context.mounted) {
+                      Navigator.pop(context);
                       Navigator.pop(context);
                     }
                   } else {

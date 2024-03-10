@@ -123,7 +123,9 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                         uid: user!.uid,
                         imageUrl: imageUrl,
                         postId: '',
+                        templateId: '',
                         createdAt: Timestamp.now(),
+                        rating: 0,
                         privacy: 'public');
 
                     print(widget.workoutModel.exercises.length);
@@ -140,8 +142,8 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                       String futureString = await WorkoutPostServices()
                           .templateToWorkout(
                               workoutModel, workoutDraft!.exercises);
-                      await RoutineServices().updateRoutine(user!.uid, widget.day,
-                          futureString, widget.workoutModel.postId);
+                      await RoutineServices().updateRoutine(user!.uid,
+                          widget.day, futureString, widget.workoutModel.postId);
                       if (image != null) {
                         await WorkoutPostServices()
                             .newImage(image!, futureString);
