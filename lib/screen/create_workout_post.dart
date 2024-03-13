@@ -8,6 +8,7 @@ import 'package:fitness_social_app/routing/route_constants.dart';
 import 'package:fitness_social_app/services/drafts.dart';
 import 'package:fitness_social_app/services/post_service.dart';
 import 'package:fitness_social_app/utlis/utils.dart';
+import 'package:fitness_social_app/widgets/bottom_modal_item_widget.dart';
 import 'package:fitness_social_app/widgets/custom_button.dart';
 import 'package:fitness_social_app/widgets/pill_widget.dart';
 import 'package:fitness_social_app/widgets/text_widget.dart';
@@ -168,34 +169,16 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                           children: [
                             GestureDetector(
                               onTap: () => selectImage('Camera'),
-                              child: const Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: ListTile(
-                                          title: Text('Take A Picture')),
-                                    ),
-                                    Icon(Icons.camera_alt_outlined)
-                                  ],
-                                ),
-                              ),
+                              child: const BottomModalItem(
+                                  text: "Click a picture",
+                                  icon: Icons.photo_outlined),
                             ),
                             const Divider(),
                             GestureDetector(
                               onTap: () => selectImage('Gallery'),
-                              child: const Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                        child: ListTile(
-                                            title:
-                                                Text('Choose From Gallery'))),
-                                    Icon(Icons.image_outlined)
-                                  ],
-                                ),
-                              ),
+                              child: const BottomModalItem(
+                                  text: "Choose from gallery",
+                                  icon: Icons.camera_alt_outlined),
                             ),
                           ],
                         );
@@ -347,10 +330,24 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                         shrinkWrap: true,
                         itemCount: workoutDraft!.exercises.length,
                         itemBuilder: (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: ExerciseWidget(
-                                exerciseModel: workoutDraft!.exercises[index]),
+                          return InkWell(
+                            onTap: () {
+                              context.pushNamed(
+                                RouteConstants.editExercise,
+                                extra: {
+                                  "editingExercise":
+                                      workoutDraft!.exercises[index],
+                                  "exercises": workoutDraft!.exercises,
+                                  "index": index
+                                },
+                              );
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: ExerciseWidget(
+                                  exerciseModel:
+                                      workoutDraft!.exercises[index]),
+                            ),
                           );
                         },
                       )

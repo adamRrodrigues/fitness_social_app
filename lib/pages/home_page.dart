@@ -71,5 +71,5 @@ class _HomePageState extends ConsumerState<HomePage>
   }
 
   @override
-  bool get wantKeepAlive => true;
+  bool get wantKeepAlive => false;
 }

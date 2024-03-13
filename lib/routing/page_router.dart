@@ -15,6 +15,7 @@ import 'package:fitness_social_app/screen/fetching_workout_screen.dart';
 import 'package:fitness_social_app/screen/run_routine.dart';
 import 'package:fitness_social_app/screen/search_workouts.dart';
 import 'package:fitness_social_app/screen/user_page.dart';
+import 'package:fitness_social_app/screen/view_plan.dart';
 import 'package:fitness_social_app/screen/view_post.dart';
 import 'package:fitness_social_app/screen/view_routine.dart';
 import 'package:fitness_social_app/screen/view_workout.dart';
@@ -53,10 +54,23 @@ final GoRouter appRouter = GoRouter(
               },
             ),
             GoRoute(
-              path: 'createMealPafe',
+              path: 'createMealPage',
               name: RouteConstants.createMeal,
               pageBuilder: (context, state) {
                 return const CupertinoPage(child: CreateMealPost());
+              },
+            ),
+            GoRoute(
+              path: 'viewMealPlanScreen/:id',
+              name: RouteConstants.viewMealPlanScreen,
+              pageBuilder: (context, state) {
+                final uid = state.pathParameters['id'];
+                int currentDay = state.extra as int;
+                return CupertinoPage(
+                    child: ViewMealPlanScreen(
+                  currentDay: currentDay,
+                  uid: uid!,
+                ));
               },
             ),
             GoRoute(

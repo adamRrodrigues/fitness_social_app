@@ -7,6 +7,7 @@ class RouteConstants {
   static String follBackPage = 'fallBackPage';
   static String createWorkout = 'createWorkoutPage';
   static String createMeal = 'createMealPage';
+  static String viewMealPlanScreen = 'viewMealPlanScreen';
   static String cameraService = 'cameraService';
   static String editWorkout = "editWorkoutScreen";
   static String createExercise = 'createExerciseScreen';

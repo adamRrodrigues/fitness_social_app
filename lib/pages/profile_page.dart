@@ -4,6 +4,7 @@ import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/routing/route_constants.dart';
 import 'package:fitness_social_app/services/auth_service.dart';
 import 'package:fitness_social_app/services/user_services.dart';
+import 'package:fitness_social_app/widgets/bottom_modal_item_widget.dart';
 import 'package:fitness_social_app/widgets/custom_button.dart';
 import 'package:fitness_social_app/widgets/user_profile.dart';
 import 'package:flutter/material.dart';
@@ -116,39 +117,42 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                           shrinkWrap: true,
                                           children: [
                                             GestureDetector(
-                                              onTap: () {
-                                                context.pop();
-                                                context.pushNamed(
-                                                    RouteConstants.createPost);
-                                              },
-                                              child: ListTile(
-                                                title: Text("Create a post"),
-                                              ),
-                                            ),
+                                                onTap: () {
+                                                  context.pop();
+                                                  context.pushNamed(
+                                                      RouteConstants
+                                                          .createPost);
+                                                },
+                                                child: const BottomModalItem(
+                                                  text: "Create a Post",
+                                                  iconRequired: false,
+                                                )),
                                             Divider(),
                                             GestureDetector(
-                                              onTap: () {
-                                                context.pop();
+                                                onTap: () {
+                                                  context.pop();
 
-                                                context.pushNamed(RouteConstants
-                                                    .createWorkout);
-                                              },
-                                              child: ListTile(
-                                                title: Text("Create a Workout"),
-                                              ),
-                                            ),
+                                                  context.pushNamed(
+                                                      RouteConstants
+                                                          .createWorkout);
+                                                },
+                                                child: const BottomModalItem(
+                                                  text: "Create a Workout",
+                                                  iconRequired: false,
+                                                )),
                                             Divider(),
                                             GestureDetector(
-                                              onTap: () {
-                                                context.pop();
+                                                onTap: () {
+                                                  context.pop();
 
-                                                context.pushNamed(
-                                                    RouteConstants.createMeal);
-                                              },
-                                              child: ListTile(
-                                                title: Text("Create a Meal"),
-                                              ),
-                                            )
+                                                  context.pushNamed(
+                                                      RouteConstants
+                                                          .createMeal);
+                                                },
+                                                child: const BottomModalItem(
+                                                  text: "Create a Meal",
+                                                  iconRequired: false,
+                                                ))
                                           ],
                                         ),
                                       );
