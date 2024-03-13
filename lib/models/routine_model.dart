@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:fitness_social_app/models/meal_model.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:fitness_social_app/models/workout_post_model.dart';
@@ -8,19 +9,21 @@ import 'package:fitness_social_app/models/workout_post_model.dart';
 class RoutineModel {
   final int day;
   final List<WorkoutModel> workouts;
+  final List<MealModel> meals;
 
-  RoutineModel({required this.day, required this.workouts});
+  RoutineModel(
+      {required this.day, required this.workouts, required this.meals});
 }
 
 class Routine {
   List<RoutineModel> routines = [
-    RoutineModel(day: 0, workouts: []),
-    RoutineModel(day: 1, workouts: []),
-    RoutineModel(day: 2, workouts: []),
-    RoutineModel(day: 3, workouts: []),
-    RoutineModel(day: 4, workouts: []),
-    RoutineModel(day: 5, workouts: []),
-    RoutineModel(day: 6, workouts: []),
+    RoutineModel(day: 0, workouts: [], meals: []),
+    RoutineModel(day: 1, workouts: [], meals: []),
+    RoutineModel(day: 2, workouts: [], meals: []),
+    RoutineModel(day: 3, workouts: [], meals: []),
+    RoutineModel(day: 4, workouts: [], meals: []),
+    RoutineModel(day: 5, workouts: [], meals: []),
+    RoutineModel(day: 6, workouts: [], meals: []),
   ];
 
   void addToRoutine(int day, WorkoutModel workout) {
@@ -83,7 +86,6 @@ class OnlineRoutineModel {
 class OnlineRoutine {
   final String uid;
 
-
   // void addToRoutine(int day, String workout) {
   //   routines[day].workouts.add(workout);
   // }
@@ -123,9 +125,8 @@ class OnlineRoutine {
   @override
   bool operator ==(covariant OnlineRoutine other) {
     if (identical(this, other)) return true;
-  
-    return 
-      other.uid == uid;
+
+    return other.uid == uid;
   }
 
   @override

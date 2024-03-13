@@ -98,54 +98,61 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                 backgroundColor:
                                     Theme.of(context).colorScheme.secondary,
                                 onPressed: () {
-                                  // context.pushNamed(RouteConstants.createPost);
-                                  showModal(ModalEntry.aligned(context,
-                                      tag: 'containerModal',
-                                      barrierDismissible: true,
-                                      alignment: Alignment.center,
-                                      // removeOnPop: true,
-
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .background,
-                                            border: Border.all(
-                                                width: 2,
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .primary),
-                                            borderRadius:
-                                                BorderRadius.circular(10)),
-                                        width: 300,
-                                        height: 200,
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
+                                  showModalBottomSheet(
+                                    context: context,
+                                    isScrollControlled: true,
+                                    showDragHandle: true,
+                                    useSafeArea: true,
+                                    shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.vertical(
+                                            top: Radius.circular(20))),
+                                    builder: (context) {
+                                      return Padding(
+                                        padding: EdgeInsets.only(
+                                            bottom: MediaQuery.of(context)
+                                                .viewInsets
+                                                .bottom),
+                                        child: ListView(
+                                          shrinkWrap: true,
                                           children: [
                                             GestureDetector(
-                                                onTap: () {
-                                                  context.pushNamed(
-                                                      RouteConstants
-                                                          .createPost);
-                                                  // context.pop();
-                                                  removeModal('containerModal');
-                                                },
-                                                child: CustomButton(
-                                                    buttonText:
-                                                        'generic post')),
+                                              onTap: () {
+                                                context.pushNamed(
+                                                    RouteConstants
+                                                        .createPost);
+                                              },
+                                              child: ListTile(
+                                                title: Text("Create a post"),
+                                              ),
+                                            ),
+                                            Divider(),
                                             GestureDetector(
-                                                onTap: () {
-                                                  context.pushNamed(
-                                                      RouteConstants
-                                                          .createWorkout);
-                                                  removeModal('containerModal');
-                                                },
-                                                child: CustomButton(
-                                                    buttonText: 'workout post'))
+                                              onTap: () {
+                                                context.pushNamed(
+                                                    RouteConstants
+                                                        .createWorkout);
+                                              },
+                                              child: ListTile(
+                                                title:
+                                                    Text("Create a Workout"),
+                                              ),
+                                            ),
+                                            Divider(),
+                                            GestureDetector(
+                                              onTap: () {
+                                                context.pushNamed(
+                                                    RouteConstants
+                                                        .createWorkout);
+                                              },
+                                              child: ListTile(
+                                                title: Text("Create a Meal"),
+                                              ),
+                                            )
                                           ],
                                         ),
-                                      )));
+                                      );
+                                    },
+                                  );
                                 },
                                 child: Icon(
                                   (Icons.add),

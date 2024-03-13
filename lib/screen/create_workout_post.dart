@@ -98,7 +98,8 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                         imageUrl: '',
                         postId: '',
                         createdAt: Timestamp.now(),
-                        rating: 0,
+                        likeCount: 0,
+                        likes: List.empty(),
                         templateId: '',
                         privacy: 'public');
                     showDialog(
@@ -149,7 +150,7 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                       selectImage();
                     },
                     child: Container(
-                      height: 200,
+                      height: 350,
                       width: double.infinity,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
@@ -266,13 +267,13 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                         itemCount: workoutDraft!.exercises.length,
                         itemBuilder: (context, index) {
                           return Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.all(4.0),
                             child: ExerciseWidget(
                                 exerciseModel: workoutDraft!.exercises[index]),
                           );
                         },
                       )
-                    : Text('Any exercises you add will appear here')
+                    : Center(child: Text('Any exercises you add will appear here'))
               ],
             ),
           ),

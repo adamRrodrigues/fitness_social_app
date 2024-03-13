@@ -124,6 +124,7 @@ class WorkoutPostServices {
         Map<String, dynamic> exercise = exercises[i].toMap();
         await workoutPosts.doc(value.id).update({
           'postId': value.id,
+          'templateId': value.id,
           'exercises': FieldValue.arrayUnion([exercise])
         });
       }
@@ -143,6 +144,7 @@ class WorkoutPostServices {
           Map<String, dynamic> exercise = exercises[i].toMap();
           await workoutTemplates.doc(value.id).update({
             'postId': value.id,
+            'templateId': value.id,
             'exercises': FieldValue.arrayUnion([exercise])
           });
         }
@@ -156,6 +158,8 @@ class WorkoutPostServices {
     final exercise = ExerciseModel(
         name: exerciseModel['name'],
         description: exerciseModel['description'],
+        type: exerciseModel['type'],
+        time: exerciseModel['time'],
         weight: exerciseModel['weight'],
         reps: exerciseModel['reps'],
         sets: exerciseModel['sets']);

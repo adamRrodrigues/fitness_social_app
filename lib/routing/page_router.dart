@@ -10,6 +10,7 @@ import 'package:fitness_social_app/screen/create_post.dart';
 import 'package:fitness_social_app/screen/create_workout_post.dart';
 import 'package:fitness_social_app/screen/edit_exercise.dart';
 import 'package:fitness_social_app/screen/edit_workout.dart';
+import 'package:fitness_social_app/screen/fetching_workout_screen.dart';
 import 'package:fitness_social_app/screen/run_routine.dart';
 import 'package:fitness_social_app/screen/search_workouts.dart';
 import 'package:fitness_social_app/screen/user_page.dart';
@@ -146,6 +147,18 @@ final GoRouter appRouter = GoRouter(
                     child: ViewWorkout(
                   workoutModel: post,
                   // postId: postId!,
+                ));
+              },
+            ),
+            GoRoute(
+              path: 'fetchWorkoutScreen',
+              name: RouteConstants.fetchingWorkoutScreen,
+              pageBuilder: (context, state) {
+                String templateId = state.extra as String;
+                // final postId = state.pathParameters['id'];
+                return CupertinoPage(
+                    child: FetchingWorkoutScreen(
+                  workoutId: templateId,
                 ));
               },
             ),

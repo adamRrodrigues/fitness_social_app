@@ -142,7 +142,6 @@ class _ViewPostState extends ConsumerState<ViewPost> {
                     context: context,
                     isScrollControlled: true,
                     showDragHandle: true,
-                    enableDrag: false,
                     shape: const RoundedRectangleBorder(
                         borderRadius:
                             BorderRadius.vertical(top: Radius.circular(20))),

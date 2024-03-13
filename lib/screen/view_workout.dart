@@ -78,7 +78,7 @@ class ViewWorkout extends StatelessWidget {
                       final exerciseModel = WorkoutPostServices()
                           .mapExercise(workoutModel.exercises[index]);
                       return Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.all(4.0),
                         child: ExerciseWidget(exerciseModel: exerciseModel),
                       );
                     },

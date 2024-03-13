@@ -19,9 +19,7 @@ class FallbackService {
   Future updatePost() async {
     var querySnapshots = await posts.get();
     for (var doc in querySnapshots.docs) {
-      await doc.reference.update({
-        'likeCount': ''
-      });
+      await doc.reference.update({'likeCount': ''});
     }
   }
 
@@ -29,7 +27,9 @@ class FallbackService {
     var querySnapshots = await workoutPostsTemplate.get();
     for (var doc in querySnapshots.docs) {
       await doc.reference.update({
-        'templateId': ''
+        'likeCount': 0,
+        'likes': FieldValue.arrayUnion([]),
+        'rating': FieldValue.delete()
       });
     }
   }
@@ -38,7 +38,9 @@ class FallbackService {
     var querySnapshots = await workoutPosts.get();
     for (var doc in querySnapshots.docs) {
       await doc.reference.update({
-        'templateId': ''
+        'likeCount': 0,
+        'likes': FieldValue.arrayUnion([]),
+        'rating': FieldValue.delete()
       });
     }
   }
@@ -50,7 +52,7 @@ class FallbackService {
     }
   }
 
-  Future addRoutines() async {
+  Future updateRoutines() async {
     var querySnapshots = await users.get();
     // var routinesSnaps = await routines.get();
     for (var doc in querySnapshots.docs) {
@@ -62,6 +64,11 @@ class FallbackService {
             .collection('day $i')
             .doc('workouts')
             .set({'workouts': List.empty()});
+        await routines
+            .doc(doc.id)
+            .collection('day $i')
+            .doc('meals')
+            .set({'meals': List.empty()});
       }
     }
   }

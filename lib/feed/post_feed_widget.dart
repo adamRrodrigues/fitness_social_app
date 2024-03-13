@@ -5,14 +5,15 @@ import 'package:fitness_social_app/widgets/generic_post_widget.dart';
 import 'package:flutter/material.dart';
 
 class PostFeedWidget extends StatelessWidget {
-  const PostFeedWidget({
-    super.key,
-    required this.postQuery,
-    this.profileView = false,
-  });
+  const PostFeedWidget(
+      {super.key,
+      required this.postQuery,
+      this.profileView = false,
+      this.noPostsMessage = "Nothing to see here"});
 
   final Query<GenericPost> postQuery;
   final bool? profileView;
+  final String noPostsMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -20,12 +21,8 @@ class PostFeedWidget extends StatelessWidget {
       pageSize: 5,
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       emptyBuilder: (context) {
-        return ListView(
-          children: [
-            const Center(
-              child: Text('No Posts'),
-            ),
-          ],
+        return Center(
+          child: Text(noPostsMessage),
         );
       },
       loadingBuilder: (context) {

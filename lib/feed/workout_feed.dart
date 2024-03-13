@@ -43,12 +43,8 @@ class _WorkoutFeedState extends ConsumerState<WorkoutFeed>
       pageSize: 5,
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       emptyBuilder: (context) {
-        return ListView(
-          children: [
-            const Center(
-              child: Text('No Posts'),
-            ),
-          ],
+        return Center(
+          child: Text('Nothing To See Here'),
         );
       },
       loadingBuilder: (context) {

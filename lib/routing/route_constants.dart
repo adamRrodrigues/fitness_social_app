@@ -12,4 +12,5 @@ class RouteConstants {
   static String editExercise = 'editExerciseScreen';
   static String viewRoutinePage = 'viewRoutinePage';
   static String runRoutineScreen = 'runRoutineScreen';
+  static String fetchingWorkoutScreen = 'fetchingWorkoutScreen';
 }

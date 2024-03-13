@@ -19,7 +19,7 @@ class CustomButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(5),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(4.0),
+          padding: const EdgeInsets.all(8.0),
           child: Center(
             child: Text(
               buttonText,

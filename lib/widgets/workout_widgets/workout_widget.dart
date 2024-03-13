@@ -4,6 +4,7 @@ import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/models/routine_model.dart';
 import 'package:fitness_social_app/models/workout_post_model.dart';
 import 'package:fitness_social_app/routing/route_constants.dart';
+import 'package:fitness_social_app/screen/fetching_workout_screen.dart';
 import 'package:fitness_social_app/services/post_service.dart';
 import 'package:fitness_social_app/services/routine_services.dart';
 import 'package:fitness_social_app/services/user_services.dart';
@@ -111,6 +112,27 @@ class WorkoutWidget extends ConsumerWidget {
                         },
                       ),
                     ),
+                    Builder(builder: (context) {
+                      if (workoutModel.postId != workoutModel.templateId) {
+                        return GestureDetector(
+                            onTap: () {
+                              context.pushNamed(
+                                  RouteConstants.fetchingWorkoutScreen,
+                                  extra: workoutModel.templateId);
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: Text(
+                                "built from this template",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall!
+                                    .copyWith(color: Colors.cyan),
+                              ),
+                            ));
+                      }
+                      return Container();
+                    }),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
