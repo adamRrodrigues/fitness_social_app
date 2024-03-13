@@ -46,13 +46,17 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
 
   bool loadingExercises = true;
 
-  void selectImage() async {
+  void selectImage(String mode) async {
     try {
-      Uint8List file = await imagePicker!.pickImage(ImageSource.gallery);
+      Uint8List? file;
+      if (mode == 'Camera') {
+        file = await Utils().pickImage(ImageSource.camera);
+      } else {
+        file = await Utils().pickImage(ImageSource.gallery);
+      }
 
       setState(() {
         image = file;
-        workoutDraft!.image = file;
       });
     } catch (e) {
       print(e);
@@ -184,29 +188,73 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                   padding: const EdgeInsets.all(4.0),
                   child: GestureDetector(
                     onTap: () {
-                      selectImage();
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        showDragHandle: true,
+                        useSafeArea: true,
+                        builder: (context) {
+                          return ListView(
+                            shrinkWrap: true,
+                            children: [
+                              GestureDetector(
+                                onTap: () => selectImage('Camera'),
+                                child: const Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: ListTile(
+                                            title: Text('Take A Picture')),
+                                      ),
+                                      Icon(Icons.camera_alt_outlined)
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              const Divider(),
+                              GestureDetector(
+                                onTap: () => selectImage('Gallery'),
+                                child: const Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                          child: ListTile(
+                                              title:
+                                                  Text('Choose From Gallery'))),
+                                      Icon(Icons.image_outlined)
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      );
                     },
-                    child: Container(
-                      height: 200,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(
-                              color: Theme.of(context).colorScheme.primary)),
-                      child: image == null
-                          ? ClipRRect(
-                              borderRadius: BorderRadius.circular(20),
-                              child: Image(
-                                image:
-                                    NetworkImage(widget.workoutModel.imageUrl),
-                                fit: BoxFit.cover,
-                              ))
-                          : ClipRRect(
-                              borderRadius: BorderRadius.circular(20),
-                              child: Image(
-                                image: MemoryImage(image!),
-                                fit: BoxFit.cover,
-                              )),
+                    child: Padding(
+                      padding: const EdgeInsets.all(14),
+                      child: Container(
+                        height: 300,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                color: Theme.of(context).colorScheme.secondary),
+                            borderRadius: BorderRadius.circular(10)),
+                        child: image == null
+                            ? const Center(
+                                child:
+                                    Icon(size: 48, Icons.add_a_photo_outlined),
+                              )
+                            : ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Image.memory(
+                                  image!,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                      ),
                     ),
                   ),
                 ),

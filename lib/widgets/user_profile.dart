@@ -203,7 +203,7 @@ class _UserProfileState extends ConsumerState<UserProfile> {
                                 extra: 0);
                           },
                           child: CustomButton(
-                              primary: false, buttonText: 'view routine')),
+                              primary: false, buttonText: 'View Routine')),
                     ),
                   ],
                 ),
@@ -250,16 +250,18 @@ class _UserProfileState extends ConsumerState<UserProfile> {
               ),
               TabBar(
                 indicatorColor: Theme.of(context).colorScheme.primary,
+
                 tabs: [
                   Tab(
+
                       icon: Icon(
                     Icons.post_add,
-                    color: Theme.of(context).colorScheme.primary,
+                    color: Theme.of(context).colorScheme.secondary,
                   )),
                   Tab(
                       icon: Icon(
                     Icons.run_circle_outlined,
-                    color: Theme.of(context).colorScheme.primary,
+                    color: Theme.of(context).colorScheme.secondary,
                   )),
                 ],
               ),

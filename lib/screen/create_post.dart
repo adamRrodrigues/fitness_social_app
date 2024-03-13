@@ -69,62 +69,74 @@ class _CreatePostState extends ConsumerState<CreatePost> {
                 ],
             body: Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(14),
-                  child: Container(
-                    height: 300,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                        border: Border.all(
-                            color: Theme.of(context).colorScheme.secondary),
-                        borderRadius: BorderRadius.circular(10)),
-                    child: image == null
-                        ? GestureDetector(
-                            onTap: () {
-                              showCupertinoModalPopup(
-                                context: context,
-                                builder: (context) {
-                                  return Center(
-                                    child: SizedBox(
-                                      height: 300,
-                                      width: double.infinity,
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          GestureDetector(
-                                            onTap: () => selectImage('Camera'),
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: CustomButton(
-                                                  buttonText: 'Take A Picture'),
-                                            ),
-                                          ),
-                                          GestureDetector(
-                                            onTap: () => selectImage('Gallery'),
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: CustomButton(
-                                                  buttonText: 'Choose From Gallery'),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                GestureDetector(
+                  onTap: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      showDragHandle: true,
+                      useSafeArea: true,
+                      builder: (context) {
+                        return ListView(
+                          shrinkWrap: true,
+                          children: [
+                            GestureDetector(
+                              onTap: () => selectImage('Camera'),
+                              child: const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: ListTile(
+                                          title: Text('Take A Picture')),
                                     ),
-                                  );
-                                },
-                              );
-                            },
-                            child: const Center(
+                                    Icon(Icons.camera_alt_outlined)
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const Divider(),
+                            GestureDetector(
+                              onTap: () => selectImage('Gallery'),
+                              child: const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                        child: ListTile(
+                                            title:
+                                                Text('Choose From Gallery'))),
+                                    Icon(Icons.image_outlined)
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(14),
+                    child: Container(
+                      height: 300,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                              color: Theme.of(context).colorScheme.secondary),
+                          borderRadius: BorderRadius.circular(10)),
+                      child: image == null
+                          ? const Center(
                               child: Icon(size: 48, Icons.add_a_photo_outlined),
+                            )
+                          : ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.memory(
+                                image!,
+                                fit: BoxFit.cover,
+                              ),
                             ),
-                          )
-                        : ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Image.memory(
-                              image!,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
+                    ),
                   ),
                 ),
                 CustomTextField(

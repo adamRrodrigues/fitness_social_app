@@ -46,13 +46,17 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
     "Back"
   ];
 
-  void selectImage() async {
+  void selectImage(String mode) async {
     try {
-      Uint8List file = await imagePicker!.pickImage(ImageSource.camera);
+      Uint8List? file;
+      if (mode == 'Camera') {
+        file = await Utils().pickImage(ImageSource.camera);
+      } else {
+        file = await Utils().pickImage(ImageSource.gallery);
+      }
 
       setState(() {
         image = file;
-        workoutDraft!.image = file;
       });
     } catch (e) {
       print(e);
@@ -151,28 +155,72 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
             child: Column(
               // mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      selectImage();
-                    },
+                GestureDetector(
+                  onTap: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      showDragHandle: true,
+                      useSafeArea: true,
+                      builder: (context) {
+                        return ListView(
+                          shrinkWrap: true,
+                          children: [
+                            GestureDetector(
+                              onTap: () => selectImage('Camera'),
+                              child: const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: ListTile(
+                                          title: Text('Take A Picture')),
+                                    ),
+                                    Icon(Icons.camera_alt_outlined)
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const Divider(),
+                            GestureDetector(
+                              onTap: () => selectImage('Gallery'),
+                              child: const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                        child: ListTile(
+                                            title:
+                                                Text('Choose From Gallery'))),
+                                    Icon(Icons.image_outlined)
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(14),
                     child: Container(
-                      height: 350,
+                      height: 300,
                       width: double.infinity,
                       decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
                           border: Border.all(
-                              color: Theme.of(context).colorScheme.primary)),
-                      child: image != null
-                          ? ClipRRect(
-                              borderRadius: BorderRadius.circular(20),
-                              child: Image(
-                                image: MemoryImage(image!),
+                              color: Theme.of(context).colorScheme.secondary),
+                          borderRadius: BorderRadius.circular(10)),
+                      child: image == null
+                          ? const Center(
+                              child: Icon(size: 48, Icons.add_a_photo_outlined),
+                            )
+                          : ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.memory(
+                                image!,
                                 fit: BoxFit.cover,
-                              ))
-                          : Center(
-                              child: Icon(Icons.add_a_photo),
+                              ),
                             ),
                     ),
                   ),
@@ -234,8 +282,8 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                                           mini: true,
                                           onPressed: () {
                                             setState(() {
-                                              workoutDraft!.categories.add(
-                                                  categoryController.text);
+                                              workoutDraft!.categories
+                                                  .add(categoryController.text);
                                               categoryController.text = '';
                                             });
                                           },
@@ -263,8 +311,8 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                                             child: Column(
                                               children: [
                                                 ListTile(
-                                                  title: Text(
-                                                      popularTags[index]),
+                                                  title:
+                                                      Text(popularTags[index]),
                                                 ),
                                                 Divider()
                                               ],
@@ -326,13 +374,5 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
         ),
       ),
     );
-  }
-}
-
-class MyBehavior extends ScrollBehavior {
-  @override
-  Widget buildOverscrollIndicator(
-      BuildContext context, Widget child, ScrollableDetails details) {
-    return child;
   }
 }

@@ -117,9 +117,9 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                           children: [
                                             GestureDetector(
                                               onTap: () {
+                                                context.pop();
                                                 context.pushNamed(
-                                                    RouteConstants
-                                                        .createPost);
+                                                    RouteConstants.createPost);
                                               },
                                               child: ListTile(
                                                 title: Text("Create a post"),
@@ -128,21 +128,22 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                             Divider(),
                                             GestureDetector(
                                               onTap: () {
-                                                context.pushNamed(
-                                                    RouteConstants
-                                                        .createWorkout);
+                                                context.pop();
+
+                                                context.pushNamed(RouteConstants
+                                                    .createWorkout);
                                               },
                                               child: ListTile(
-                                                title:
-                                                    Text("Create a Workout"),
+                                                title: Text("Create a Workout"),
                                               ),
                                             ),
                                             Divider(),
                                             GestureDetector(
                                               onTap: () {
+                                                context.pop();
+
                                                 context.pushNamed(
-                                                    RouteConstants
-                                                        .createMeal);
+                                                    RouteConstants.createMeal);
                                               },
                                               child: ListTile(
                                                 title: Text("Create a Meal"),
