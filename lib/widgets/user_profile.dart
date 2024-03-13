@@ -40,7 +40,7 @@ class _UserProfileState extends ConsumerState<UserProfile> {
   GenericPostServices? genericPostServices;
   FeedServices? feedServices;
 
-  Stream getFollowage() async* {
+  Future getFollowage() async {
     await FirebaseFirestore.instance
         .collection('users')
         .doc(widget.thisUser.uid)
@@ -107,94 +107,113 @@ class _UserProfileState extends ConsumerState<UserProfile> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Column(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      if (widget.thisUser.uid == currentUser!.uid) {
-                        selectImage();
-                      } else {
-                        showImageViewer(context, profileImage);
-                      }
-                    },
-                    child: CircleAvatar(
-                      backgroundImage: NetworkImage(widget.thisUser.profileUrl),
-                      radius: 38,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Builder(builder: (context) {
-                    if (widget.thisUser.firstName.isNotEmpty &&
-                        widget.thisUser.lastName.isNotEmpty) {
-                      return Text(
-                        "${widget.thisUser.firstName} ${widget.thisUser.lastName}",
-                        style: Theme.of(context).textTheme.titleLarge,
-                      );
-                    } else {
-                      return Text(
-                        widget.thisUser.username,
-                        style: Theme.of(context).textTheme.titleLarge,
-                      );
-                    }
-                  })
-                ],
+              GestureDetector(
+                onTap: () {
+                  if (widget.thisUser.uid == currentUser!.uid) {
+                    selectImage();
+                  } else {
+                    showImageViewer(context, profileImage);
+                  }
+                },
+                child: CircleAvatar(
+                  backgroundImage: NetworkImage(widget.thisUser.profileUrl),
+                  radius: 48,
+                ),
               ),
+              const SizedBox(height: 10),
+              Builder(builder: (context) {
+                if (widget.thisUser.firstName.isNotEmpty &&
+                    widget.thisUser.lastName.isNotEmpty) {
+                  return Text(
+                    "${widget.thisUser.firstName} ${widget.thisUser.lastName}",
+                    style: Theme.of(context).textTheme.titleLarge,
+                  );
+                } else {
+                  return Text(
+                    widget.thisUser.username,
+                    style: Theme.of(context).textTheme.titleLarge,
+                  );
+                }
+              }),
               const SizedBox(
                 height: 10,
               ),
-              Builder(builder: (context) {
-                if (widget.thisUser.uid == currentUser!.uid) {
-                  return const CustomButton(buttonText: "Edit Profile");
-                } else {
-                  return StreamBuilder(
-                      stream: FirebaseFirestore.instance
-                          .collection('users')
-                          .doc(widget.thisUser.uid)
-                          .collection('followers')
-                          .doc(currentUser.uid)
-                          .snapshots(),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.active) {
-                          if (snapshot.data!.exists) {
-                            return GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    userServices!
-                                        .unfollowUser(widget.thisUser.uid);
-                                  });
-                                },
-                                child:
-                                    const CustomButton(buttonText: "Unfollow"));
-                          } else {
-                            return GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    userServices!
-                                        .followUser(widget.thisUser.uid);
-                                  });
-                                },
-                                child:
-                                    const CustomButton(buttonText: "Follow"));
-                          }
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Builder(builder: (context) {
+                        if (widget.thisUser.uid == currentUser!.uid) {
+                          return const SizedBox(
+                              width: 150,
+                              child: CustomButton(buttonText: "Edit Profile"));
                         } else {
-                          return const CircularProgressIndicator();
+                          return StreamBuilder(
+                              stream: FirebaseFirestore.instance
+                                  .collection('users')
+                                  .doc(widget.thisUser.uid)
+                                  .collection('followers')
+                                  .doc(currentUser.uid)
+                                  .snapshots(),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.active) {
+                                  if (snapshot.data!.exists) {
+                                    return GestureDetector(
+                                        onTap: () async {
+                                          setState(() {
+                                            followers--;
+                                          });
+                                          userServices!.unfollowUser(
+                                              widget.thisUser.uid);
+                                        },
+                                        child: CustomButton(
+                                            buttonText: "Unfollow"));
+                                  } else {
+                                    return GestureDetector(
+                                        onTap: () async {
+                                          setState(() {
+                                            followers++;
+                                          });
+                                          userServices!
+                                              .followUser(widget.thisUser.uid);
+                                        },
+                                        child:
+                                            CustomButton(buttonText: "Follow"));
+                                  }
+                                } else {
+                                  return const CustomButton(
+                                    buttonText: "Follow",
+                                  );
+                                }
+                              });
                         }
-                      });
-                }
-              }),
-              GestureDetector(
-                  onTap: () {
-                    context.pushNamed(RouteConstants.viewRoutinePage,
-                        pathParameters: {'id': widget.thisUser.uid});
-                  },
-                  child: CustomButton(buttonText: 'view routine')),
+                      }),
+                    ),
+                    SizedBox(
+                      width: 30,
+                    ),
+                    Expanded(
+                      child: GestureDetector(
+                          onTap: () {
+                            context.pushNamed(RouteConstants.viewRoutinePage,
+                                pathParameters: {'id': widget.thisUser.uid},
+                                extra: 0);
+                          },
+                          child: CustomButton(
+                              primary: false, buttonText: 'View Routine')),
+                    ),
+                  ],
+                ),
+              ),
               Divider(
                 color: Theme.of(context).colorScheme.primary,
               ),
               Center(
-                child: StreamBuilder(
-                    stream: getFollowage(),
+                child: FutureBuilder(
+                    future: getFollowage(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.done) {
                         return Row(
@@ -218,8 +237,12 @@ class _UserProfileState extends ConsumerState<UserProfile> {
                             CountWidget(
                                 amount: widget.thisUser.posts.length.toString(),
                                 type: 'posts'),
-                            CountWidget(amount: 'xx', type: 'followers'),
-                            CountWidget(amount: 'xx', type: 'following'),
+                            CountWidget(
+                                amount: followers.toString(),
+                                type: 'followers'),
+                            CountWidget(
+                                amount: following.toString(),
+                                type: 'following'),
                           ],
                         );
                       }
@@ -227,16 +250,18 @@ class _UserProfileState extends ConsumerState<UserProfile> {
               ),
               TabBar(
                 indicatorColor: Theme.of(context).colorScheme.primary,
+
                 tabs: [
                   Tab(
+
                       icon: Icon(
                     Icons.post_add,
-                    color: Theme.of(context).colorScheme.primary,
+                    color: Theme.of(context).colorScheme.secondary,
                   )),
                   Tab(
                       icon: Icon(
                     Icons.run_circle_outlined,
-                    color: Theme.of(context).colorScheme.primary,
+                    color: Theme.of(context).colorScheme.secondary,
                   )),
                 ],
               ),

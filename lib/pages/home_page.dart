@@ -48,7 +48,7 @@ class _HomePageState extends ConsumerState<HomePage>
                   if (snapshot.connectionState == ConnectionState.done) {
                     if (feedServices!.following.isNotEmpty) {
                       return PostFeedWidget( profileView: false,
-                          postQuery: feedServices!.fetchPosts(user!.uid));
+                          postQuery: feedServices!.fetchPosts(user!.uid), noPostsMessage: "You Are Not Following Any Users",);
                     } else {
                       return Expanded(
                         child: Center(
@@ -71,5 +71,5 @@ class _HomePageState extends ConsumerState<HomePage>
   }
 
   @override
-  bool get wantKeepAlive => true;
+  bool get wantKeepAlive => false;
 }

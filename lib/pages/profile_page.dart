@@ -5,6 +5,7 @@ import 'package:fitness_social_app/pages/chat_page.dart';
 import 'package:fitness_social_app/routing/route_constants.dart';
 import 'package:fitness_social_app/services/auth_service.dart';
 import 'package:fitness_social_app/services/user_services.dart';
+import 'package:fitness_social_app/widgets/bottom_modal_item_widget.dart';
 import 'package:fitness_social_app/widgets/custom_button.dart';
 import 'package:fitness_social_app/widgets/user_profile.dart';
 import 'package:flutter/material.dart';
@@ -124,58 +125,70 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                 backgroundColor:
                                     Theme.of(context).colorScheme.secondary,
                                 onPressed: () {
-                                  // context.pushNamed(RouteConstants.createPost);
-                                  showModal(ModalEntry.aligned(context,
-                                      tag: 'containerModal',
-                                      barrierDismissible: true,
-                                      alignment: Alignment.center,
-                                      // removeOnPop: true,
-
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .background,
-                                            border: Border.all(
-                                                width: 2,
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .primary),
-                                            borderRadius:
-                                                BorderRadius.circular(10)),
-                                        width: 300,
-                                        height: 200,
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
+                                  showModalBottomSheet(
+                                    context: context,
+                                    isScrollControlled: true,
+                                    showDragHandle: true,
+                                    useSafeArea: true,
+                                    shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.vertical(
+                                            top: Radius.circular(20))),
+                                    builder: (context) {
+                                      return Padding(
+                                        padding: EdgeInsets.only(
+                                            bottom: MediaQuery.of(context)
+                                                .viewInsets
+                                                .bottom),
+                                        child: ListView(
+                                          shrinkWrap: true,
                                           children: [
                                             GestureDetector(
                                                 onTap: () {
+                                                  context.pop();
                                                   context.pushNamed(
                                                       RouteConstants
                                                           .createPost);
-                                                  // context.pop();
-                                                  removeAllModals();
                                                 },
-                                                child: CustomButton(
-                                                    buttonText:
-                                                        'generic post')),
+                                                child: const BottomModalItem(
+                                                  text: "Create a Post",
+                                                  iconRequired: false,
+                                                )),
+                                            Divider(),
                                             GestureDetector(
                                                 onTap: () {
+                                                  context.pop();
+
                                                   context.pushNamed(
                                                       RouteConstants
                                                           .createWorkout);
-                                                  removeAllModals();
                                                 },
-                                                child: CustomButton(
-                                                    buttonText: 'workout post'))
+                                                child: const BottomModalItem(
+                                                  text: "Create a Workout",
+                                                  iconRequired: false,
+                                                )),
+                                            Divider(),
+                                            GestureDetector(
+                                                onTap: () {
+                                                  context.pop();
+
+                                                  context.pushNamed(
+                                                      RouteConstants
+                                                          .createMeal);
+                                                },
+                                                child: const BottomModalItem(
+                                                  text: "Create a Meal",
+                                                  iconRequired: false,
+                                                ))
                                           ],
                                         ),
-                                      )));
+                                      );
+                                    },
+                                  );
                                 },
                                 child: Icon(
                                   (Icons.add),
-                                  color: Theme.of(context).colorScheme.primary,
+                                  color:
+                                      Theme.of(context).colorScheme.background,
                                 ),
                               ),
                             ),

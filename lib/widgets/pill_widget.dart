@@ -20,11 +20,11 @@ class PillWidget extends StatelessWidget {
       decoration: BoxDecoration(
           border: Border.all(
               color: active
-                  ? Theme.of(context).colorScheme.secondary
-                  : Theme.of(context).colorScheme.primary),
+                  ? Theme.of(context).colorScheme.primary
+                  : Theme.of(context).colorScheme.secondary),
           borderRadius: BorderRadius.circular(10),
           color: active
-              ? Theme.of(context).colorScheme.primary
+              ? Theme.of(context).colorScheme.secondary
               : Theme.of(context).colorScheme.background),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12.0),
@@ -37,8 +37,8 @@ class PillWidget extends StatelessWidget {
                 style: Theme.of(context).textTheme.bodySmall!.copyWith(
                     fontWeight: FontWeight.bold,
                     color: active
-                        ? Theme.of(context).colorScheme.secondary
-                        : Theme.of(context).colorScheme.primary),
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(context).colorScheme.secondary),
                 // textAlign: TextAlign.center,
               ),
             ),

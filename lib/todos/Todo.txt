@@ -1,0 +1,12 @@
+Doing: 
+meal widget
+view meal page
+
+Next: 
+run workout page
+discover page
+saved workouts, my workouts pages
+edit profile page
+
+Done:
+create meal post page

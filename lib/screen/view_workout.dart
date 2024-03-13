@@ -2,6 +2,7 @@ import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:fitness_social_app/models/exercise_model.dart';
 import 'package:fitness_social_app/models/workout_post_model.dart';
+import 'package:fitness_social_app/services/post_service.dart';
 import 'package:fitness_social_app/widgets/custom_button.dart';
 import 'package:fitness_social_app/widgets/image_widget.dart';
 import 'package:fitness_social_app/widgets/pill_widget.dart';
@@ -10,10 +11,10 @@ import 'package:flutter/material.dart';
 
 class ViewWorkout extends StatelessWidget {
   const ViewWorkout(
-      {Key? key, required this.workoutModel, required this.postId})
+      {Key? key, required this.workoutModel})
       : super(key: key);
   final WorkoutModel workoutModel;
-  final String postId;
+  // final String postId;
   @override
   Widget build(BuildContext context) {
     final imageProvider = MultiImageProvider(
@@ -74,15 +75,10 @@ class ViewWorkout extends StatelessWidget {
                     shrinkWrap: true,
                     itemCount: workoutModel.exercises.length,
                     itemBuilder: (context, index) {
-                      final exerciseModel = ExerciseModel(
-                          name: workoutModel.exercises[index]['name'],
-                          description: workoutModel.exercises[index]
-                              ['description'],
-                          weight: workoutModel.exercises[index]['weight'],
-                          reps: workoutModel.exercises[index]['reps'],
-                          sets: workoutModel.exercises[index]['sets']);
+                      final exerciseModel = WorkoutPostServices()
+                          .mapExercise(workoutModel.exercises[index]);
                       return Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.all(4.0),
                         child: ExerciseWidget(exerciseModel: exerciseModel),
                       );
                     },

@@ -19,6 +19,7 @@ final genericPostServicesProvider = Provider((ref) => GenericPostServices());
 final feedServicesProvider = Provider((ref) => FeedServices());
 final utilProvider = Provider((ref) => Utils());
 final draftProvider = Provider((ref) => WorkoutDraft());
+final mealDraftProvider = Provider((ref) => MealDraft());
 final routineProvider = Provider((ref) => Routine());
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -3,10 +3,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_social_app/commons/commons.dart';
 import 'package:fitness_social_app/main.dart';
+import 'package:fitness_social_app/models/exercise_model.dart';
+import 'package:fitness_social_app/models/routine_model.dart';
 import 'package:fitness_social_app/models/workout_post_model.dart';
 import 'package:fitness_social_app/routing/route_constants.dart';
 import 'package:fitness_social_app/services/drafts.dart';
 import 'package:fitness_social_app/services/post_service.dart';
+import 'package:fitness_social_app/services/routine_services.dart';
 import 'package:fitness_social_app/utlis/utils.dart';
 import 'package:fitness_social_app/widgets/custom_button.dart';
 import 'package:fitness_social_app/widgets/pill_widget.dart';
@@ -20,8 +23,10 @@ import 'package:image_picker/image_picker.dart';
 import 'package:modals/modals.dart';
 
 class EditWorkout extends ConsumerStatefulWidget {
-  const EditWorkout({Key? key}) : super(key: key);
-
+  const EditWorkout({Key? key, required this.workoutModel, required this.day})
+      : super(key: key);
+  final WorkoutModel workoutModel;
+  final int day;
   @override
   _EditWorkoutState createState() => _EditWorkoutState();
 }
@@ -30,6 +35,7 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
   TextEditingController titleController = TextEditingController();
   WorkoutDraft? workoutDraft;
   User? user;
+  Routine? routine;
   TextEditingController categoryController = TextEditingController();
 
   Uint8List? image;
@@ -38,13 +44,19 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
 
   FocusNode focusNode = FocusNode();
 
-  void selectImage() async {
+  bool loadingExercises = true;
+
+  void selectImage(String mode) async {
     try {
-      Uint8List file = await imagePicker!.pickImage(ImageSource.gallery);
+      Uint8List? file;
+      if (mode == 'Camera') {
+        file = await Utils().pickImage(ImageSource.camera);
+      } else {
+        file = await Utils().pickImage(ImageSource.gallery);
+      }
 
       setState(() {
         image = file;
-        workoutDraft!.image = file;
       });
     } catch (e) {
       print(e);
@@ -56,7 +68,20 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
     imagePicker = ref.read(utilProvider);
     workoutDraft = ref.read(draftProvider);
     user = ref.read(userProvider);
+    routine = ref.read(routineProvider);
+
     image = workoutDraft!.image;
+    titleController.text = workoutDraft!.workoutName;
+
+    for (int i = 0; i < widget.workoutModel.exercises.length; i++) {
+      final exerciseModel =
+          WorkoutPostServices().mapExercise(widget.workoutModel.exercises[i]);
+      workoutDraft!.exercises.add(exerciseModel);
+    }
+    loadingExercises = false;
+
+    workoutDraft!.categories = widget.workoutModel.categories;
+    workoutDraft!.workoutName = widget.workoutModel.workoutName;
     titleController.text = workoutDraft!.workoutName;
 
     super.initState();
@@ -66,14 +91,15 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
   Widget build(BuildContext context) {
     void delete(int index) {
       setState(() {
-        workoutDraft!.categories.removeAt(index);
+        widget.workoutModel.categories.removeAt(index);
       });
     }
 
     return SafeArea(
       child: WillPopScope(
         onWillPop: () async {
-          workoutDraft!.workoutName = titleController.text;
+          // widget.workoutModel.workoutName = titleController.text;
+          ref.invalidate(draftProvider);
           return true;
         },
         child: Scaffold(
@@ -87,20 +113,27 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
             actions: [
               GestureDetector(
                 onTap: () async {
+                  String imageUrl = "";
+                  if (image == null) {
+                    imageUrl = widget.workoutModel.imageUrl;
+                  }
                   if (titleController.text.isNotEmpty &&
-                      image != null &&
+                      // image != null &&
                       workoutDraft!.exercises.isNotEmpty) {
                     WorkoutModel workoutModel = WorkoutModel(
                         workoutName: titleController.text,
-                        categories: workoutDraft!.categories,
+                        categories: widget.workoutModel.categories,
                         exercises: List.empty(),
                         uid: user!.uid,
-                        imageUrl: '',
+                        imageUrl: imageUrl,
                         postId: '',
+                        templateId: '',
                         createdAt: Timestamp.now(),
+                        likeCount: 0,
+                        likes: List.empty(),
                         privacy: 'public');
 
-                    print(workoutDraft!.exercises.length);
+                    print(widget.workoutModel.exercises.length);
 
                     showDialog(
                       barrierDismissible: false,
@@ -111,14 +144,24 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                     );
 
                     try {
-                      // await WorkoutPostServices()
-                      //     .postTemplate(workoutModel, workoutDraft!.exercises);
-                      await WorkoutPostServices().postWorkout(
-                          workoutModel, image!, workoutDraft!.exercises);
+                      String futureString = await WorkoutPostServices()
+                          .templateToWorkout(
+                              workoutModel, workoutDraft!.exercises);
+                      await RoutineServices().updateRoutine(user!.uid,
+                          widget.day, futureString, widget.workoutModel.postId);
+                      if (image != null) {
+                        await WorkoutPostServices()
+                            .newImage(image!, futureString);
+                      }
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
                           Commons().snackBarMessage(e.toString(), Colors.red));
                       print(e);
+                    }
+                    // routine!.addToRoutine(widget.day, workoutModel);
+
+                    if (context.mounted) {
+                      context.pop();
                     }
                     Navigator.pop(context);
                     ref.invalidate(draftProvider);
@@ -145,25 +188,73 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                   padding: const EdgeInsets.all(4.0),
                   child: GestureDetector(
                     onTap: () {
-                      selectImage();
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        showDragHandle: true,
+                        useSafeArea: true,
+                        builder: (context) {
+                          return ListView(
+                            shrinkWrap: true,
+                            children: [
+                              GestureDetector(
+                                onTap: () => selectImage('Camera'),
+                                child: const Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: ListTile(
+                                            title: Text('Take A Picture')),
+                                      ),
+                                      Icon(Icons.camera_alt_outlined)
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              const Divider(),
+                              GestureDetector(
+                                onTap: () => selectImage('Gallery'),
+                                child: const Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                          child: ListTile(
+                                              title:
+                                                  Text('Choose From Gallery'))),
+                                      Icon(Icons.image_outlined)
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      );
                     },
-                    child: Container(
-                      height: 200,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(
-                              color: Theme.of(context).colorScheme.primary)),
-                      child: image != null
-                          ? ClipRRect(
-                              borderRadius: BorderRadius.circular(20),
-                              child: Image(
-                                image: MemoryImage(image!),
-                                fit: BoxFit.cover,
-                              ))
-                          : Center(
-                              child: Icon(Icons.add_a_photo),
-                            ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(14),
+                      child: Container(
+                        height: 300,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                color: Theme.of(context).colorScheme.secondary),
+                            borderRadius: BorderRadius.circular(10)),
+                        child: image == null
+                            ? const Center(
+                                child:
+                                    Icon(size: 48, Icons.add_a_photo_outlined),
+                              )
+                            : ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Image.memory(
+                                  image!,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                      ),
                     ),
                   ),
                 ),
@@ -176,7 +267,7 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                           height: 35,
                           child: ListView.builder(
                             scrollDirection: Axis.horizontal,
-                            itemCount: workoutDraft!.categories.length,
+                            itemCount: widget.workoutModel.categories.length,
                             itemBuilder: (context, index) {
                               return Padding(
                                 padding: const EdgeInsets.all(4.0),
@@ -185,7 +276,7 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                                     delete: () {
                                       delete(index);
                                     },
-                                    name: workoutDraft!.categories[index],
+                                    name: widget.workoutModel.categories[index],
                                     active: false),
                               );
                             },
@@ -228,7 +319,7 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                                       GestureDetector(
                                           onTap: () {
                                             setState(() {
-                                              workoutDraft!.categories
+                                              widget.workoutModel.categories
                                                   .add(categoryController.text);
                                               categoryController.text = '';
                                             });
@@ -258,7 +349,7 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                 SizedBox(
                   height: 10,
                 ),
-                workoutDraft!.exercises.isNotEmpty
+                !loadingExercises
                     ? ListView.builder(
                         physics: NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
@@ -266,12 +357,26 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                         itemBuilder: (context, index) {
                           return Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: ExerciseWidget(
-                                exerciseModel: workoutDraft!.exercises[index]),
+                            child: GestureDetector(
+                              onTap: () {
+                                context.pushNamed(
+                                  RouteConstants.editExercise,
+                                  extra: {
+                                    "editingExercise":
+                                        workoutDraft!.exercises[index],
+                                    "exercises": workoutDraft!.exercises,
+                                    "index": index
+                                  },
+                                );
+                              },
+                              child: ExerciseWidget(
+                                  exerciseModel:
+                                      workoutDraft!.exercises[index]),
+                            ),
                           );
                         },
                       )
-                    : Text('Any exercises you add will appear here')
+                    : Text('Loading')
               ],
             ),
           ),

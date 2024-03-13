@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_social_app/main.dart';
-import 'package:fitness_social_app/models/user_model.dart';
-import 'package:fitness_social_app/services/user_services.dart';
 import 'package:fitness_social_app/widgets/mini_profie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -49,11 +47,11 @@ class _DiscoverPageState extends ConsumerState<DiscoverPage>
                           .where((element) => element.id != user!.uid)
                           .map((e) {
                     // Map<String, dynamic> data = e as Map<String, dynamic>;
-                    UserModel thisUser = UserServices().mapDocUser(e);
+                    // UserModel thisUser = UserServices().mapDocUser(e);
 
                     return Container(
                       padding: const EdgeInsets.all(8.0),
-                      child: MiniProfie(user: thisUser),
+                      child: MiniProfie(userId: e.id),
                     );
                   }).toList());
                 } else {

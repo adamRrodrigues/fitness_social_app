@@ -9,21 +9,42 @@ class ExerciseWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(border: Border.all(color: Theme.of(context).colorScheme.primary), borderRadius: BorderRadius.circular(20)),
+      decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface,
+          borderRadius: BorderRadius.circular(10)),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-          Icon(
-            Icons.run_circle_outlined,
-            size: 48,
+        child:
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Icon(
+                exerciseModel.type == "time"
+                    ? Icons.run_circle_outlined
+                    : Icons.line_weight,
+                size: 48,
+              ),
+              SizedBox(
+                width: 20,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(exerciseModel.name),
+                  SizedBox(
+                      width: 220,
+                      child: Text(
+                    exerciseModel.description,
+                    overflow: TextOverflow.ellipsis,
+                  ))
+                ],
+              ),
+            ],
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [Text(exerciseModel.name), SizedBox(width: 220, child: Text(exerciseModel.description, overflow: TextOverflow.ellipsis,))],
-          ),
-          Text('Sets: ${exerciseModel.sets.toString()}x')
+          exerciseModel.type == 'sets'
+              ? Text('Sets: ${exerciseModel.sets.toString()}x')
+              : Text('Time: ${exerciseModel.time.toString()} min')
         ]),
       ),
     );

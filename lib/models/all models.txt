@@ -1,0 +1,58 @@
+UserModel{
+    final String username;
+    final String firstName;
+    final String lastName;
+    final String profileUrl;
+    final String uid;
+    final List posts;
+}
+UserStatsModel{
+    final String uid;
+    final double userWeight;
+    final double userHeight;
+    final int steps;
+    final int workoutStreak;
+    final List<Achievement> achievements;
+}
+WorkoutPostModel{
+    final String workoutName;
+    final List<String> categories;
+    final List<dynamic> exercises;
+    final String uid;
+    final String postId;
+    final String templateId;
+    final String privacy;
+    final String imageUrl;
+    final int rating;
+    final Timestamp createdAt;
+}
+ExerciseModel{
+    final String name;
+    final String description;
+    final String toolName = '';
+    final double weight;
+    final String imageUrl = '';
+    final int reps;
+    final int time = 0;
+    final int sets;
+}
+MealModel{
+    final String mealName;
+    final String description;
+    final String uid;
+    final String postId;
+    final List<dynamic> ingredients;
+}
+GenericPostModel{
+    final String postName;
+    final String uid;
+    final String image;
+    final List<String> likes;
+    final int likeCount;
+    final List<dynamic> comments;
+    final Timestamp createdAt;
+}
+RoutineModel{
+    final int day;
+    final List<WorkoutModel> workouts;
+}

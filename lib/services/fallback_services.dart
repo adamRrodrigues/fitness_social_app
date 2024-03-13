@@ -6,6 +6,12 @@ class FallbackService {
   CollectionReference posts =
       FirebaseFirestore.instance.collection('generic_posts');
 
+  CollectionReference workoutPostsTemplate =
+      FirebaseFirestore.instance.collection('workout_templates_demo');
+
+  CollectionReference workoutPosts =
+      FirebaseFirestore.instance.collection('user_workouts_demo');
+
   CollectionReference users = FirebaseFirestore.instance.collection('users');
   CollectionReference routines =
       FirebaseFirestore.instance.collection('routines');
@@ -13,8 +19,28 @@ class FallbackService {
   Future updatePost() async {
     var querySnapshots = await posts.get();
     for (var doc in querySnapshots.docs) {
+      await doc.reference.update({'likeCount': ''});
+    }
+  }
+
+  Future updateWorkoutTemplatePosts() async {
+    var querySnapshots = await workoutPostsTemplate.get();
+    for (var doc in querySnapshots.docs) {
       await doc.reference.update({
-        'likeCount': 0
+        'likeCount': 0,
+        'likes': FieldValue.arrayUnion([]),
+        'rating': FieldValue.delete()
+      });
+    }
+  }
+
+  Future updateWorkoutPosts() async {
+    var querySnapshots = await workoutPosts.get();
+    for (var doc in querySnapshots.docs) {
+      await doc.reference.update({
+        'likeCount': 0,
+        'likes': FieldValue.arrayUnion([]),
+        'rating': FieldValue.delete()
       });
     }
   }
@@ -26,7 +52,7 @@ class FallbackService {
     }
   }
 
-  Future addRoutines() async {
+  Future updateRoutines() async {
     var querySnapshots = await users.get();
     // var routinesSnaps = await routines.get();
     for (var doc in querySnapshots.docs) {
@@ -38,6 +64,11 @@ class FallbackService {
             .collection('day $i')
             .doc('workouts')
             .set({'workouts': List.empty()});
+        await routines
+            .doc(doc.id)
+            .collection('day $i')
+            .doc('meals')
+            .set({'meals': List.empty()});
       }
     }
   }

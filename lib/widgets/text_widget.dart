@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
 class CustomTextField extends StatelessWidget {
-  const CustomTextField({
-    Key? key,
-    required this.textController,
-    required this.hintText,
-    this.obscure = false,
-    this.focusNode 
-  }) : super(key: key);
+  const CustomTextField(
+      {Key? key,
+      required this.textController,
+      required this.hintText,
+      this.obscure = false,
+      this.focusNode})
+      : super(key: key);
 
   final TextEditingController textController;
   final String hintText;
@@ -19,6 +19,8 @@ class CustomTextField extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: TextFormField(
+        scrollPadding:
+            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         focusNode: focusNode,
         autofocus: false,
         controller: textController,
@@ -27,19 +29,19 @@ class CustomTextField extends StatelessWidget {
         obscureText: obscure,
         decoration: InputDecoration(
           filled: true,
-          fillColor: Theme.of(context).colorScheme.background,
+          fillColor: Colors.transparent,
           hintText: hintText,
           hintStyle: Theme.of(context).textTheme.bodySmall,
           // fillColor: Color(0xff4E4E4E),
           // fillColor: Color(0xff222222),
           enabledBorder: OutlineInputBorder(
               borderSide:
-                  BorderSide(color: Theme.of(context).colorScheme.primary),
+                  BorderSide(color: Theme.of(context).colorScheme.secondary),
               borderRadius: BorderRadius.circular(12)),
           focusedBorder: OutlineInputBorder(
               // borderSide: const BorderSide(color: Color(0xff4E4E4E)),
               borderSide:
-                  BorderSide(color: Theme.of(context).colorScheme.primary),
+                  BorderSide(color: Theme.of(context).colorScheme.secondary),
               borderRadius: BorderRadius.circular(12)),
         ),
       ),

@@ -6,15 +6,22 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:numberpicker/numberpicker.dart';
 
-class CreateExercise extends StatefulWidget {
-  const CreateExercise({Key? key, required this.exercises}) : super(key: key);
+class EditExercise extends StatefulWidget {
+  EditExercise(
+      {Key? key,
+      required this.editingExercise,
+      required this.exercises,
+      required this.index})
+      : super(key: key);
+  final ExerciseModel editingExercise;
   final List<ExerciseModel> exercises;
+  final int index;
 
   @override
-  _CreateExerciseState createState() => _CreateExerciseState();
+  _EditExerciseState createState() => _EditExerciseState();
 }
 
-class _CreateExerciseState extends State<CreateExercise> {
+class _EditExerciseState extends State<EditExercise> {
   TextEditingController nameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   double weightValue = 0;
@@ -33,6 +40,20 @@ class _CreateExerciseState extends State<CreateExercise> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    weightValue = widget.editingExercise.weight;
+    repValue = widget.editingExercise.reps;
+    setValue = widget.editingExercise.sets;
+    nameController.text = widget.editingExercise.name;
+    descriptionController.text = widget.editingExercise.description;
+    totalTime = widget.editingExercise.time;
+    selected = widget.editingExercise.type;
+    hours = widget.editingExercise.time ~/ 60;
+    minutes = widget.editingExercise.time % 60;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -43,7 +64,6 @@ class _CreateExerciseState extends State<CreateExercise> {
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             CustomTextField(
                 textController: nameController, hintText: 'exercise name'),
@@ -102,7 +122,7 @@ class _CreateExerciseState extends State<CreateExercise> {
                 ),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 60,
             ),
             Builder(builder: (context) {
@@ -290,7 +310,8 @@ class _CreateExerciseState extends State<CreateExercise> {
                       weight: weightValue,
                       reps: repValue,
                       sets: setValue);
-                  widget.exercises.add(exerciseModel);
+                  widget.exercises.removeAt(widget.index);
+                  widget.exercises.insert(widget.index, exerciseModel);
                 } else {
                   calculateTime();
                   if (totalTime == 0) {
@@ -303,7 +324,8 @@ class _CreateExerciseState extends State<CreateExercise> {
                       description: descriptionController.text,
                       time: totalTime,
                     );
-                    widget.exercises.add(exerciseModel);
+                    widget.exercises.removeAt(widget.index);
+                    widget.exercises.insert(widget.index, exerciseModel);
                   }
                 }
                 context.pop();

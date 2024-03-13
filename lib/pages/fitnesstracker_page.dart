@@ -1,10 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/models/routine_model.dart';
 import 'package:fitness_social_app/models/workout_post_model.dart';
 import 'package:fitness_social_app/routing/route_constants.dart';
-import 'package:fitness_social_app/services/routine_services.dart';
 import 'package:fitness_social_app/widgets/custom_button.dart';
 import 'package:fitness_social_app/widgets/custom_calender.dart';
 import 'package:fitness_social_app/widgets/progress_widget.dart';
@@ -34,7 +32,7 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage> {
   @override
   void initState() {
     super.initState();
-    checkRoutineExists();
+    // checkRoutineExists();
 
     currentDay = now.weekday;
     if (currentDay == 7) {
@@ -52,19 +50,6 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage> {
     // setState(() {
     //   routineExists = true;
     // });
-  }
-
-  void checkRoutineExists() async {
-    await FirebaseFirestore.instance
-        .collection('routine')
-        .doc(user!.uid)
-        .get()
-        .then((value) => {
-              if (value.exists)
-                {routineExists = true}
-              else
-                {RoutineServices().createRoutine(), routineExists = true}
-            });
   }
 
   @override
@@ -105,7 +90,7 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage> {
                         child: Container(
                           height: 300,
                           decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.secondary,
+                              color: Theme.of(context).colorScheme.surface,
                               borderRadius: BorderRadius.circular(20)),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -134,22 +119,22 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage> {
                         child: Container(
                           height: 300,
                           decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.secondary,
+                              color: Theme.of(context).colorScheme.surface,
                               borderRadius: BorderRadius.circular(20)),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                "Calories",
+                                "Workout Streak",
                                 style: Theme.of(context).textTheme.titleLarge,
                               ),
                               const SizedBox(
                                 height: 30,
                               ),
                               const ProgressWidget(
-                                  type: 'kcal',
-                                  value: 1300,
-                                  maxValue: 1500,
+                                  type: 'days',
+                                  value: 3,
+                                  maxValue: 7,
                                   color: Color(0xffFF8080)),
                             ],
                           ),
@@ -160,26 +145,44 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage> {
                 ),
               ),
             ),
-            GestureDetector(
-              onTap: () {
-                context.pushNamed(RouteConstants.viewRoutinePage,
-                    pathParameters: {'id': user.uid}, extra: currentDay);
-              },
-              child: const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: CustomButton(buttonText: 'My Routine'),
-              ),
+            Row(
+              children: [
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      context.pushNamed(RouteConstants.viewRoutinePage,
+                          pathParameters: {'id': user.uid}, extra: currentDay);
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: CustomButton(
+                        buttonText: 'Routine',
+                        primary: false,
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      context.pushNamed(RouteConstants.viewRoutinePage,
+                          pathParameters: {'id': user.uid}, extra: currentDay);
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: CustomButton(
+                        buttonText: 'Meals',
+                        primary: false,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(
-              height: 10,
+            Center(
+              child: Text("Workouts: "),
             ),
-            Text(
-              "Today's Routine",
-              style: Theme.of(context)
-                  .textTheme
-                  .titleMedium!
-                  .copyWith(color: Colors.grey[400]),
-            ),
+            Divider(),
             Builder(builder: (context) {
               if (routineExists) {
                 return OnlineRoutineWidget(
@@ -198,12 +201,15 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage> {
         padding: const EdgeInsets.all(8),
         color: Colors.transparent,
         elevation: 0,
-        child: GestureDetector(
-            onTap: () {
-              context.pushNamed(RouteConstants.viewRoutinePage,
-                  pathParameters: {'id': user.uid}, extra: currentDay);
-            },
-            child: const CustomButton(buttonText: 'Begin Routine')),
+        child: Padding(
+          padding: EdgeInsets.all(4),
+          child: GestureDetector(
+              onTap: () {
+                context.pushNamed(RouteConstants.viewRoutinePage,
+                    pathParameters: {'id': user.uid}, extra: currentDay);
+              },
+              child: const CustomButton(buttonText: 'Begin Routine')),
+        ),
       ),
     );
   }

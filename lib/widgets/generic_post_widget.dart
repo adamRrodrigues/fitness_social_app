@@ -56,136 +56,101 @@ class _GenericPostWidgetState extends ConsumerState<GenericPostWidget> {
           genericPostServices!.deletePost(widget.postId, user!.uid);
         }
       },
-      child: Material(
+      child: ClipRRect(
         borderRadius: BorderRadius.circular(10),
-        elevation: 4,
-        child: Container(
-          decoration: BoxDecoration(
-              // borderRadius: BorderRadius.circular(10),
-              border: Border(
-                bottom:
-                    BorderSide(color: Theme.of(context).colorScheme.primary),
-              ),
-              color: Theme.of(context).colorScheme.secondary),
-          child: SizedBox(
-            // height: 250,
-            width: double.infinity,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                widget.mini == false
-                    ? StreamBuilder(
-                        stream: FirebaseFirestore.instance
-                            .collection('users')
-                            .doc(widget.post.uid)
-                            .snapshots(),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData &&
-                              snapshot.connectionState ==
-                                  ConnectionState.active) {
-                            Map<String, dynamic> data =
-                                snapshot.data!.data() as Map<String, dynamic>;
-
-                            final thisUser = UserServices().mapSingleUser(data);
-
-                            return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: MiniProfie(
-                                  user: thisUser,
-                                  optionalSubText:
-                                      '${widget.post.createdAt.toDate().day.toString()}/${widget.post.createdAt.toDate().month.toString()}/${widget.post.createdAt.toDate().year.toString()} '),
-                            );
-                          } else if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: SizedBox(
-                                height: 50,
-                                child: Row(
-                                  children: [
-                                    CircleAvatar(
-                                        backgroundColor: Theme.of(context)
+        child: Material(
+          // borderRadius: BorderRadius.circular(10),
+          elevation: 4,
+          child: Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Theme.of(context).colorScheme.surface),
+            child: SizedBox(
+              width: double.infinity,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  widget.mini == false
+                      ? MiniProfie(
+                          userId: widget.post.uid,
+                          optionalSubText:
+                              '${widget.post.createdAt.toDate().day.toString()}/${widget.post.createdAt.toDate().month.toString()}/${widget.post.createdAt.toDate().year.toString()}',
+                        )
+                      : Container(),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      widget.post.postName,
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleMedium!
+                          .copyWith(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SizedBox(
+                      height: 300,
+                      width: double.infinity,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: ImageWidget(url: widget.post.image),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            InkWell(
+                              onTap: like,
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 2.0),
+                                child: isLiked
+                                    ? Icon(
+                                        Icons.favorite,
+                                        color: Theme.of(context)
                                             .colorScheme
-                                            .secondary),
-                                    Text('user'),
-                                  ],
-                                ),
+                                            .primary,
+                                      )
+                                    : const Icon(Icons.favorite_outline),
                               ),
-                            );
-                          } else {
-                            return const Text('Error Loading');
-                          }
-                        },
-                      )
-                    : Container(),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    widget.post.postName,
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleMedium!
-                        .copyWith(fontWeight: FontWeight.bold),
-                  ),
-                ),
-                SizedBox(
-                  height: 300,
-                  width: double.infinity,
-                  child: ClipRRect(
-                    // borderRadius: BorderRadius.circular(10),
-                    child: ImageWidget(url: widget.post.image),
-                  ),
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          InkWell(
-                            onTap: like,
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 2.0),
-                              child: isLiked
-                                  ? Icon(
-                                      Icons.favorite,
-                                      color:
-                                          Theme.of(context).colorScheme.primary,
-                                    )
-                                  : const Icon(Icons.favorite_outline),
                             ),
-                          ),
-                          Padding(
+                            Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 2.0),
+                                child: Text(widget.post.likeCount.toString()))
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 2.0),
+                              child: Icon(Icons.comment_outlined),
+                            ),
+                            Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 2.0),
-                              child: Text(widget.post.likeCount.toString()))
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 2.0),
-                            child: Icon(Icons.comment_outlined),
-                          ),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 2.0),
-                            child: Text(widget.post.comments.length.toString()),
-                          ),
-                        ],
-                      ),
-                      const Icon(Icons.share_outlined),
-                    ],
-                  ),
-                )
-              ],
+                              child:
+                                  Text(widget.post.comments.length.toString()),
+                            ),
+                          ],
+                        ),
+                        const Icon(Icons.share_outlined),
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ),
