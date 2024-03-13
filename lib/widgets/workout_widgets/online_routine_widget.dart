@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_social_app/models/workout_post_model.dart';
 import 'package:fitness_social_app/services/routine_services.dart';
 import 'package:fitness_social_app/widgets/workout_widgets/workout_widget.dart';
@@ -65,9 +64,9 @@ class OnlineRoutineWidget extends StatelessWidget {
                         });
                   },
                 )
-              : const Text('empty');
+              : Center(child: const Text('No Wokouts for this day'));
         } else {
-          return const Text('Error');
+          return const Center(child: CircularProgressIndicator());
         }
       },
     );

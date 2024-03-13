@@ -1,10 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/models/routine_model.dart';
 import 'package:fitness_social_app/models/workout_post_model.dart';
 import 'package:fitness_social_app/routing/route_constants.dart';
-import 'package:fitness_social_app/services/routine_services.dart';
 import 'package:fitness_social_app/widgets/custom_button.dart';
 import 'package:fitness_social_app/widgets/custom_calender.dart';
 import 'package:fitness_social_app/widgets/progress_widget.dart';
@@ -53,7 +51,6 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage> {
     //   routineExists = true;
     // });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -148,19 +145,44 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage> {
                 ),
               ),
             ),
-            GestureDetector(
-              onTap: () {
-                context.pushNamed(RouteConstants.viewRoutinePage,
-                    pathParameters: {'id': user.uid}, extra: currentDay);
-              },
-              child: const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: CustomButton(
-                  buttonText: 'My Routine',
-                  primary: false,
+            Row(
+              children: [
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      context.pushNamed(RouteConstants.viewRoutinePage,
+                          pathParameters: {'id': user.uid}, extra: currentDay);
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: CustomButton(
+                        buttonText: 'Routine',
+                        primary: false,
+                      ),
+                    ),
+                  ),
                 ),
-              ),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      context.pushNamed(RouteConstants.viewRoutinePage,
+                          pathParameters: {'id': user.uid}, extra: currentDay);
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: CustomButton(
+                        buttonText: 'Meals',
+                        primary: false,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
+            Center(
+              child: Text("Workouts: "),
+            ),
+            Divider(),
             Builder(builder: (context) {
               if (routineExists) {
                 return OnlineRoutineWidget(

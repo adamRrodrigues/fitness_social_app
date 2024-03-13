@@ -6,6 +6,7 @@ import 'package:fitness_social_app/models/workout_post_model.dart';
 import 'package:fitness_social_app/routing/error_screen.dart';
 import 'package:fitness_social_app/routing/route_constants.dart';
 import 'package:fitness_social_app/screen/create_exercise.dart';
+import 'package:fitness_social_app/screen/create_meal_post.dart';
 import 'package:fitness_social_app/screen/create_post.dart';
 import 'package:fitness_social_app/screen/create_workout_post.dart';
 import 'package:fitness_social_app/screen/edit_exercise.dart';
@@ -49,6 +50,13 @@ final GoRouter appRouter = GoRouter(
               name: RouteConstants.createPost,
               pageBuilder: (context, state) {
                 return const CupertinoPage(child: CreatePost());
+              },
+            ),
+            GoRoute(
+              path: 'createMealPafe',
+              name: RouteConstants.createMeal,
+              pageBuilder: (context, state) {
+                return const CupertinoPage(child: CreateMealPost());
               },
             ),
             GoRoute(

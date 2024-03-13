@@ -142,7 +142,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                               onTap: () {
                                                 context.pushNamed(
                                                     RouteConstants
-                                                        .createWorkout);
+                                                        .createMeal);
                                               },
                                               child: ListTile(
                                                 title: Text("Create a Meal"),

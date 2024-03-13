@@ -12,12 +12,10 @@ import 'package:fitness_social_app/widgets/custom_button.dart';
 import 'package:fitness_social_app/widgets/pill_widget.dart';
 import 'package:fitness_social_app/widgets/text_widget.dart';
 import 'package:fitness_social_app/widgets/workout_widgets/exercise_widget.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:modals/modals.dart';
 
 class CreateWorkoutPost extends ConsumerStatefulWidget {
   const CreateWorkoutPost({Key? key}) : super(key: key);
@@ -37,6 +35,16 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
   Utils? imagePicker;
 
   FocusNode focusNode = FocusNode();
+  List<String> popularTags = [
+    "Chest",
+    "Arms",
+    "Cardio",
+    "Legs",
+    "Back",
+    "Back",
+    "Back",
+    "Back"
+  ];
 
   void selectImage() async {
     try {
@@ -199,52 +207,77 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                         backgroundColor: Theme.of(context).colorScheme.primary,
                         onPressed: () {
                           focusNode.requestFocus();
-                          showModal(ModalEntry.aligned(context,
-                              tag: 'containerModal',
-                              barrierDismissible: true,
-                              alignment: Alignment.center,
-                              // removeOnPop: true,
 
-                              child: Material(
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .background,
-                                      border: Border.all(
-                                          width: 2,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary),
-                                      borderRadius: BorderRadius.circular(10)),
-                                  width: 300,
-                                  height: 200,
-                                  child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      CustomTextField(
-                                          focusNode: focusNode,
-                                          textController: categoryController,
-                                          hintText: 'add a category'),
-                                      GestureDetector(
-                                          onTap: () {
+                          showModalBottomSheet(
+                            context: context,
+                            isScrollControlled: true,
+                            showDragHandle: true,
+                            useSafeArea: true,
+                            shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(20))),
+                            builder: (context) {
+                              return SizedBox(
+                                height: 450,
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: CustomTextField(
+                                              focusNode: focusNode,
+                                              textController:
+                                                  categoryController,
+                                              hintText: 'add a category'),
+                                        ),
+                                        FloatingActionButton(
+                                          mini: true,
+                                          onPressed: () {
                                             setState(() {
-                                              workoutDraft!.categories
-                                                  .add(categoryController.text);
+                                              workoutDraft!.categories.add(
+                                                  categoryController.text);
                                               categoryController.text = '';
                                             });
-                                            removeAllModals();
                                           },
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child:
-                                                CustomButton(buttonText: 'Add'),
-                                          ))
-                                    ],
-                                  ),
+                                          child: Icon(Icons.add),
+                                        ),
+                                      ],
+                                    ),
+                                    Divider(),
+                                    Center(
+                                      child: Text("Popular Tags: "),
+                                    ),
+                                    Expanded(
+                                      child: ListView.builder(
+                                        shrinkWrap: true,
+                                        itemCount: popularTags.length,
+                                        itemBuilder: (context, index) {
+                                          return GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                workoutDraft!.categories
+                                                    .add(popularTags[index]);
+                                                context.pop();
+                                              });
+                                            },
+                                            child: Column(
+                                              children: [
+                                                ListTile(
+                                                  title: Text(
+                                                      popularTags[index]),
+                                                ),
+                                                Divider()
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    )
+                                  ],
                                 ),
-                              )));
+                              );
+                            },
+                          );
                         },
                         child: Icon(Icons.add),
                       )
@@ -273,7 +306,8 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                           );
                         },
                       )
-                    : Center(child: Text('Any exercises you add will appear here'))
+                    : Center(
+                        child: Text('Any exercises you add will appear here'))
               ],
             ),
           ),
@@ -292,5 +326,13 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
         ),
       ),
     );
+  }
+}
+
+class MyBehavior extends ScrollBehavior {
+  @override
+  Widget buildOverscrollIndicator(
+      BuildContext context, Widget child, ScrollableDetails details) {
+    return child;
   }
 }
