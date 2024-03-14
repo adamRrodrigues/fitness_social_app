@@ -6,7 +6,7 @@ import 'package:fitness_social_app/services/routine_services.dart';
 import 'package:flutter/material.dart';
 
 class Auth {
-  bool created = false;
+  bool created = true;
 
   CollectionReference routines =
       FirebaseFirestore.instance.collection('routines');
@@ -22,6 +22,7 @@ class Auth {
         UserCredential user = await FirebaseAuth.instance
             .createUserWithEmailAndPassword(email: email, password: password);
 
+        await RoutineServices().createRoutine();
         await FirebaseFirestore.instance
             .collection('users')
             .doc(user.user!.uid)
@@ -43,11 +44,9 @@ class Auth {
             .collection('users')
             .doc(user.user!.uid)
             .collection('following')
-            .add({});
-
-        await RoutineServices().createRoutine();
-
-        created = true;
+            .add({}).then((value) {
+          created = true;
+        });
       } catch (e) {
         if (context.mounted) {
           showDialog(

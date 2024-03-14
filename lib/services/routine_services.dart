@@ -16,6 +16,11 @@ class RoutineServices {
           .collection('day $i')
           .doc('workouts')
           .set({'workouts': List.empty()});
+      await routines
+          .doc(user!.uid)
+          .collection('day $i')
+          .doc('meals')
+          .set({'meals': List.empty()});
     }
   }
 

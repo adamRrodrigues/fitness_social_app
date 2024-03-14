@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/models/routine_model.dart';
 import 'package:fitness_social_app/models/workout_post_model.dart';
 import 'package:fitness_social_app/routing/route_constants.dart';
+import 'package:fitness_social_app/services/routine_services.dart';
 import 'package:fitness_social_app/widgets/custom_button.dart';
 import 'package:fitness_social_app/widgets/custom_calender.dart';
 import 'package:fitness_social_app/widgets/progress_widget.dart';
@@ -25,15 +27,16 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage> {
   List<DateTime> dates = [];
   List<WorkoutModel> workouts = [];
   Routine routine = Routine();
-  bool routineExists = true;
+  bool routineExists = false;
 
   final user = FirebaseAuth.instance.currentUser;
+  CollectionReference routines =
+      FirebaseFirestore.instance.collection('routines');
 
   @override
   void initState() {
     super.initState();
     // checkRoutineExists();
-
     currentDay = now.weekday;
     if (currentDay == 7) {
       currentDay = 0;
@@ -183,16 +186,16 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage> {
               child: Text("Workouts: "),
             ),
             Divider(),
-            Builder(builder: (context) {
-              if (routineExists) {
-                return OnlineRoutineWidget(
-                  uid: user.uid,
-                  currentDay: currentDay,
-                );
-              } else {
-                return Text('Fetching routine');
-              }
-            })
+            // Builder(builder: (context) {
+            //   if (routineExists) {
+            //     return OnlineRoutineWidget(
+            //       uid: user.uid,
+            //       currentDay: currentDay,
+            //     );
+            //   } else {
+            //     return Text('Fetching routine');
+            //   }
+            // })
           ],
         ),
       ),
