@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fitness_social_app/models/generic_post_model.dart';
+import 'package:fitness_social_app/models/meal_model.dart';
 import 'package:fitness_social_app/models/workout_post_model.dart';
 import 'package:fitness_social_app/services/user_services.dart';
 
@@ -39,6 +40,17 @@ class FeedServices {
         .withConverter(
           fromFirestore: (snapshot, _) =>
               WorkoutModel.fromMap(snapshot.data()!),
+          toFirestore: (post, _) => post.toMap(),
+        );
+    return postQuery;
+  }
+
+  Query<MealModel> fetchMeals() {
+    final postQuery;
+    postQuery = FirebaseFirestore.instance
+        .collection('meals_demo')
+        .withConverter(
+          fromFirestore: (snapshot, _) => MealModel.fromMap(snapshot.data()!),
           toFirestore: (post, _) => post.toMap(),
         );
     return postQuery;

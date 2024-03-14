@@ -27,7 +27,7 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage> {
   List<DateTime> dates = [];
   List<WorkoutModel> workouts = [];
   Routine routine = Routine();
-  bool routineExists = false;
+  bool routineExists = true;
 
   final user = FirebaseAuth.instance.currentUser;
   CollectionReference routines =
@@ -186,16 +186,16 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage> {
               child: Text("Workouts: "),
             ),
             Divider(),
-            // Builder(builder: (context) {
-            //   if (routineExists) {
-            //     return OnlineRoutineWidget(
-            //       uid: user.uid,
-            //       currentDay: currentDay,
-            //     );
-            //   } else {
-            //     return Text('Fetching routine');
-            //   }
-            // })
+            Builder(builder: (context) {
+              if (routineExists) {
+                return OnlineRoutineWidget(
+                  uid: user.uid,
+                  currentDay: currentDay,
+                );
+              } else {
+                return Text('Fetching routine');
+              }
+            })
           ],
         ),
       ),

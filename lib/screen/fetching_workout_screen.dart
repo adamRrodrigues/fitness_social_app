@@ -46,6 +46,7 @@ class _FetchingWorkoutScreenState extends State<FetchingWorkoutScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print('id: ' + widget.workoutId);
     return Scaffold(
       body: Center(
         child: Builder(builder: (context) {

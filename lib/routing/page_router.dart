@@ -13,6 +13,7 @@ import 'package:fitness_social_app/screen/edit_exercise.dart';
 import 'package:fitness_social_app/screen/edit_workout.dart';
 import 'package:fitness_social_app/screen/fetching_workout_screen.dart';
 import 'package:fitness_social_app/screen/run_routine.dart';
+import 'package:fitness_social_app/screen/search_meals.dart';
 import 'package:fitness_social_app/screen/search_workouts.dart';
 import 'package:fitness_social_app/screen/user_page.dart';
 import 'package:fitness_social_app/screen/view_meal_plan.dart';
@@ -144,6 +145,13 @@ final GoRouter appRouter = GoRouter(
               pageBuilder: (context, state) {
                 int number = state.extra as int;
                 return CupertinoPage(child: SearchWorkouts(number));
+              },
+            ),
+            GoRoute(
+              path: 'searchMealsScreen',
+              name: RouteConstants.searchMealsScreen,
+              pageBuilder: (context, state) {
+                return const CupertinoPage(child: SearchMeals());
               },
             ),
             GoRoute(

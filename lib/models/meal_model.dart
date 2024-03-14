@@ -56,7 +56,7 @@ class MealModel {
         postId: map['postId'] as String,
         ingredients: List<dynamic>.from((map['ingredients'] as List<dynamic>)),
         tags: List<String>.from(
-          (map['tags'] as List<String>),
+          (map['tags'] as List<dynamic>),
         ));
   }
 

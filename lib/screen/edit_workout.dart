@@ -127,7 +127,7 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                         uid: user!.uid,
                         imageUrl: imageUrl,
                         postId: '',
-                        templateId: '',
+                        templateId: widget.workoutModel.postId,
                         createdAt: Timestamp.now(),
                         likeCount: 0,
                         likes: List.empty(),

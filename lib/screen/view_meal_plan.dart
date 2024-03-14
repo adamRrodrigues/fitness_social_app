@@ -100,7 +100,7 @@ class VviewMealPlanScreenState extends State<ViewMealPlanScreen> {
             child: user!.uid == widget.uid
                 ? GestureDetector(
                     onTap: () {
-                      context.pushNamed(RouteConstants.searchWorkoutScreen,
+                      context.pushNamed(RouteConstants.searchMealsScreen,
                           extra: currentDay);
                     },
                     child: const CustomButton(buttonText: 'Add Meal'))
