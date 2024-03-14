@@ -15,7 +15,7 @@ import 'package:fitness_social_app/screen/fetching_workout_screen.dart';
 import 'package:fitness_social_app/screen/run_routine.dart';
 import 'package:fitness_social_app/screen/search_workouts.dart';
 import 'package:fitness_social_app/screen/user_page.dart';
-import 'package:fitness_social_app/screen/view_plan.dart';
+import 'package:fitness_social_app/screen/view_meal_plan.dart';
 import 'package:fitness_social_app/screen/view_post.dart';
 import 'package:fitness_social_app/screen/view_routine.dart';
 import 'package:fitness_social_app/screen/view_workout.dart';
