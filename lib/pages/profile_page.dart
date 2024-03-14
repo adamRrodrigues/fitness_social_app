@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_social_app/main.dart';
+import 'package:fitness_social_app/pages/chat_page.dart';
 import 'package:fitness_social_app/routing/route_constants.dart';
 import 'package:fitness_social_app/services/auth_service.dart';
 import 'package:fitness_social_app/services/user_services.dart';
@@ -64,7 +65,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
 
                     actions: [
                       Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.only(right: 21.4),
                         child: GestureDetector(
                           onTap: () {
                             Auth().signOut();
@@ -76,6 +77,31 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                             ref.invalidate(draftProvider);
                           },
                           child: const Icon(Icons.logout_outlined),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          left: 5.0,
+                          right: 21.0,
+                          top: 8.0,
+                          bottom: 8.0,
+                        ),
+                        child: GestureDetector(
+                          onTap: () {
+                            // print("object");
+                            // Navigator.of(context).push(
+                            //   MaterialPageRoute(
+                            //     builder: (context) => const Chat(),
+                            //   ),
+                            // );
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const Chat(),
+                              ),
+                            );
+                          },
+                          child: const Icon(Icons.chat),
                         ),
                       )
                     ],
