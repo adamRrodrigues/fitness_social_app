@@ -165,7 +165,7 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage> {
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
-                      context.pushNamed(RouteConstants.viewRoutinePage,
+                      context.pushNamed(RouteConstants.viewMealPlanScreen,
                           pathParameters: {'id': user.uid}, extra: currentDay);
                     },
                     child: const Padding(
