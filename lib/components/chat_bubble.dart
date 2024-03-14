@@ -8,9 +8,11 @@ class ChatBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // var bubbleColor = Theme.of(context).colorScheme.primary;
+    var bubbleColor = Color.fromARGB(255, 52, 179, 71);
     return Container(
       decoration: BoxDecoration(
-        color: isCurrentUser ? Colors.green : Colors.grey.shade800,
+        color: isCurrentUser ? bubbleColor : Colors.grey.shade800,
         borderRadius: const BorderRadius.all(Radius.circular(12)),
       ),
       padding: const EdgeInsets.all(15),

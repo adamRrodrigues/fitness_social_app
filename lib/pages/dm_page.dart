@@ -47,12 +47,12 @@ class _DmPageState extends State<DmPage> {
     );
 
     // wait for the listview to be built then scroll down
-    Future.delayed(
-      const Duration(
-        milliseconds: 500,
-      ),
-      () => scrollDown(),
-    );
+    // Future.delayed(
+    //   const Duration(
+    //     milliseconds: 500,
+    //   ),
+    //   () => scrollDown(),
+    // );
   }
 
   @override
