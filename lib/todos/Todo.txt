@@ -1,12 +1,13 @@
 Doing: 
-run workout page
 view meal page
 
 Next: 
 saved workouts, my workouts pages
 edit profile page
+fix registration issue
 
 Done:
 discover page
 meal widget
 create meal post page
+run workout page
