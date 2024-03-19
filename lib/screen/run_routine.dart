@@ -18,6 +18,15 @@ class RunRoutine extends ConsumerStatefulWidget {
 class _RunRoutineState extends ConsumerState<RunRoutine> {
   Routine? routine;
 
+  void _onReorder(int oldIndex, int newIndex) {
+    setState(() {
+      WorkoutModel workoutModel =
+          routine!.routines[widget.currentDay].workouts.removeAt(oldIndex);
+      routine!.routines[widget.currentDay].workouts
+          .insert(newIndex > oldIndex ? newIndex -= 1 : newIndex, workoutModel);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -27,13 +36,18 @@ class _RunRoutineState extends ConsumerState<RunRoutine> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: Text("Day ${widget.currentDay}"), centerTitle: true, elevation: 0,),
       body: SafeArea(
-        child: ListView.builder(
+        child: ReorderableListView.builder(
           itemCount: routine!.routines[widget.currentDay].workouts.length,
+          onReorder: _onReorder,
           itemBuilder: (context, index) {
-            return WorkoutWidget(
-                workoutModel:
-                    routine!.routines[widget.currentDay].workouts[index]);
+            return Container(
+              key: ValueKey(index),
+              child: WorkoutWidget(
+                  workoutModel:
+                      routine!.routines[widget.currentDay].workouts[index]),
+            );
           },
         ),
       ),

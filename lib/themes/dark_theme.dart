@@ -18,6 +18,7 @@ ThemeData darkTheme = ThemeData(
         onPrimary: Colors.black,
         secondary: Color(0xffF0F3FF),
         onSecondary: Colors.black,
+        error: Colors.redAccent,
         surface: Color(0xff1B1B1C)),
     textTheme: TextTheme(
       titleLarge: TextStyle(

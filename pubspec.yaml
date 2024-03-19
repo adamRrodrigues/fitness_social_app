@@ -54,6 +54,7 @@ dependencies:
   google_fonts: ^6.1.0
   flutter_rating_stars: ^1.0.3+4
   step_progress_indicator: ^1.0.2
+  reorderables: ^0.6.0
 
 dev_dependencies:
   flutter_test:

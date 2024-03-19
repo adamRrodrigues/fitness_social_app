@@ -76,79 +76,76 @@ class _RunWorkoutState extends ConsumerState<RunWorkout> {
       ),
       body: Builder(builder: (context) {
         if (!showDone) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SizedBox(
-                    height: 500,
-                    width: 370,
-                    child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: ImageWidget(
-                            url: widget.workouts[currentWorkout].imageUrl)),
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Center(
-                child: Text(
-                  widget.workouts[currentWorkout].exercises[currentExercise]
-                      ['name'],
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.all(8.0),
-                width: double.infinity,
-                child: Text(
-                  widget.workouts[currentWorkout].exercises[currentExercise]
-                      ['description'],
-                  style: Theme.of(context).textTheme.bodySmall,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 3,
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Center(
-                child: Text(
-                  "sets",
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: StepProgressIndicator(
-                  totalSteps: widget.workouts[currentWorkout]
-                      .exercises[currentExercise]['sets'],
-                  roundedEdges: Radius.circular(20),
-                  currentStep: currentSet,
-                  selectedColor: Theme.of(context).colorScheme.primary,
-                  unselectedColor: Theme.of(context).colorScheme.secondary,
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  const CircularProgressIndicator(),
-                  Center(
-                    child: Text(
-                      "${widget.workouts[currentWorkout].exercises[currentExercise]['reps']}x",
-                      style: Theme.of(context).textTheme.titleMedium,
+          return SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SizedBox(
+                      height: 475,
+                      width: 370,
+                      child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: ImageWidget(
+                              url: widget.workouts[currentWorkout].imageUrl)),
                     ),
                   ),
-                ],
-              ),
-            ],
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Center(
+                  child: Text(
+                    widget.workouts[currentWorkout].exercises[currentExercise]
+                        ['name'],
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.all(8.0),
+                  width: double.infinity,
+                  child: Text(
+                    widget.workouts[currentWorkout].exercises[currentExercise]
+                        ['description'],
+                    style: Theme.of(context).textTheme.bodySmall,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Center(
+                  child: Text(
+                    "sets",
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: StepProgressIndicator(
+                    totalSteps: widget.workouts[currentWorkout]
+                        .exercises[currentExercise]['sets'],
+                    roundedEdges: Radius.circular(20),
+                    currentStep: currentSet,
+                    selectedColor: Theme.of(context).colorScheme.primary,
+                    unselectedColor: Theme.of(context).colorScheme.secondary,
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Center(
+                  child: Text(
+                    "${widget.workouts[currentWorkout].exercises[currentExercise]['reps']}x",
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                ),
+              ],
+            ),
           );
         } else {
           return Center(
@@ -174,7 +171,7 @@ class _RunWorkoutState extends ConsumerState<RunWorkout> {
                 icon: Icon(
                   Icons.restart_alt_rounded,
                   size: 30,
-                  color: Colors.redAccent,
+                  color: Theme.of(context).colorScheme.error,
                 ),
               ),
             ),
