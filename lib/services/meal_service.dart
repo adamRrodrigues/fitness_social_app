@@ -13,12 +13,12 @@ class MealServices {
     await meals.add(meal.toMap()).then((value) async {
       await meals
           .doc(value.id)
-          .update({'postId': value.id, 'uId': thisUser!.uid});
+          .update({'postId': value.id, 'uid': thisUser!.uid});
 
       String thumbnail = await StorageServices()
           .postThumbnail('mealPostImages', value.id, image);
 
-      await meals.doc(value.id).update({'imageUrl': thumbnail});
+      await meals.doc(value.id).update({'image': thumbnail});
     });
   }
 }

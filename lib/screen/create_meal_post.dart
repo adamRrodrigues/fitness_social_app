@@ -109,6 +109,7 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost> {
                             description: mealDraft!.description,
                             uid: "",
                             postId: "",
+                            image: "",
                             ingredients: mealDraft!.ingredients,
                             tags: mealDraft!.categories);
 

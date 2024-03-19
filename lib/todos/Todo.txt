@@ -1,12 +1,12 @@
 Doing: 
-meal widget
+run workout page
 view meal page
 
 Next: 
-run workout page
-discover page
 saved workouts, my workouts pages
 edit profile page
 
 Done:
+discover page
+meal widget
 create meal post page

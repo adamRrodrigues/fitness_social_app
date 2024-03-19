@@ -9,12 +9,14 @@ class MealFeed extends StatefulWidget {
   const MealFeed(
       {super.key,
       required this.postQuery,
+      this.horizontal = false,
       this.profileView = false,
       this.noPostsMessage = "Nothing to see here"});
 
   final Query<MealModel> postQuery;
   final bool? profileView;
   final String noPostsMessage;
+  final bool horizontal;
 
   @override
   State<MealFeed> createState() => _MealFeedState();
@@ -23,40 +25,84 @@ class MealFeed extends StatefulWidget {
 class _MealFeedState extends State<MealFeed> {
   @override
   Widget build(BuildContext context) {
-    return FirestoreListView<MealModel>(
-      pageSize: 5,
-      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-      emptyBuilder: (context) {
-        return Center(
-          child: Text(widget.noPostsMessage),
+    return Builder(builder: (context) {
+      if (!widget.horizontal) {
+        return FirestoreListView<MealModel>(
+          pageSize: 5,
+          shrinkWrap: true,
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          emptyBuilder: (context) {
+            return Center(
+              child: Text(widget.noPostsMessage),
+            );
+          },
+          loadingBuilder: (context) {
+            return const Center(child: CircularProgressIndicator());
+          },
+          errorBuilder: (context, error, stackTrace) {
+            return ListView(children: [
+              const Center(
+                child: Text(
+                    'There was a problem loading the feed please try again'),
+              ),
+              GestureDetector(
+                  onTap: () {
+                    setState(() {});
+                  },
+                  child: const CustomButton(buttonText: "Refresh"))
+            ]);
+          },
+          query: widget.postQuery,
+          itemBuilder: (context, doc) {
+            final post = doc.data();
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: MealWidget(
+                meal: post,
+              ),
+            );
+          },
         );
-      },
-      loadingBuilder: (context) {
-        return const Center(child: CircularProgressIndicator());
-      },
-      errorBuilder: (context, error, stackTrace) {
-        return ListView(children: [
-          const Center(
-            child:
-                Text('There was a problem loading the feed please try again'),
-          ),
-          GestureDetector(
-              onTap: () {
-                setState(() {});
-              },
-              child: const CustomButton(buttonText: "Refresh"))
-        ]);
-      },
-      query: widget.postQuery,
-      itemBuilder: (context, doc) {
-        final post = doc.data();
-        return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: MealWidget(
-            meal: post,
-          ),
+      } else {
+        return FirestoreListView<MealModel>(
+          pageSize: 5,
+          shrinkWrap: true,
+          scrollDirection: Axis.horizontal,
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          emptyBuilder: (context) {
+            return Center(
+              child: Text(widget.noPostsMessage),
+            );
+          },
+          loadingBuilder: (context) {
+            return const Center(child: CircularProgressIndicator());
+          },
+          errorBuilder: (context, error, stackTrace) {
+            return ListView(children: [
+              const Center(
+                child: Text(
+                    'There was a problem loading the feed please try again'),
+              ),
+              GestureDetector(
+                  onTap: () {
+                    setState(() {});
+                  },
+                  child: const CustomButton(buttonText: "Refresh"))
+            ]);
+          },
+          query: widget.postQuery,
+          itemBuilder: (context, doc) {
+            final post = doc.data();
+            return Container(
+              width: 400,
+              padding: const EdgeInsets.all(8.0),
+              child: MealWidget(
+                meal: post,
+              ),
+            );
+          },
         );
-      },
-    );
+      }
+    });
   }
 }

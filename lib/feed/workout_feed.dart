@@ -13,6 +13,7 @@ class WorkoutFeed extends ConsumerStatefulWidget {
       required this.uid,
       this.profileView,
       required this.postQuery,
+      this.horizontal = false,
       this.day = 0,
       this.selection = false})
       : super(key: key);
@@ -21,6 +22,7 @@ class WorkoutFeed extends ConsumerStatefulWidget {
   final bool? profileView;
   final int day;
   final bool selection;
+  final bool horizontal;
 
   @override
   _WorkoutFeedState createState() => _WorkoutFeedState();
@@ -38,39 +40,77 @@ class _WorkoutFeedState extends ConsumerState<WorkoutFeed>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Scaffold(
-        body: FirestoreListView<WorkoutModel>(
-      pageSize: 5,
-      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-      emptyBuilder: (context) {
-        return Center(
-          child: Text('Nothing To See Here'),
-        );
-      },
-      loadingBuilder: (context) {
-        return const Center(child: CircularProgressIndicator());
-      },
-      errorBuilder: (context, error, stackTrace) {
-        return const Center(
-          child: Text('There was a problem loading the feed please try again'),
-        );
-      },
-      query: widget.postQuery,
-      itemBuilder: (context, doc) {
-        final post = doc.data();
-        return InkWell(
-          onTap: () {
-            // context.pop();
+    return Builder(builder: (context) {
+      if (widget.horizontal == false) {
+        return FirestoreListView<WorkoutModel>(
+          pageSize: 5,
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          emptyBuilder: (context) {
+            return Center(
+              child: Text('Nothing To See Here'),
+            );
           },
-          child: WorkoutWidget(
-            workoutModel: post,
-            day: widget.day,
-            selection: widget.selection,
-            mini: widget.profileView,
-          ),
+          loadingBuilder: (context) {
+            return const Center(child: CircularProgressIndicator());
+          },
+          errorBuilder: (context, error, stackTrace) {
+            return const Center(
+              child:
+                  Text('There was a problem loading the feed please try again'),
+            );
+          },
+          query: widget.postQuery,
+          itemBuilder: (context, doc) {
+            final post = doc.data();
+            return InkWell(
+              onTap: () {
+                // context.pop();
+              },
+              child: WorkoutWidget(
+                workoutModel: post,
+                day: widget.day,
+                selection: widget.selection,
+                mini: widget.profileView,
+              ),
+            );
+          },
         );
-      },
-    ));
+      } else {
+        return FirestoreListView<WorkoutModel>(
+          pageSize: 5,
+          shrinkWrap: true,
+          scrollDirection: Axis.horizontal,
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          emptyBuilder: (context) {
+            return Center(
+              child: Text('Nothing To See Here'),
+            );
+          },
+          loadingBuilder: (context) {
+            return const Center(child: CircularProgressIndicator());
+          },
+          errorBuilder: (context, error, stackTrace) {
+            return const Center(
+              child:
+                  Text('There was a problem loading the feed please try again'),
+            );
+          },
+          query: widget.postQuery,
+          itemBuilder: (context, doc) {
+            final post = doc.data();
+            return SizedBox(
+              width: 400,
+              child: WorkoutWidget(
+                workoutModel: post,
+                day: widget.day,
+                selection: widget.selection,
+                mini: false,
+              ),
+            );
+          },
+        );
+      }
+    });
   }
 
   @override
