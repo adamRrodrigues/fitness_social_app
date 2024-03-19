@@ -1,10 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fitness_social_app/main.dart';
+import 'package:fitness_social_app/models/routine_model.dart';
 import 'package:fitness_social_app/models/workout_post_model.dart';
 import 'package:fitness_social_app/services/routine_services.dart';
 import 'package:fitness_social_app/widgets/workout_widgets/workout_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class OnlineRoutineWidget extends StatelessWidget {
+class OnlineRoutineWidget extends ConsumerWidget {
   const OnlineRoutineWidget({
     super.key,
     required this.uid,
@@ -15,7 +18,8 @@ class OnlineRoutineWidget extends StatelessWidget {
   final int currentDay;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final Routine routinesStored = ref.read(routineProvider);
     return StreamBuilder(
       stream: FirebaseFirestore.instance
           .collection('routines')
@@ -40,7 +44,7 @@ class OnlineRoutineWidget extends StatelessWidget {
           return data['workouts'].isNotEmpty
               ? ListView.builder(
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: data['workouts'].length,
                   itemBuilder: (context, index) {
                     return FutureBuilder(
@@ -57,9 +61,17 @@ class OnlineRoutineWidget extends StatelessWidget {
 
                             final WorkoutModel mappedWorkout = RoutineServices()
                                 .mapSingleRoutineWorkout(thisWorkout);
+
+                            if (routinesStored.routines[currentDay].workouts
+                                .length != data['workouts'].length) {
+                              routinesStored.addToRoutine(
+                                  currentDay, mappedWorkout);
+                            }
+
                             return WorkoutWidget(workoutModel: mappedWorkout);
                           } else {
-                            return Center(child: CircularProgressIndicator());
+                            return const Center(
+                                child: CircularProgressIndicator());
                           }
                         });
                   },

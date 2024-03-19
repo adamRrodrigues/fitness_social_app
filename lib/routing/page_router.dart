@@ -13,6 +13,7 @@ import 'package:fitness_social_app/screen/edit_exercise.dart';
 import 'package:fitness_social_app/screen/edit_workout.dart';
 import 'package:fitness_social_app/screen/fetching_workout_screen.dart';
 import 'package:fitness_social_app/screen/run_routine.dart';
+import 'package:fitness_social_app/screen/run_workou.dart';
 import 'package:fitness_social_app/screen/search_meals.dart';
 import 'package:fitness_social_app/screen/search_workouts.dart';
 import 'package:fitness_social_app/screen/user_page.dart';
@@ -20,7 +21,6 @@ import 'package:fitness_social_app/screen/view_meal_plan.dart';
 import 'package:fitness_social_app/screen/view_post.dart';
 import 'package:fitness_social_app/screen/view_routine.dart';
 import 'package:fitness_social_app/screen/view_workout.dart';
-import 'package:fitness_social_app/services/camera_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
 
@@ -74,13 +74,7 @@ final GoRouter appRouter = GoRouter(
                 ));
               },
             ),
-            GoRoute(
-              path: 'cameraService',
-              name: RouteConstants.cameraService,
-              pageBuilder: (context, state) {
-                return const CupertinoPage(child: CameraService());
-              },
-            ),
+            
             GoRoute(
               path: 'createWorkoutPage',
               name: RouteConstants.createWorkout,
@@ -131,11 +125,11 @@ final GoRouter appRouter = GoRouter(
               name: RouteConstants.viewRoutinePage,
               pageBuilder: (context, state) {
                 final uid = state.pathParameters['id'];
-                int currentDay = state.extra as int;
+                final viewRoutineExtras = state.extra! as Map<String, dynamic>;
                 return CupertinoPage(
                     child: ViewRoutine(
                   uid: uid!,
-                  currentDay: currentDay,
+                  currentDay: viewRoutineExtras['currentDay'],
                 ));
               },
             ),
@@ -196,13 +190,21 @@ final GoRouter appRouter = GoRouter(
               path: 'runRoutineScreen',
               name: RouteConstants.runRoutineScreen,
               pageBuilder: (context, state) {
-                List<WorkoutModel> routineWorkouts =
-                    state.extra as List<WorkoutModel>;
-                int day = state.extra as int;
+                int currentDay = state.extra as int;
                 return CupertinoPage(
                     child: RunRoutine(
-                  routine: routineWorkouts,
-                  day: day,
+                  currentDay: currentDay,
+                ));
+              },
+            ),
+            GoRoute(
+              path: 'runWorkoutScreen',
+              name: RouteConstants.runWorkoutScreen,
+              pageBuilder: (context, state) {
+                List<WorkoutModel> workouts = state.extra as List<WorkoutModel>;
+                return CupertinoPage(
+                    child: RunWorkout(
+                  workouts: workouts,
                 ));
               },
             ),

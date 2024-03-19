@@ -10,8 +10,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 class ViewRoutine extends ConsumerStatefulWidget {
-  const ViewRoutine({Key? key, required this.uid, required this.currentDay})
-      : super(key: key);
+  const ViewRoutine({
+    Key? key,
+    required this.uid,
+    required this.currentDay,
+  }) : super(key: key);
   final String uid;
   final int currentDay;
   @override
@@ -65,23 +68,24 @@ class _ViewRoutineState extends ConsumerState<ViewRoutine>
           ),
         ),
         bottomNavigationBar: BottomAppBar(
-            height: 60,
-            padding: const EdgeInsets.all(8),
-            color: Colors.transparent,
-            elevation: 0,
-            child: user!.uid == widget.uid
-                ? GestureDetector(
-                    onTap: () {
-                      context.pushNamed(RouteConstants.searchWorkoutScreen,
-                          extra: currentDay);
-                    },
-                    child: const CustomButton(buttonText: 'Add Workout'))
-                : GestureDetector(
-                    onTap: () {
-                      // context.pushNamed(RouteConstants.searchWorkoutScreen,
-                      //     extra: currentDay);
-                    },
-                    child: const CustomButton(buttonText: 'Save Routine'))));
+          height: 60,
+          padding: const EdgeInsets.all(8),
+          color: Colors.transparent,
+          elevation: 0,
+          child: user!.uid == widget.uid
+              ? GestureDetector(
+                  onTap: () {
+                    context.pushNamed(RouteConstants.searchWorkoutScreen,
+                        extra: currentDay);
+                  },
+                  child: const CustomButton(buttonText: 'Add Workout'))
+              : GestureDetector(
+                  onTap: () {
+                    // context.pushNamed(RouteConstants.searchWorkoutScreen,
+                    //     extra: currentDay);
+                  },
+                  child: const CustomButton(buttonText: 'Save Routine')),
+        ));
   }
 
   @override

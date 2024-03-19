@@ -154,7 +154,13 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage> {
                   child: GestureDetector(
                     onTap: () {
                       context.pushNamed(RouteConstants.viewRoutinePage,
-                          pathParameters: {'id': user.uid}, extra: currentDay);
+                          pathParameters: {
+                            'id': user.uid
+                          },
+                          extra: {
+                            'currentDay': currentDay,
+                            'startRoutine': false
+                          });
                     },
                     child: const Padding(
                       padding: EdgeInsets.all(8.0),
@@ -182,10 +188,10 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage> {
                 ),
               ],
             ),
-            Center(
+            const Center(
               child: Text("Workouts: "),
             ),
-            Divider(),
+            const Divider(),
             Builder(builder: (context) {
               if (routineExists) {
                 return OnlineRoutineWidget(
@@ -204,15 +210,12 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage> {
         padding: const EdgeInsets.all(8),
         color: Colors.transparent,
         elevation: 0,
-        child: Padding(
-          padding: EdgeInsets.all(4),
-          child: GestureDetector(
-              onTap: () {
-                context.pushNamed(RouteConstants.viewRoutinePage,
-                    pathParameters: {'id': user.uid}, extra: currentDay);
-              },
-              child: const CustomButton(buttonText: 'Begin Routine')),
-        ),
+        child: GestureDetector(
+            onTap: () {
+              context.pushNamed(RouteConstants.runRoutineScreen,
+                  extra: currentDay);
+            },
+            child: const CustomButton(buttonText: 'Begin Routine')),
       ),
     );
   }
