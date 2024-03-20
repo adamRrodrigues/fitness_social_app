@@ -1,4 +1,5 @@
 Doing: 
+run workout page
 view meal page
 
 Next: 
@@ -10,4 +11,3 @@ Done:
 discover page
 meal widget
 create meal post page
-run workout page
