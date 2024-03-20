@@ -55,6 +55,7 @@ dependencies:
   flutter_rating_stars: ^1.0.3+4
   step_progress_indicator: ^1.0.2
   reorderables: ^0.6.0
+  timeline_tile: ^2.0.0
 
 dev_dependencies:
   flutter_test:
