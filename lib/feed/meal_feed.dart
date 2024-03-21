@@ -1,20 +1,24 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:fitness_social_app/models/meal_model.dart';
+import 'package:fitness_social_app/routing/route_constants.dart';
 import 'package:fitness_social_app/widgets/custom_button.dart';
 import 'package:fitness_social_app/widgets/meal_widgets/meal_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class MealFeed extends StatefulWidget {
   const MealFeed(
       {super.key,
       required this.postQuery,
       this.horizontal = false,
+      this.add = false,
       this.profileView = false,
       this.noPostsMessage = "Nothing to see here"});
 
   final Query<MealModel> postQuery;
   final bool? profileView;
+  final bool add;
   final String noPostsMessage;
   final bool horizontal;
 
@@ -57,8 +61,18 @@ class _MealFeedState extends State<MealFeed> {
             final post = doc.data();
             return Padding(
               padding: const EdgeInsets.all(8.0),
-              child: MealWidget(
-                meal: post,
+              child: GestureDetector(
+                onTap: () {
+                  if (widget.add) {
+                    
+                  } else {
+                    context.pushNamed(RouteConstants.viewMealScreen,
+                        extra: post);
+                  }
+                },
+                child: MealWidget(
+                  meal: post,
+                ),
               ),
             );
           },
@@ -96,8 +110,17 @@ class _MealFeedState extends State<MealFeed> {
             return Container(
               width: 400,
               padding: const EdgeInsets.all(8.0),
-              child: MealWidget(
-                meal: post,
+              child: GestureDetector(
+                onTap: () {
+                  if (widget.add) {
+                  } else {
+                    context.pushNamed(RouteConstants.viewMealScreen,
+                        extra: post);
+                  }
+                },
+                child: MealWidget(
+                  meal: post,
+                ),
               ),
             );
           },

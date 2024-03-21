@@ -142,6 +142,7 @@ class _ViewPostState extends ConsumerState<ViewPost> {
                     context: context,
                     isScrollControlled: true,
                     showDragHandle: true,
+                    enableDrag: false,
                     shape: const RoundedRectangleBorder(
                         borderRadius:
                             BorderRadius.vertical(top: Radius.circular(20))),
@@ -161,12 +162,10 @@ class _ViewPostState extends ConsumerState<ViewPost> {
                                     ? SizedBox(
                                         height: 520,
                                         child: ListView.builder(
+                                          physics: BouncingScrollPhysics(),
                                           shrinkWrap: true,
-                                          // physics:
-                                          //     NeverScrollableScrollPhysics(),
 
                                           itemCount: comments.length,
-                                          // reverse: true,
                                           itemBuilder: (context, index) {
                                             CommentModel comment = CommentModel(
                                                 uid: comments[index]['uid'],

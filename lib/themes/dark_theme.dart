@@ -23,15 +23,18 @@ ThemeData darkTheme = ThemeData(
     textTheme: TextTheme(
       titleLarge: TextStyle(
         color: Colors.white,
+        fontSize: 20,
       ),
-      titleMedium: TextStyle(
+      titleMedium: const TextStyle(
         color: Colors.white,
+        fontSize: 16,
       ),
-      titleSmall: TextStyle(color: Colors.grey[400]),
-      bodyMedium: TextStyle(
-        color: Colors.white,
-      ),
-      bodySmall: TextStyle(
+      titleSmall: TextStyle(
         color: Colors.grey[400],
+        fontSize: 14,
       ),
+      bodyMedium: const TextStyle(
+        color: Colors.white,
+      ),
+      bodySmall: TextStyle(color: Colors.grey[400], fontSize: 12),
     ));

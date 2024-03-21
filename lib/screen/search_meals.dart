@@ -21,6 +21,7 @@ class SearchMeals extends StatelessWidget {
         children: [
           Expanded(
               child: MealFeed(
+                add: true,
             postQuery: FeedServices().fetchMeals(),
             profileView: false,
           ))

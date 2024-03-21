@@ -21,4 +21,16 @@ class MealServices {
       await meals.doc(value.id).update({'image': thumbnail});
     });
   }
+
+  MealModel getMealFromDoc(QueryDocumentSnapshot<Object?> data) {
+    final meal = MealModel(
+        mealName: data['mealName'],
+        description: data['description'],
+        uid: data['uid'],
+        postId: data['postId'],
+        image: data['image'],
+        ingredients: List.from(data['ingredients']),
+        tags: List.from(data['tags']));
+    return meal;
+  }
 }

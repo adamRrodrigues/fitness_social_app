@@ -100,7 +100,6 @@ class _RunWorkoutState extends ConsumerState<RunWorkout> {
                               itemCount: widget.workouts.length,
                               itemBuilder: (context, index) {
                                 return TimelineTile(
-
                                   isFirst: index == 0 ? true : false,
                                   isLast: widget.workouts.length == index + 1
                                       ? true
@@ -114,18 +113,8 @@ class _RunWorkoutState extends ConsumerState<RunWorkout> {
                                               .colorScheme
                                               .secondary),
                                   indicatorStyle: IndicatorStyle(
-                                      width: 35,
-                                      height: 35,
-                                      iconStyle: IconStyle(
-                                          iconData: Icons.done,
-                                          fontSize: 32,
-                                          color: currentWorkout >= index
-                                          ? Theme.of(context)
-                                              .colorScheme
-                                              .background
-                                          : Theme.of(context)
-                                              .colorScheme
-                                              .secondary),
+                                      width: 25,
+                                      height: 25,
                                       color: currentWorkout >= index
                                           ? Theme.of(context)
                                               .colorScheme

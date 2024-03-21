@@ -154,6 +154,23 @@ class WorkoutPostServices {
     });
   }
 
+  WorkoutModel mapDocPost(QueryDocumentSnapshot<Object?> data) {
+    final thisPost = WorkoutModel(
+        workoutName: data['workoutName'],
+        categories: List.from(data['categories']),
+        exercises: List.from(data['exercises']),
+        uid: data['uid'],
+        postId: data['postId'],
+        templateId: data['templateId'],
+        privacy: data['privacy'],
+        imageUrl: data['imageUrl'],
+        likeCount: data['likeCount'],
+        likes: List.from(data['likes']),
+        createdAt: data['createdAt']);
+    print(thisPost);
+    return thisPost;
+  }
+
   ExerciseModel mapExercise(dynamic exerciseModel) {
     final exercise = ExerciseModel(
         name: exerciseModel['name'],

@@ -1,6 +1,7 @@
 import 'package:fitness_social_app/auth/auth_state.dart';
 import 'package:fitness_social_app/models/exercise_model.dart';
 import 'package:fitness_social_app/models/generic_post_model.dart';
+import 'package:fitness_social_app/models/meal_model.dart';
 import 'package:fitness_social_app/models/user_model.dart';
 import 'package:fitness_social_app/models/workout_post_model.dart';
 import 'package:fitness_social_app/routing/error_screen.dart';
@@ -18,6 +19,7 @@ import 'package:fitness_social_app/screen/search_meals.dart';
 import 'package:fitness_social_app/screen/search_workouts.dart';
 import 'package:fitness_social_app/screen/user_page.dart';
 import 'package:fitness_social_app/screen/view_meal_plan.dart';
+import 'package:fitness_social_app/screen/view_meal_screen.dart';
 import 'package:fitness_social_app/screen/view_post.dart';
 import 'package:fitness_social_app/screen/view_routine.dart';
 import 'package:fitness_social_app/screen/view_workout.dart';
@@ -74,7 +76,6 @@ final GoRouter appRouter = GoRouter(
                 ));
               },
             ),
-            
             GoRoute(
               path: 'createWorkoutPage',
               name: RouteConstants.createWorkout,
@@ -205,6 +206,17 @@ final GoRouter appRouter = GoRouter(
                 return CupertinoPage(
                     child: RunWorkout(
                   workouts: workouts,
+                ));
+              },
+            ),
+            GoRoute(
+              path: 'viewMealScreen',
+              name: RouteConstants.viewMealScreen,
+              pageBuilder: (context, state) {
+                MealModel meal = state.extra as MealModel;
+                return CupertinoPage(
+                    child: ViewMealScreen(
+                  mealModel: meal,
                 ));
               },
             ),

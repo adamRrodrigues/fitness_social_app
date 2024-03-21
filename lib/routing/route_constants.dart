@@ -17,4 +17,5 @@ class RouteConstants {
   static String runWorkoutScreen = 'runWorkoutScreen';
   static String fetchingWorkoutScreen = 'fetchingWorkoutScreen';
   static String searchMealsScreen = 'SearchMealsScreen';
+  static String viewMealScreen = 'viewMealScreen';
 }

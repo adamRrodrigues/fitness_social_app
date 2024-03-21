@@ -51,6 +51,7 @@ class _ViewRoutineState extends ConsumerState<ViewRoutine>
           title: const Text('My Routine'),
         ),
         body: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
           child: Column(
             children: [
               CustomCalender(

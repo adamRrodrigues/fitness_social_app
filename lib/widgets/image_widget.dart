@@ -2,12 +2,10 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 
 class ImageWidget extends StatelessWidget {
-  const ImageWidget({
-    super.key,
-    required this.url,
-  });
+  const ImageWidget({super.key, required this.url, this.viewable = false});
 
   final String url;
+  final bool viewable;
 
   @override
   Widget build(BuildContext context) {

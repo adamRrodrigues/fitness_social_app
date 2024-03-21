@@ -1,13 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_social_app/feed/meal_feed.dart';
-import 'package:fitness_social_app/feed/workout_feed.dart';
 import 'package:fitness_social_app/main.dart';
-import 'package:fitness_social_app/models/user_model.dart';
 import 'package:fitness_social_app/routing/route_constants.dart';
 import 'package:fitness_social_app/services/feed_services.dart';
+import 'package:fitness_social_app/services/meal_service.dart';
+import 'package:fitness_social_app/services/post_service.dart';
 import 'package:fitness_social_app/services/user_services.dart';
-import 'package:fitness_social_app/widgets/mini_profie.dart';
+import 'package:fitness_social_app/widgets/meal_widgets/meal_widget.dart';
+import 'package:fitness_social_app/widgets/workout_widgets/workout_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -22,7 +23,13 @@ class DiscoverPage extends ConsumerStatefulWidget {
 class _DiscoverPageState extends ConsumerState<DiscoverPage>
     with AutomaticKeepAliveClientMixin {
   CollectionReference users = FirebaseFirestore.instance.collection('users');
+  CollectionReference wokrouts =
+      FirebaseFirestore.instance.collection('workout_templates_demo');
+  CollectionReference meals =
+      FirebaseFirestore.instance.collection('meals_demo');
   User? user;
+  WorkoutPostServices workoutPostServices = WorkoutPostServices();
+  MealServices mealServices = MealServices();
 
   @override
   void initState() {
@@ -43,123 +50,158 @@ class _DiscoverPageState extends ConsumerState<DiscoverPage>
             backgroundColor: Theme.of(context).colorScheme.background,
             elevation: 0,
           ),
-          body: ListView(
-            // crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      "people",
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      "See More...",
-                      style: Theme.of(context).textTheme.titleSmall,
-                    ),
-                  ),
-                ],
-              ),
-              FutureBuilder(
-                future: users.get(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    return SizedBox(
-                      height: 120,
-                      child: ListView(
-                          scrollDirection: Axis.horizontal,
-                          shrinkWrap: true,
-                          children: snapshot.data!.docs
-                              .where((element) => element.id != user!.uid)
-                              .map((e) {
-                            UserModel thisUser = UserServices().mapDocUser(e);
+          body: RefreshIndicator(
+            onRefresh: () async {
+              setState(() {});
+            },
+            child: ListView(
+              // crossAxisAlignment: CrossAxisAlignment.start,
+              physics: BouncingScrollPhysics(),
+              children: [
+                section(context, "People"),
+                FutureBuilder(
+                  future: users.get(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      final data = snapshot.data!.docs
+                          .where((element) => element.id != user!.uid)
+                          .toList();
 
+                      return SizedBox(
+                        height: 120,
+                        child: ListView.builder(
+                          itemCount: data.length > 5 ? 5 : data.length,
+                          shrinkWrap: true,
+                          physics: BouncingScrollPhysics(),
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) {
+                            final thisUser =
+                                UserServices().mapDocUser(data[index]);
                             return InkWell(
                               onTap: () {
                                 context.pushNamed(RouteConstants.userPage,
                                     extra: thisUser);
                               },
-                              child: Padding(
+                              child: Container(
+                                width: 80,
                                 padding: const EdgeInsets.all(8.0),
                                 child: Column(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceAround,
                                   children: [
                                     CircleAvatar(
-                                        maxRadius: 40,
+                                        maxRadius: 30,
                                         backgroundImage:
                                             NetworkImage(thisUser.profileUrl)),
-                                    Text(thisUser.username)
+                                    Text(
+                                      thisUser.username,
+                                      overflow: TextOverflow.ellipsis,
+                                    )
                                   ],
                                 ),
                               ),
                             );
-                          }).toList()),
-                    );
-                  } else {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                },
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      "Workouts",
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
+                          },
+                        ),
+                      );
+                    } else {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                  },
+                ),
+                section(context, "Workouts"),
+                SizedBox(
+                  height: 300,
+                  child: FutureBuilder(
+                    future: wokrouts.get(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        final data = snapshot.data!.docs
+                            .where((element) => element.id != user!.uid)
+                            .toList();
+
+                        return ListView.builder(
+                          itemCount: data.length > 5 ? 5 : data.length,
+                          shrinkWrap: true,
+                          physics: BouncingScrollPhysics(),
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) {
+                            final thisWorkout =
+                                workoutPostServices.mapDocPost(data[index]);
+                            return SizedBox(
+                                height: 300,
+                                width: 370,
+                                child: WorkoutWidget(
+                                  workoutModel: thisWorkout,
+                                  mini: false,
+                                ));
+                          },
+                        );
+                      } else {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                    },
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      "See More...",
-                      style: Theme.of(context).textTheme.titleSmall,
-                    ),
+                ),
+                section(context, "Meals"),
+                SizedBox(
+                  // width: 400,
+                  height: 450,
+                  child: FutureBuilder(
+                    future: meals.get(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        final data = snapshot.data!.docs
+                            .where((element) => element.id != user!.uid)
+                            .toList();
+
+                        return ListView.builder(
+                          itemCount: data.length > 5 ? 5 : data.length,
+                          shrinkWrap: true,
+                          physics: BouncingScrollPhysics(),
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) {
+                            final thisMeal =
+                                mealServices.getMealFromDoc(data[index]);
+                            return SizedBox(
+                                height: 300,
+                                width: 370,
+                                child: MealWidget(
+                                  meal: thisMeal,
+                                ));
+                          },
+                        );
+                      } else {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                    },
                   ),
-                ],
-              ),
-              SizedBox(
-                // width: 200,
-                height: 300,
-                child: WorkoutFeed(
-                    horizontal: true,
-                    uid: user!.uid,
-                    postQuery: FeedServices().fetchWorkouts()),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      "Meals",
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      "See More...",
-                      style: Theme.of(context).textTheme.titleSmall,
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                // width: 400,
-                height: 450,
-                child: MealFeed(
-                    horizontal: true, postQuery: FeedServices().fetchMeals()),
-              ),
-            ],
+                ),
+              ],
+            ),
           )),
+    );
+  }
+
+  Row section(BuildContext context, String sectionName) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            sectionName,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            "See More...",
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+        ),
+      ],
     );
   }
 

@@ -4,7 +4,6 @@ import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/models/routine_model.dart';
 import 'package:fitness_social_app/models/workout_post_model.dart';
 import 'package:fitness_social_app/routing/route_constants.dart';
-import 'package:fitness_social_app/services/routine_services.dart';
 import 'package:fitness_social_app/widgets/custom_button.dart';
 import 'package:fitness_social_app/widgets/custom_calender.dart';
 import 'package:fitness_social_app/widgets/progress_widget.dart';
@@ -61,6 +60,7 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [

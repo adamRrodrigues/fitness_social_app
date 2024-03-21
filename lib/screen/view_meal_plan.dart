@@ -74,19 +74,25 @@ class VviewMealPlanScreenState extends State<ViewMealPlanScreen> {
                       meals.add(['meals'][0]);
                       // print(workouts);
                     }
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      physics: BouncingScrollPhysics(),
+                      itemCount: meals.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          title: Text(meals[index]),
+                        );
+                      },
+                    );
+                  } else {
+                    return Center(
+                      child: Text("No meals added to this plan yet"),
+                    );
                   }
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: meals.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(meals[index]),
-                      );
-                    },
-                  );
                 } else {
-                  return Container();
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
                 }
               },
             )
