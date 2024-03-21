@@ -1,14 +1,14 @@
 Doing: 
-update workout widget
+saved workouts, my workouts pages
 
 Next: 
-saved workouts, my workouts pages
 edit profile page
 
 Done:
 fix discover page
 view meal page 
 run workout page
+update workout widget
 discover page
 meal widget
 create meal post page

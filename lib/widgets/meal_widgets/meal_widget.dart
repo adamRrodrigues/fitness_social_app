@@ -40,47 +40,25 @@ class MealWidget extends StatelessWidget {
                 const SizedBox(
                   height: 5,
                 ),
-                Builder(builder: (context) {
-                  if (meal.ingredients.length < 4) {
-                    return ListView.builder(
-                      itemCount: meal.ingredients.length,
-                      physics: NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          leading: Icon(
-                            Icons.circle,
-                          ),
-                          minLeadingWidth: 10,
-                          dense: true,
-                          title: Text(
-                            meal.ingredients[index],
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                        );
-                      },
+                ListView.builder(
+                  itemCount:
+                      3 > meal.ingredients.length ? meal.ingredients.length : 3,
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      leading: Icon(
+                        Icons.circle,
+                      ),
+                      minLeadingWidth: 10,
+                      dense: true,
+                      title: Text(
+                        meal.ingredients[index],
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
                     );
-                  } else {
-                    return ListView.builder(
-                      itemCount: 3,
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          leading: Icon(
-                            Icons.circle,
-                          ),
-                          minLeadingWidth: 10,
-                          dense: true,
-                          title: Text(
-                            meal.ingredients[index],
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                        );
-                      },
-                    );
-                  }
-                })
+                  },
+                )
               ],
             ),
           ),

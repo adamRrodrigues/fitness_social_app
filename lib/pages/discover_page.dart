@@ -111,7 +111,7 @@ class _DiscoverPageState extends ConsumerState<DiscoverPage>
                 ),
                 section(context, "Workouts"),
                 SizedBox(
-                  height: 300,
+                  height: 450,
                   child: FutureBuilder(
                     future: wokrouts.get(),
                     builder: (context, snapshot) {
@@ -129,7 +129,7 @@ class _DiscoverPageState extends ConsumerState<DiscoverPage>
                             final thisWorkout =
                                 workoutPostServices.mapDocPost(data[index]);
                             return SizedBox(
-                                height: 300,
+                                // height: 330,
                                 width: 370,
                                 child: WorkoutWidget(
                                   workoutModel: thisWorkout,
