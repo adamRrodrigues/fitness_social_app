@@ -1,21 +1,30 @@
+import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/services/auth_service.dart';
+import 'package:fitness_social_app/services/user_services.dart';
 import 'package:fitness_social_app/widgets/custom_button.dart';
 import 'package:fitness_social_app/widgets/text_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SignupPage extends StatefulWidget {
+class SignupPage extends ConsumerStatefulWidget {
   const SignupPage({Key? key, required this.changeAuthState}) : super(key: key);
   final Function changeAuthState;
 
   @override
-  State<SignupPage> createState() => _SignupPageState();
+  _SignupPageState createState() => _SignupPageState();
 }
 
-class _SignupPageState extends State<SignupPage> {
-  Auth auth = Auth();
+class _SignupPageState extends ConsumerState<SignupPage> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordContoller = TextEditingController();
+  Auth? auth;
+
+  @override
+  void initState() {
+    super.initState();
+    auth = ref.read(authProvider);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +65,9 @@ class _SignupPageState extends State<SignupPage> {
                 ),
                 GestureDetector(
                     onTap: () {
-                      auth.signUp(
+                      auth!.isRegistering = true;
+
+                      auth!.signUp(
                         context,
                         emailController.text,
                         usernameController.text,

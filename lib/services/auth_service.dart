@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 
 class Auth {
   bool created = true;
+  bool isRegistering = false;
 
   CollectionReference routines =
       FirebaseFirestore.instance.collection('routines');
@@ -22,7 +23,6 @@ class Auth {
         UserCredential user = await FirebaseAuth.instance
             .createUserWithEmailAndPassword(email: email, password: password);
 
-        await RoutineServices().createRoutine();
         await FirebaseFirestore.instance
             .collection('users')
             .doc(user.user!.uid)
@@ -46,6 +46,7 @@ class Auth {
             .collection('following')
             .add({}).then((value) {
           created = true;
+          isRegistering = false;
         });
       } catch (e) {
         if (context.mounted) {
