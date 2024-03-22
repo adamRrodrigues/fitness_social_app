@@ -17,7 +17,7 @@ class CustomTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       child: TextFormField(
         scrollPadding:
             EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
@@ -37,12 +37,12 @@ class CustomTextField extends StatelessWidget {
           enabledBorder: OutlineInputBorder(
               borderSide:
                   BorderSide(color: Theme.of(context).colorScheme.secondary),
-              borderRadius: BorderRadius.circular(12)),
+              borderRadius: BorderRadius.circular(30)),
           focusedBorder: OutlineInputBorder(
               // borderSide: const BorderSide(color: Color(0xff4E4E4E)),
               borderSide:
-                  BorderSide(color: Theme.of(context).colorScheme.secondary),
-              borderRadius: BorderRadius.circular(12)),
+                  BorderSide(color: Theme.of(context).colorScheme.primary),
+              borderRadius: BorderRadius.circular(30)),
         ),
       ),
     );

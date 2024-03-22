@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fitness_social_app/models/routine_model.dart';
+import 'package:fitness_social_app/services/user_services.dart';
 
 class FallbackService {
   //update post model
@@ -31,6 +32,13 @@ class FallbackService {
         'likes': FieldValue.arrayUnion([]),
         'rating': FieldValue.delete()
       });
+    }
+  }
+
+  Future createUserStats() async {
+    var querySnapshots = await users.get();
+    for (var doc in querySnapshots.docs) {
+      await UserServices().createUserStats(doc.id);
     }
   }
 

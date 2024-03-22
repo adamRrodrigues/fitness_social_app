@@ -1,21 +1,30 @@
+import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/services/auth_service.dart';
+import 'package:fitness_social_app/services/user_services.dart';
 import 'package:fitness_social_app/widgets/custom_button.dart';
 import 'package:fitness_social_app/widgets/text_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({Key? key, required this.changeAuthState}) : super(key: key);
   final Function changeAuthState;
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  _LoginPageState createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends ConsumerState<LoginPage> {
+  Auth auth = Auth();
+  @override
+  void initState() {
+    super.initState();
+    auth = ref.read(authProvider);
+
+  }
+
   @override
   Widget build(BuildContext context) {
-    Auth auth = Auth();
-
     TextEditingController emailController = TextEditingController();
     TextEditingController passwordContoller = TextEditingController();
 
@@ -53,6 +62,7 @@ class _LoginPageState extends State<LoginPage> {
                       //     return MainPage();
                       //   },
                       // ));
+                      auth.isRegistering = false;
                       auth.signIn(context, emailController.text,
                           passwordContoller.text);
                     },

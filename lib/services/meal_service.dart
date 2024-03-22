@@ -21,4 +21,30 @@ class MealServices {
       await meals.doc(value.id).update({'image': thumbnail});
     });
   }
+
+  Future deleteMeal(String mealId) async {
+    await StorageServices().deleteImages('mealPostImages', mealId);
+    await FirebaseFirestore.instance
+        .collection('meals_demo')
+        .doc(mealId)
+        .delete();
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(thisUser!.uid)
+        .update({
+      'posts': FieldValue.arrayRemove([mealId])
+    });
+  }
+
+  MealModel getMealFromDoc(QueryDocumentSnapshot<Object?> data) {
+    final meal = MealModel(
+        mealName: data['mealName'],
+        description: data['description'],
+        uid: data['uid'],
+        postId: data['postId'],
+        image: data['image'],
+        ingredients: List.from(data['ingredients']),
+        tags: List.from(data['tags']));
+    return meal;
+  }
 }

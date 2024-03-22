@@ -1,10 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/models/generic_post_model.dart';
 import 'package:fitness_social_app/routing/route_constants.dart';
 import 'package:fitness_social_app/services/post_service.dart';
-import 'package:fitness_social_app/services/user_services.dart';
+import 'package:fitness_social_app/widgets/bottom_modal_item_widget.dart';
 import 'package:fitness_social_app/widgets/image_widget.dart';
 import 'package:fitness_social_app/widgets/mini_profie.dart';
 import 'package:flutter/material.dart';
@@ -52,9 +51,50 @@ class _GenericPostWidgetState extends ConsumerState<GenericPostWidget> {
             extra: widget.post, pathParameters: {'id': widget.postId});
       },
       onLongPress: () {
-        if (widget.post.uid == user!.uid) {
-          genericPostServices!.deletePost(widget.postId, user!.uid);
-        }
+        showModalBottomSheet(
+          context: context,
+          isScrollControlled: true,
+          showDragHandle: true,
+          useSafeArea: true,
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+          builder: (context) {
+            return Padding(
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom),
+              child: ListView(
+                shrinkWrap: true,
+                children: [
+                  widget.post.uid == user!.uid
+                      ? GestureDetector(
+                          onTap: () {
+                            context.pop();
+                            setState(() {
+                              genericPostServices!
+                                  .deletePost(widget.postId, user!.uid);
+                            });
+                          },
+                          child: const BottomModalItem(
+                            text: "Delete This Post",
+                            iconRequired: true,
+                            icon: Icons.delete_rounded,
+                          ))
+                      : Container(),
+                  Divider(),
+                  GestureDetector(
+                      onTap: () {
+                        context.pop();
+                      },
+                      child: const BottomModalItem(
+                        text: "Share",
+                        iconRequired: true,
+                        icon: Icons.share_rounded,
+                      ))
+                ],
+              ),
+            );
+          },
+        );
       },
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),

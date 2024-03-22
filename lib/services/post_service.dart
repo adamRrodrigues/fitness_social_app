@@ -154,6 +154,23 @@ class WorkoutPostServices {
     });
   }
 
+  WorkoutModel mapDocPost(QueryDocumentSnapshot<Object?> data) {
+    final thisPost = WorkoutModel(
+        workoutName: data['workoutName'],
+        categories: List.from(data['categories']),
+        exercises: List.from(data['exercises']),
+        uid: data['uid'],
+        postId: data['postId'],
+        templateId: data['templateId'],
+        privacy: data['privacy'],
+        imageUrl: data['imageUrl'],
+        likeCount: data['likeCount'],
+        likes: List.from(data['likes']),
+        createdAt: data['createdAt']);
+    print(thisPost);
+    return thisPost;
+  }
+
   ExerciseModel mapExercise(dynamic exerciseModel) {
     final exercise = ExerciseModel(
         name: exerciseModel['name'],
@@ -190,13 +207,17 @@ class WorkoutPostServices {
     await workoutPosts.doc(id).update({'imageUrl': thumbnail});
   }
 
-  Future deletePost(id, userId) async {
+  Future deletePost(id) async {
     await StorageServices().deleteImages('workoutPostImages', id);
     await FirebaseFirestore.instance
-        .collection('workout_posts')
+        .collection('user_workouts_demo')
         .doc(id)
         .delete();
-    await FirebaseFirestore.instance.collection('users').doc(userId).update({
+    await workoutTemplates.doc(id).delete();
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(thisUser!.uid)
+        .update({
       'posts': FieldValue.arrayRemove([id])
     });
   }

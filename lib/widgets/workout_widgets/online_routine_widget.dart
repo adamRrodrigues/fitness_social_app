@@ -62,13 +62,17 @@ class OnlineRoutineWidget extends ConsumerWidget {
                             final WorkoutModel mappedWorkout = RoutineServices()
                                 .mapSingleRoutineWorkout(thisWorkout);
 
-                            if (routinesStored.routines[currentDay].workouts
-                                .length != data['workouts'].length) {
+                            if (routinesStored
+                                    .routines[currentDay].workouts.length !=
+                                data['workouts'].length) {
                               routinesStored.addToRoutine(
                                   currentDay, mappedWorkout);
                             }
-
-                            return WorkoutWidget(workoutModel: mappedWorkout);
+                            try {
+                              return WorkoutWidget(workoutModel: mappedWorkout);
+                            } catch (e) {
+                              return Container();
+                            }
                           } else {
                             return const Center(
                                 child: CircularProgressIndicator());

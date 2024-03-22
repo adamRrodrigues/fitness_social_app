@@ -25,6 +25,7 @@ class _PostFeedWidgetState extends State<PostFeedWidget> {
   Widget build(BuildContext context) {
     return FirestoreListView<GenericPost>(
       pageSize: 5,
+      physics: const BouncingScrollPhysics(),
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       emptyBuilder: (context) {
         return Center(

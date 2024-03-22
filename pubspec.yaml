@@ -57,6 +57,7 @@ dependencies:
   reorderables: ^0.6.0
   pedometer: ^4.0.1
   permission_handler: ^11.0.1
+  timeline_tile: ^2.0.0
 
 dev_dependencies:
   flutter_test:

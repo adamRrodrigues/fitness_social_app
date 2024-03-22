@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:fitness_social_app/firebase_options.dart';
 import 'package:fitness_social_app/models/routine_model.dart';
 import 'package:fitness_social_app/routing/page_router.dart';
+import 'package:fitness_social_app/services/auth_service.dart';
 import 'package:fitness_social_app/services/drafts.dart';
 import 'package:fitness_social_app/services/feed_services.dart';
 import 'package:fitness_social_app/services/post_service.dart';
@@ -15,6 +16,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final userProvider = Provider((ref) => FirebaseAuth.instance.currentUser);
 final userServicesProvider = Provider((ref) => UserServices());
+final authProvider = Provider((ref) => Auth());
 final genericPostServicesProvider = Provider((ref) => GenericPostServices());
 final feedServicesProvider = Provider((ref) => FeedServices());
 final utilProvider = Provider((ref) => Utils());

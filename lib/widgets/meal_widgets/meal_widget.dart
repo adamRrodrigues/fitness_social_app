@@ -1,20 +1,73 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/models/meal_model.dart';
+import 'package:fitness_social_app/routing/route_constants.dart';
+import 'package:fitness_social_app/services/meal_service.dart';
+import 'package:fitness_social_app/widgets/bottom_modal_item_widget.dart';
 import 'package:fitness_social_app/widgets/image_widget.dart';
 import 'package:fitness_social_app/widgets/mini_profie.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
-class MealWidget extends StatelessWidget {
+class MealWidget extends ConsumerWidget {
   const MealWidget({Key? key, required this.meal}) : super(key: key);
   final MealModel meal;
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(8),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(10),
+  Widget build(BuildContext context, WidgetRef ref) {
+    User? user = ref.read(userProvider);
+    return GestureDetector(
+      onTap: () {
+        context.pushNamed(RouteConstants.viewMealScreen, extra: meal);
+      },
+      onLongPress: () {
+        showModalBottomSheet(
+          context: context,
+          isScrollControlled: true,
+          showDragHandle: true,
+          useSafeArea: true,
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+          builder: (context) {
+            return Padding(
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom),
+              child: ListView(
+                shrinkWrap: true,
+                children: [
+                  meal.uid == user!.uid
+                      ? GestureDetector(
+                          onTap: () {
+                            context.pop();
+                            MealServices().deleteMeal(meal.postId);
+                          },
+                          child: const BottomModalItem(
+                            text: "Delete This Post",
+                            iconRequired: true,
+                            icon: Icons.delete_rounded,
+                          ))
+                      : Container(),
+                  Divider(),
+                  GestureDetector(
+                      onTap: () {
+                        context.pop();
+                      },
+                      child: const BottomModalItem(
+                        text: "Share",
+                        iconRequired: true,
+                        icon: Icons.share_rounded,
+                      ))
+                ],
+              ),
+            );
+          },
+        );
+      },
+      child: Padding(
+        padding: EdgeInsets.all(8),
         child: Material(
-          // borderRadius: BorderRadius.circular(10),
           elevation: 4,
+          borderRadius: BorderRadius.circular(10),
           child: Container(
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
@@ -42,45 +95,26 @@ class MealWidget extends StatelessWidget {
                   const SizedBox(
                     height: 5,
                   ),
-                  Builder(builder: (context) {
-                    if (meal.ingredients.length < 4) {
-                      return ListView.builder(
-                        itemCount: meal.ingredients.length,
-                        shrinkWrap: true,
-                        itemBuilder: (context, index) {
-                          return ListTile(
-                            leading: Icon(
-                              Icons.circle,
-                            ),
-                            minLeadingWidth: 10,
-                            dense: true,
-                            title: Text(
-                              meal.ingredients[index],
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
-                          );
-                        },
+                  ListView.builder(
+                    itemCount: 3 > meal.ingredients.length
+                        ? meal.ingredients.length
+                        : 3,
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        leading: Icon(
+                          Icons.circle,
+                        ),
+                        minLeadingWidth: 10,
+                        dense: true,
+                        title: Text(
+                          meal.ingredients[index],
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
                       );
-                    } else {
-                      return ListView.builder(
-                        itemCount: 3,
-                        shrinkWrap: true,
-                        itemBuilder: (context, index) {
-                          return ListTile(
-                            leading: Icon(
-                              Icons.circle,
-                            ),
-                            minLeadingWidth: 10,
-                            dense: true,
-                            title: Text(
-                              meal.ingredients[index],
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
-                          );
-                        },
-                      );
-                    }
-                  })
+                    },
+                  )
                 ],
               ),
             ),

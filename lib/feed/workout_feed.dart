@@ -45,6 +45,7 @@ class _WorkoutFeedState extends ConsumerState<WorkoutFeed>
         return FirestoreListView<WorkoutModel>(
           pageSize: 5,
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          physics: const BouncingScrollPhysics(),
           emptyBuilder: (context) {
             return Center(
               child: Text('Nothing To See Here'),

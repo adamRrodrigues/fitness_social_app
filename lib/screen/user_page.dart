@@ -15,35 +15,37 @@ class _UserPageState extends State<UserPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: RefreshIndicator(
-        displacement: 70,
-        color: Theme.of(context).colorScheme.primary,
-        notificationPredicate: (notification) {
-          // with NestedScrollView local(depth == 2) OverscrollNotification are not sent
-          return notification.depth == 2;
-        },
-        onRefresh: () => Future(() {
-          setState(() {});
-        }),
-        child: NestedScrollView(
-            headerSliverBuilder: (context, innerBoxIsScrolled) => [
-                  SliverAppBar(
-                    title: Text(
-                      widget.user.username,
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    backgroundColor: Theme.of(context).colorScheme.background,
-                    // snap: true,
-                    floating: true,
-                  )
+      body: SafeArea(
+        child: RefreshIndicator(
+          displacement: 70,
+          color: Theme.of(context).colorScheme.primary,
+          notificationPredicate: (notification) {
+            // with NestedScrollView local(depth == 2) OverscrollNotification are not sent
+            return notification.depth == 2;
+          },
+          onRefresh: () => Future(() {
+            setState(() {});
+          }),
+          child: NestedScrollView(
+              headerSliverBuilder: (context, innerBoxIsScrolled) => [
+                    SliverAppBar(
+                      title: Text(
+                        widget.user.username,
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      backgroundColor: Theme.of(context).colorScheme.background,
+                      // snap: true,
+                      floating: true,
+                    )
+                  ],
+              body: Stack(
+                children: [
+                  RefreshIndicator(
+                      onRefresh: () async {},
+                      child: UserProfile(thisUser: widget.user))
                 ],
-            body: Stack(
-              children: [
-                RefreshIndicator(
-                    onRefresh: () async {},
-                    child: UserProfile(thisUser: widget.user))
-              ],
-            )),
+              )),
+        ),
       ),
     );
   }

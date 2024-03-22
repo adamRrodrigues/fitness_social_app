@@ -87,6 +87,7 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost> {
       child: Scaffold(
         body: SafeArea(
           child: NestedScrollView(
+            physics: const BouncingScrollPhysics(),
             headerSliverBuilder: (context, innerBoxIsScrolled) => [
               SliverAppBar(
                 title: const Text('Create a Meal'),
@@ -129,7 +130,8 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost> {
                         }
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(Commons()
-                              .snackBarMessage("Post Name or Image is missing", Colors.red));
+                            .snackBarMessage(
+                                "Post Name or Image is missing", Colors.red));
                       }
                     },
                     child: const Padding(
@@ -310,7 +312,7 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost> {
                 CustomTextField(
                     textController: titleController, hintText: "Meal Name"),
                 const SizedBox(
-                  height: 20,
+                  height: 10,
                 ),
                 mealDraft!.ingredients.isNotEmpty
                     ? Expanded(
@@ -364,7 +366,7 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost> {
                                 child: CustomTextField(
                                     focusNode: focusNode,
                                     textController: ingredientController,
-                                    hintText: 'add an ingredient'),
+                                    hintText: '1/2 chicken, 3/4 cup water'),
                               ),
                               FloatingActionButton(
                                 mini: true,

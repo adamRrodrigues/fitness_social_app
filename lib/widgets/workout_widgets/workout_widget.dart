@@ -1,14 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_social_app/main.dart';
-import 'package:fitness_social_app/models/routine_model.dart';
 import 'package:fitness_social_app/models/workout_post_model.dart';
 import 'package:fitness_social_app/routing/route_constants.dart';
-import 'package:fitness_social_app/screen/fetching_workout_screen.dart';
 import 'package:fitness_social_app/services/post_service.dart';
-import 'package:fitness_social_app/services/routine_services.dart';
-import 'package:fitness_social_app/services/user_services.dart';
-import 'package:fitness_social_app/widgets/custom_start_widget.dart';
+import 'package:fitness_social_app/widgets/bottom_modal_item_widget.dart';
 import 'package:fitness_social_app/widgets/image_widget.dart';
 import 'package:fitness_social_app/widgets/mini_profie.dart';
 import 'package:fitness_social_app/widgets/pill_widget.dart';
@@ -30,6 +25,7 @@ class WorkoutWidget extends ConsumerWidget {
   final bool selection;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    User? user = ref.read(userProvider);
     return GestureDetector(
       onTap: () async {
         if (selection) {
@@ -40,150 +36,153 @@ class WorkoutWidget extends ConsumerWidget {
               extra: workoutModel);
         }
       },
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: Material(
-            elevation: 8,
-            color: Theme.of(context).colorScheme.surface,
-            // borderRadius: BorderRadius.circular(10),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surface,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              // height: 500,
-              child: Padding(
-                padding: const EdgeInsets.all(2.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    mini == false
-                        ? StreamBuilder(
-                            stream: FirebaseFirestore.instance
-                                .collection('users')
-                                .doc(workoutModel.uid)
-                                .snapshots(),
-                            builder: (context, snapshot) {
-                              if (snapshot.hasData &&
-                                  snapshot.connectionState ==
-                                      ConnectionState.active) {
-                                Map<String, dynamic> data = snapshot.data!
-                                    .data() as Map<String, dynamic>;
-
-                                final thisUser =
-                                    UserServices().mapSingleUser(data);
-
-                                return Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: MiniProfie(
-                                      userId: thisUser.uid,
-                                      optionalSubText:
-                                          '${workoutModel.createdAt.toDate().day.toString()}/${workoutModel.createdAt.toDate().month.toString()}/${workoutModel.createdAt.toDate().year.toString()} '),
+      onLongPress: () {
+        showModalBottomSheet(
+          context: context,
+          isScrollControlled: true,
+          showDragHandle: true,
+          useSafeArea: true,
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+          builder: (context) {
+            return Padding(
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom),
+              child: ListView(
+                shrinkWrap: true,
+                children: [
+                  workoutModel.uid == user!.uid
+                      ? GestureDetector(
+                          onTap: () async {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return Center(
+                                  child: CircularProgressIndicator(),
                                 );
-                              } else if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return const SizedBox(
-                                    height: 50,
-                                    child: Text(
-                                      'loading...',
-                                    ));
-                              } else {
-                                return const Text('Error Loading');
-                              }
-                            },
-                          )
-                        : Container(),
-                    SizedBox(
-                      height: 35,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: workoutModel.categories.length,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: PillWidget(
-                                editable: false,
-                                name: workoutModel.categories[index],
-                                delete: () {},
-                                active: false),
-                          );
-                        },
-                      ),
-                    ),
-                    Builder(builder: (context) {
-                      if (workoutModel.postId != workoutModel.templateId) {
-                        return GestureDetector(
-                            onTap: () {
-                              context.pushNamed(
-                                  RouteConstants.fetchingWorkoutScreen,
-                                  extra: workoutModel.templateId);
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: Text(
-                                "built from this template",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall!
-                                    .copyWith(color: Colors.cyan),
-                              ),
-                            ));
-                      }
-                      return Container();
-                    }),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              // width: 220,
-                              height: 40,
-                              padding: const EdgeInsets.all(4.0),
-                              child: Text(
-                                workoutModel.workoutName,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleMedium!
-                                    .copyWith(
-                                        fontWeight: FontWeight.bold,
-                                        overflow: TextOverflow.ellipsis),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: Text(
-                                '${workoutModel.exercises.length.toString()} exercises',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall!
-                                    .copyWith(fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.all(4),
-                              child: CustomStarWidget(starValue: 4.5),
-                            )
-                          ],
-                        ),
-                        SizedBox(
-                          height: 150,
-                          width: 150,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: ImageWidget(url: workoutModel.imageUrl),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                              },
+                            );
+                            await WorkoutPostServices()
+                                .deletePost(workoutModel.postId);
+                            if (context.mounted) {
+                              context.pop();
+                            }
+                          },
+                          child: const BottomModalItem(
+                            text: "Delete This Post",
+                            iconRequired: true,
+                            icon: Icons.delete_rounded,
+                          ))
+                      : Container(),
+                  GestureDetector(
+                      onTap: () {
+                        context.pop();
+                      },
+                      child: const BottomModalItem(
+                        text: "Share",
+                        iconRequired: true,
+                        icon: Icons.share_rounded,
+                      ))
+                ],
               ),
+            );
+          },
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.all(8.0),
+        child: Material(
+          elevation: 4,
+          borderRadius: BorderRadius.circular(10),
+          color: Theme.of(context).colorScheme.surface,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            // height: 500,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 200,
+                  width: double.infinity,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(10)),
+                    child: ImageWidget(url: workoutModel.imageUrl),
+                  ),
+                ),
+                SizedBox(
+                  height: 35,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: workoutModel.categories.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: PillWidget(
+                            editable: false,
+                            name: workoutModel.categories[index],
+                            delete: () {},
+                            active: false),
+                      );
+                    },
+                  ),
+                ),
+                mini == false
+                    ? MiniProfie(
+                        userId: workoutModel.uid,
+                      )
+                    : Container(),
+                Builder(builder: (context) {
+                  if (workoutModel.postId != workoutModel.templateId) {
+                    return GestureDetector(
+                        onTap: () {
+                          context.pushNamed(
+                              RouteConstants.fetchingWorkoutScreen,
+                              extra: workoutModel.templateId);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            "built from this template",
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall!
+                                .copyWith(color: Colors.cyan),
+                          ),
+                        ));
+                  }
+                  return Container();
+                }),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          workoutModel.workoutName,
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          workoutModel.likes.contains(user!.uid)
+                              ? Icon(Icons.bookmark_rounded)
+                              : Icon(Icons.bookmark_outline_rounded),
+                          Text(workoutModel.likeCount.toString())
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text("${workoutModel.exercises.length} Exercises"),
+                ),
+              ],
             ),
           ),
         ),

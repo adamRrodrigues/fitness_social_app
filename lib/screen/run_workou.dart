@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
+import 'package:timeline_tile/timeline_tile.dart';
 
 class RunWorkout extends ConsumerStatefulWidget {
   const RunWorkout({Key? key, required this.workouts}) : super(key: key);
@@ -48,17 +49,21 @@ void incrementSet(int setLimit, int exerciseLimit, int workoutLimit) {
 }
 
 void reset() {
-  // currentWorkout = 0;
-  // currentExercise = 0;
-  showDone = false;
-  if (currentSet != 0) {
-    currentSet--;
+  if (showDone) {
+    showDone = false;
+    currentWorkout = 0;
+    currentExercise = 0;
+    currentSet = 1;
   } else {
-    if (currentExercise != 0) {
-      currentExercise--;
+    if (currentSet != 0) {
+      currentSet--;
     } else {
-      if (currentWorkout != 0) {
-        currentWorkout--;
+      if (currentExercise != 0) {
+        currentExercise--;
+      } else {
+        if (currentWorkout != 0) {
+          currentWorkout--;
+        }
       }
     }
   }
@@ -82,23 +87,51 @@ class _RunWorkoutState extends ConsumerState<RunWorkout> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     widget.workouts.length > 1
                         ? Container(
-                            height: 350,
-                            width: 40,
-                            padding: const EdgeInsets.all(8.0),
-                            child: StepProgressIndicator(
-                              totalSteps: widget.workouts.length,
-                              direction: Axis.vertical,
-                              padding: 2,
-                              currentStep: currentWorkout,
-                              roundedEdges: Radius.circular(5),
-                              selectedColor:
-                                  Theme.of(context).colorScheme.primary,
-                              unselectedColor:
-                                  Theme.of(context).colorScheme.secondary,
+                            // height: 400,
+                            width: 70,
+                            padding: const EdgeInsets.all(16.0),
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemCount: widget.workouts.length,
+                              itemBuilder: (context, index) {
+                                return TimelineTile(
+                                  isFirst: index == 0 ? true : false,
+                                  isLast: widget.workouts.length == index + 1
+                                      ? true
+                                      : false,
+                                  beforeLineStyle: LineStyle(
+                                      color: currentWorkout >= index
+                                          ? Theme.of(context)
+                                              .colorScheme
+                                              .primary
+                                          : Theme.of(context)
+                                              .colorScheme
+                                              .secondary),
+                                  indicatorStyle: IndicatorStyle(
+                                      width: 25,
+                                      height: 25,
+                                      color: currentWorkout >= index
+                                          ? Theme.of(context)
+                                              .colorScheme
+                                              .primary
+                                          : Theme.of(context)
+                                              .colorScheme
+                                              .secondary),
+                                  afterLineStyle: LineStyle(
+                                      color: currentWorkout >= index
+                                          ? Theme.of(context)
+                                              .colorScheme
+                                              .primary
+                                          : Theme.of(context)
+                                              .colorScheme
+                                              .secondary),
+                                );
+                              },
                             ),
                           )
                         : Container(),
@@ -172,7 +205,7 @@ class _RunWorkoutState extends ConsumerState<RunWorkout> {
                   ),
                 ),
                 SizedBox(
-                  height: 10,
+                  height: 20,
                 ),
                 Stack(
                   alignment: Alignment.center,
@@ -206,7 +239,7 @@ class _RunWorkoutState extends ConsumerState<RunWorkout> {
                   ],
                 ),
                 SizedBox(
-                  height: 15,
+                  height: 20,
                 ),
                 Text("Exercises left"),
                 Padding(
@@ -215,7 +248,7 @@ class _RunWorkoutState extends ConsumerState<RunWorkout> {
                     totalSteps:
                         widget.workouts[currentWorkout].exercises.length,
                     padding: 2,
-                    currentStep: currentExercise,
+                    currentStep: currentExercise + 1,
                     roundedEdges: Radius.circular(5),
                     selectedColor: Theme.of(context).colorScheme.primary,
                     unselectedColor: Theme.of(context).colorScheme.secondary,

@@ -1,13 +1,19 @@
 Doing: 
-run workout page
-view meal page
+user stats page
+saved workouts, my workouts pages
+workout streaks
 
 Next: 
-saved workouts, my workouts pages
 edit profile page
-fix registration issue
+add amounts for meal ingredients
+
 
 Done:
+long press posts for options
+fix discover page
+view meal page 
+run workout page
+update workout widget
 discover page
 meal widget
 create meal post page

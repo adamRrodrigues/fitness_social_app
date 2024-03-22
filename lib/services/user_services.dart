@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_social_app/models/user_model.dart';
+import 'package:fitness_social_app/models/user_stats.dart';
 
 class UserServices {
   CollectionReference users = FirebaseFirestore.instance.collection('users');
@@ -91,5 +92,17 @@ class UserServices {
     List<String> following = querySnapshot.docs.map((e) => e.id).toList();
 
     return following;
+  }
+
+  Future createUserStats(String userId) async {
+    await FirebaseFirestore.instance.collection('user_stats').doc(userId).set(
+        UserStats(
+                uid: userId,
+                userWeight: 0,
+                userHeight: 0,
+                steps: 0,
+                workoutStreak: 0,
+                achievements: List.empty())
+            .toMap());
   }
 }
