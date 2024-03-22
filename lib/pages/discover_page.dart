@@ -128,13 +128,17 @@ class _DiscoverPageState extends ConsumerState<DiscoverPage>
                           itemBuilder: (context, index) {
                             final thisWorkout =
                                 workoutPostServices.mapDocPost(data[index]);
-                            return SizedBox(
-                                // height: 330,
-                                width: 370,
-                                child: WorkoutWidget(
-                                  workoutModel: thisWorkout,
-                                  mini: false,
-                                ));
+                            try {
+                              return SizedBox(
+                                  // height: 330,
+                                  width: 370,
+                                  child: WorkoutWidget(
+                                    workoutModel: thisWorkout,
+                                    mini: false,
+                                  ));
+                            } catch (e) {
+                              return Container();
+                            }
                           },
                         );
                       } else {

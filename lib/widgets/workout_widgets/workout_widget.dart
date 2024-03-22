@@ -1,8 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/models/workout_post_model.dart';
 import 'package:fitness_social_app/routing/route_constants.dart';
-import 'package:fitness_social_app/services/user_services.dart';
-import 'package:fitness_social_app/widgets/custom_start_widget.dart';
+import 'package:fitness_social_app/services/post_service.dart';
+import 'package:fitness_social_app/widgets/bottom_modal_item_widget.dart';
 import 'package:fitness_social_app/widgets/image_widget.dart';
 import 'package:fitness_social_app/widgets/mini_profie.dart';
 import 'package:fitness_social_app/widgets/pill_widget.dart';
@@ -24,6 +25,7 @@ class WorkoutWidget extends ConsumerWidget {
   final bool selection;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    User? user = ref.read(userProvider);
     return GestureDetector(
       onTap: () async {
         if (selection) {
@@ -33,6 +35,59 @@ class WorkoutWidget extends ConsumerWidget {
           context.pushNamed(RouteConstants.viewWorkoutScreen,
               extra: workoutModel);
         }
+      },
+      onLongPress: () {
+        showModalBottomSheet(
+          context: context,
+          isScrollControlled: true,
+          showDragHandle: true,
+          useSafeArea: true,
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+          builder: (context) {
+            return Padding(
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom),
+              child: ListView(
+                shrinkWrap: true,
+                children: [
+                  workoutModel.uid == user!.uid
+                      ? GestureDetector(
+                          onTap: () async {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              },
+                            );
+                            await WorkoutPostServices()
+                                .deletePost(workoutModel.postId);
+                            if (context.mounted) {
+                              context.pop();
+                            }
+                          },
+                          child: const BottomModalItem(
+                            text: "Delete This Post",
+                            iconRequired: true,
+                            icon: Icons.delete_rounded,
+                          ))
+                      : Container(),
+                  GestureDetector(
+                      onTap: () {
+                        context.pop();
+                      },
+                      child: const BottomModalItem(
+                        text: "Share",
+                        iconRequired: true,
+                        icon: Icons.share_rounded,
+                      ))
+                ],
+              ),
+            );
+          },
+        );
       },
       child: Container(
         padding: const EdgeInsets.all(8.0),
