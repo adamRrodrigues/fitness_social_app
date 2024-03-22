@@ -366,7 +366,7 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost> {
                                 child: CustomTextField(
                                     focusNode: focusNode,
                                     textController: ingredientController,
-                                    hintText: 'add an ingredient'),
+                                    hintText: '1/2 chicken, 3/4 cup water'),
                               ),
                               FloatingActionButton(
                                 mini: true,

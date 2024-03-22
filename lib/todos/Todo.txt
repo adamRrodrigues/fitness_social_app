@@ -1,8 +1,11 @@
 Doing: 
+long press posts for options
 saved workouts, my workouts pages
 
 Next: 
 edit profile page
+add amounts for meal ingredients
+
 
 Done:
 fix discover page
@@ -12,4 +15,3 @@ update workout widget
 discover page
 meal widget
 create meal post page
-fix registration issue(in auth check have check if user is registering > if yes show different page that shows user account is being set up > go to home page)
