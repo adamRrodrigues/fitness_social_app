@@ -1,5 +1,5 @@
 Doing: 
-long press posts for options
+user stats page
 saved workouts, my workouts pages
 
 Next: 
@@ -8,6 +8,7 @@ add amounts for meal ingredients
 
 
 Done:
+long press posts for options
 fix discover page
 view meal page 
 run workout page

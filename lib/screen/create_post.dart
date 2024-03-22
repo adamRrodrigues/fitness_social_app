@@ -7,12 +7,9 @@ import 'package:fitness_social_app/utlis/utils.dart';
 import 'package:fitness_social_app/widgets/bottom_modal_item_widget.dart';
 import 'package:fitness_social_app/widgets/custom_button.dart';
 import 'package:fitness_social_app/widgets/text_widget.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:modals/modals.dart';
 
 class CreatePost extends ConsumerStatefulWidget {
   const CreatePost({Key? key}) : super(key: key);

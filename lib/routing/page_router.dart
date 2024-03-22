@@ -18,6 +18,7 @@ import 'package:fitness_social_app/screen/run_workou.dart';
 import 'package:fitness_social_app/screen/search_meals.dart';
 import 'package:fitness_social_app/screen/search_workouts.dart';
 import 'package:fitness_social_app/screen/user_page.dart';
+import 'package:fitness_social_app/screen/user_stats_screen.dart';
 import 'package:fitness_social_app/screen/view_meal_plan.dart';
 import 'package:fitness_social_app/screen/view_meal_screen.dart';
 import 'package:fitness_social_app/screen/view_post.dart';
@@ -217,6 +218,17 @@ final GoRouter appRouter = GoRouter(
                 return CupertinoPage(
                     child: ViewMealScreen(
                   mealModel: meal,
+                ));
+              },
+            ),
+            GoRoute(
+              path: 'viewUserStatsScreen/:id',
+              name: RouteConstants.viewUserStatsScreen,
+              pageBuilder: (context, state) {
+                final postId = state.pathParameters['id'];
+                return CupertinoPage(
+                    child: UserStatsScreen(
+                  uid: postId!,
                 ));
               },
             ),

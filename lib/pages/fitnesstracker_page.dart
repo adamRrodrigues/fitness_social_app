@@ -19,7 +19,8 @@ class FitnesstrackerPage extends ConsumerStatefulWidget {
   _FitnesstrackerPageState createState() => _FitnesstrackerPageState();
 }
 
-class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage> {
+class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage>
+    with AutomaticKeepAliveClientMixin {
   DateTime now = DateTime.now();
   int currentDay = 0;
   DateTime today = DateTime.now();
@@ -78,7 +79,10 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage> {
               Padding(
                 padding: const EdgeInsets.only(right: 16.0),
                 child: GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    context.pushNamed(RouteConstants.viewUserStatsScreen,
+                        pathParameters: {'id': user.uid});
+                  },
                   child: Icon(Icons.bar_chart_rounded),
                 ),
               )
@@ -131,44 +135,88 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage> {
                                 const SizedBox(
                                   height: 30,
                                 ),
-                                const ProgressWidget(
-                                    type: 'steps',
-                                    value: 2000,
-                                    color: Color(0xffCDFAD5)),
+                                const CircularProgressIndicator()
                               ],
                             ),
                           ),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Material(
-                          elevation: 2,
-                          borderRadius: BorderRadius.circular(20),
-                          child: Container(
-                            height: 300,
-                            decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.surface,
-                                borderRadius: BorderRadius.circular(20)),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  "Workout Streak",
-                                  style: Theme.of(context).textTheme.titleLarge,
+                      FutureBuilder(
+                        future: FirebaseFirestore.instance
+                            .collection('user_stats')
+                            .doc(user.uid)
+                            .get(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData &&
+                              snapshot.connectionState ==
+                                  ConnectionState.done) {
+                            final workoutStreak =
+                                snapshot.data!.get('workoutStreak');
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Material(
+                                elevation: 2,
+                                borderRadius: BorderRadius.circular(20),
+                                child: Container(
+                                  height: 300,
+                                  decoration: BoxDecoration(
+                                      color:
+                                          Theme.of(context).colorScheme.surface,
+                                      borderRadius: BorderRadius.circular(20)),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "Workout Streak",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleLarge,
+                                      ),
+                                      const SizedBox(
+                                        height: 30,
+                                      ),
+                                      ProgressWidget(
+                                          type: 'days',
+                                          value: workoutStreak.toDouble(),
+                                          maxValue: 7,
+                                          color: Color(0xffFF8080)),
+                                    ],
+                                  ),
                                 ),
-                                const SizedBox(
-                                  height: 30,
+                              ),
+                            );
+                          } else {
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Material(
+                                elevation: 2,
+                                borderRadius: BorderRadius.circular(20),
+                                child: Container(
+                                  height: 300,
+                                  decoration: BoxDecoration(
+                                      color:
+                                          Theme.of(context).colorScheme.surface,
+                                      borderRadius: BorderRadius.circular(20)),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "Workout Streak",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleLarge,
+                                      ),
+                                      const SizedBox(
+                                        height: 30,
+                                      ),
+                                      const CircularProgressIndicator()
+                                    ],
+                                  ),
                                 ),
-                                const ProgressWidget(
-                                    type: 'days',
-                                    value: 3,
-                                    maxValue: 7,
-                                    color: Color(0xffFF8080)),
-                              ],
-                            ),
-                          ),
-                        ),
+                              ),
+                            );
+                          }
+                        },
                       ),
                     ],
                   ),
@@ -247,4 +295,8 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage> {
       ),
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }
