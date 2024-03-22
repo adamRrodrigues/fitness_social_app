@@ -167,9 +167,9 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage>
                                 const SizedBox(
                                   height: 30,
                                 ),
-                                const ProgressWidget(
+                                ProgressWidget(
                                     type: 'steps',
-                                    value: 2500,
+                                    value: _steps,
                                     color: Color(0xffFF8080)),
                               ],
                             ),
