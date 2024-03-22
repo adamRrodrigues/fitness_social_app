@@ -123,7 +123,7 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage>
                           child: Container(
                             height: 300,
                             decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.surface,
+                                color: Theme.of(context)  .colorScheme.surface,
                                 borderRadius: BorderRadius.circular(20)),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -135,7 +135,10 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage>
                                 const SizedBox(
                                   height: 30,
                                 ),
-                                const CircularProgressIndicator()
+                                const ProgressWidget(
+                                          type: 'steps',
+                                          value: 2500,
+                                          color: Color(0xffFF8080)),
                               ],
                             ),
                           ),

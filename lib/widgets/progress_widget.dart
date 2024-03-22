@@ -43,6 +43,7 @@ class ProgressWidget extends StatelessWidget {
               height: 100,
               width: 100,
               child: CircularProgressIndicator(
+                backgroundColor: Theme.of(context).colorScheme.secondary,
                 value: value / maxValue,
                 color: color,
               ),

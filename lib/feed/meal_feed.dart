@@ -61,18 +61,8 @@ class _MealFeedState extends State<MealFeed> {
             final post = doc.data();
             return Padding(
               padding: const EdgeInsets.all(8.0),
-              child: GestureDetector(
-                onTap: () {
-                  if (widget.add) {
-                    
-                  } else {
-                    context.pushNamed(RouteConstants.viewMealScreen,
-                        extra: post);
-                  }
-                },
-                child: MealWidget(
-                  meal: post,
-                ),
+              child: MealWidget(
+                meal: post,
               ),
             );
           },
@@ -110,17 +100,8 @@ class _MealFeedState extends State<MealFeed> {
             return Container(
               width: 400,
               padding: const EdgeInsets.all(8.0),
-              child: GestureDetector(
-                onTap: () {
-                  if (widget.add) {
-                  } else {
-                    context.pushNamed(RouteConstants.viewMealScreen,
-                        extra: post);
-                  }
-                },
-                child: MealWidget(
-                  meal: post,
-                ),
+              child: MealWidget(
+                meal: post,
               ),
             );
           },

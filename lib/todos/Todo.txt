@@ -1,6 +1,7 @@
 Doing: 
 user stats page
 saved workouts, my workouts pages
+workout streaks
 
 Next: 
 edit profile page

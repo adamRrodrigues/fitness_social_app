@@ -134,7 +134,6 @@ class WorkoutWidget extends ConsumerWidget {
                 mini == false
                     ? MiniProfie(
                         userId: workoutModel.uid,
-                        optionalSubText: workoutModel.workoutName,
                       )
                     : Container(),
                 Builder(builder: (context) {
@@ -160,27 +159,28 @@ class WorkoutWidget extends ConsumerWidget {
                 }),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text("${workoutModel.exercises.length} Exercises: "),
-                ),
-                ListView.builder(
-                  itemCount: 2 > workoutModel.exercises.length
-                      ? workoutModel.exercises.length
-                      : 2,
-                  physics: NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      // leading: Icon(
-                      //   Icons.circle,
-                      // ),
-                      // minLeadingWidth: 10,
-                      dense: true,
-                      title: Text(
-                        workoutModel.exercises[index]['name'],
-                        style: Theme.of(context).textTheme.bodyMedium,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          workoutModel.workoutName,
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
                       ),
-                    );
-                  },
+                      Row(
+                        children: [
+                          workoutModel.likes.contains(user!.uid)
+                              ? Icon(Icons.bookmark_rounded)
+                              : Icon(Icons.bookmark_outline_rounded),
+                          Text(workoutModel.likeCount.toString())
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text("${workoutModel.exercises.length} Exercises"),
                 ),
               ],
             ),

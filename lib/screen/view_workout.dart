@@ -1,9 +1,7 @@
 import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:extended_image/extended_image.dart';
-import 'package:fitness_social_app/models/exercise_model.dart';
 import 'package:fitness_social_app/models/workout_post_model.dart';
 import 'package:fitness_social_app/services/post_service.dart';
-import 'package:fitness_social_app/widgets/custom_button.dart';
 import 'package:fitness_social_app/widgets/image_widget.dart';
 import 'package:fitness_social_app/widgets/pill_widget.dart';
 import 'package:fitness_social_app/widgets/workout_widgets/exercise_widget.dart';
@@ -26,6 +24,7 @@ class ViewWorkout extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.background,
       ),
       body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
         child: Column(
           // mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -86,14 +85,6 @@ class ViewWorkout extends StatelessWidget {
                 : Text('Any exercises you add will appear here')
           ],
         ),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        height: 60,
-        padding: EdgeInsets.all(8),
-        color: Colors.transparent,
-        elevation: 0,
-        child: GestureDetector(
-            child: CustomButton(buttonText: 'Save This Workout')),
       ),
     );
   }
