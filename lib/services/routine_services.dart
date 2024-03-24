@@ -38,4 +38,13 @@ class RoutineServices {
 
     return thisUser;
   }
+
+  Future removeFromWorkoutRoutine(
+      String templateId, String userWorkoutId, int day) async {
+    routines.doc(user!.uid).collection('day $day').doc('workouts').update({
+      'workouts': FieldValue.arrayRemove([
+        {'userWorkoutId': userWorkoutId, 'templateId': templateId}
+      ])
+    });
+  }
 }

@@ -38,7 +38,7 @@ class OnlineRoutineWidget extends ConsumerWidget {
           if (data['workouts'].isNotEmpty) {
             for (int i = 0; i <= data['workouts'].length; i++) {
               workouts.add(['workouts'][0]);
-              // print(workouts);
+              print(workouts);
             }
           }
           return data['workouts'].isNotEmpty
@@ -56,21 +56,26 @@ class OnlineRoutineWidget extends ConsumerWidget {
                           if (snapshot.hasData &&
                               snapshot.connectionState ==
                                   ConnectionState.done) {
-                            Map<String, dynamic> thisWorkout =
-                                snapshot.data!.data() as Map<String, dynamic>;
-
-                            final WorkoutModel mappedWorkout = RoutineServices()
-                                .mapSingleRoutineWorkout(thisWorkout);
-
-                            if (routinesStored
-                                    .routines[currentDay].workouts.length !=
-                                data['workouts'].length) {
-                              routinesStored.addToRoutine(
-                                  currentDay, mappedWorkout);
-                            }
                             try {
+                              Map<String, dynamic> thisWorkout =
+                                  snapshot.data!.data() as Map<String, dynamic>;
+
+                              final WorkoutModel mappedWorkout =
+                                  RoutineServices()
+                                      .mapSingleRoutineWorkout(thisWorkout);
+
+                              if (routinesStored
+                                      .routines[currentDay].workouts.length !=
+                                  data['workouts'].length) {
+                                routinesStored.addToRoutine(
+                                    currentDay, mappedWorkout);
+                              }
                               return WorkoutWidget(workoutModel: mappedWorkout);
                             } catch (e) {
+                              RoutineServices().removeFromWorkoutRoutine(
+                                  data['workouts'][index]['templateId'],
+                                  data['workouts'][index]['userWorkoutId'],
+                                  currentDay);
                               return Container();
                             }
                           } else {
