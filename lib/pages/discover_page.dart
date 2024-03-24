@@ -1,9 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fitness_social_app/feed/meal_feed.dart';
 import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/routing/route_constants.dart';
-import 'package:fitness_social_app/services/feed_services.dart';
 import 'package:fitness_social_app/services/meal_service.dart';
 import 'package:fitness_social_app/services/post_service.dart';
 import 'package:fitness_social_app/services/user_services.dart';
@@ -56,7 +54,7 @@ class _DiscoverPageState extends ConsumerState<DiscoverPage>
             },
             child: ListView(
               // crossAxisAlignment: CrossAxisAlignment.start,
-              physics: BouncingScrollPhysics(),
+              physics: const BouncingScrollPhysics(),
               children: [
                 section(context, "People"),
                 FutureBuilder(
@@ -72,7 +70,7 @@ class _DiscoverPageState extends ConsumerState<DiscoverPage>
                         child: ListView.builder(
                           itemCount: data.length > 5 ? 5 : data.length,
                           shrinkWrap: true,
-                          physics: BouncingScrollPhysics(),
+                          physics: const BouncingScrollPhysics(),
                           scrollDirection: Axis.horizontal,
                           itemBuilder: (context, index) {
                             final thisUser =
@@ -123,7 +121,7 @@ class _DiscoverPageState extends ConsumerState<DiscoverPage>
                         return ListView.builder(
                           itemCount: data.length > 5 ? 5 : data.length,
                           shrinkWrap: true,
-                          physics: BouncingScrollPhysics(),
+                          physics: const BouncingScrollPhysics(),
                           scrollDirection: Axis.horizontal,
                           itemBuilder: (context, index) {
                             final thisWorkout =
@@ -162,7 +160,7 @@ class _DiscoverPageState extends ConsumerState<DiscoverPage>
                         return ListView.builder(
                           itemCount: data.length > 5 ? 5 : data.length,
                           shrinkWrap: true,
-                          physics: BouncingScrollPhysics(),
+                          physics: const BouncingScrollPhysics(),
                           scrollDirection: Axis.horizontal,
                           itemBuilder: (context, index) {
                             final thisMeal =

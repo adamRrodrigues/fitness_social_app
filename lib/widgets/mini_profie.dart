@@ -61,7 +61,7 @@ class _MiniProfieState extends State<MiniProfie> {
                             ? Text(
                                 widget.optionalSubText!,
                               )
-                            : Text(''),
+                            : const Text(''),
                       ],
                     ),
                   ),
@@ -93,7 +93,7 @@ class _MiniProfieState extends State<MiniProfie> {
                           ? Text(
                               widget.optionalSubText!,
                             )
-                          : Text(''),
+                          : const Text(''),
                     ],
                   ),
                 ),

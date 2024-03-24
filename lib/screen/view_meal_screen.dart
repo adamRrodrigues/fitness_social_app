@@ -58,7 +58,7 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
               maxLines: 4,
             ),
             Padding(
-              padding: EdgeInsets.all(15.0),
+              padding: const EdgeInsets.all(15.0),
               child: Text("Ingredients:", style: Theme.of(context).textTheme.titleMedium,),
             ),
             ListView.builder(

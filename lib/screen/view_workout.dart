@@ -70,7 +70,7 @@ class ViewWorkout extends StatelessWidget {
             ),
             workoutModel.exercises.isNotEmpty
                 ? ListView.builder(
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     itemCount: workoutModel.exercises.length,
                     itemBuilder: (context, index) {
@@ -82,7 +82,7 @@ class ViewWorkout extends StatelessWidget {
                       );
                     },
                   )
-                : Text('Any exercises you add will appear here')
+                : const Text('Any exercises you add will appear here')
           ],
         ),
       ),

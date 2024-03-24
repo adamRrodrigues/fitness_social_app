@@ -51,13 +51,13 @@ class WorkoutWidget extends ConsumerWidget {
               child: ListView(
                 shrinkWrap: true,
                 children: [
-                  workoutModel.uid == user!.uid
+                  workoutModel.uid == user.uid
                       ? GestureDetector(
                           onTap: () async {
                             showDialog(
                               context: context,
                               builder: (context) {
-                                return Center(
+                                return const Center(
                                   child: CircularProgressIndicator(),
                                 );
                               },
@@ -108,7 +108,7 @@ class WorkoutWidget extends ConsumerWidget {
                   height: 200,
                   width: double.infinity,
                   child: ClipRRect(
-                    borderRadius: BorderRadius.only(
+                    borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(10),
                         topRight: Radius.circular(10)),
                     child: ImageWidget(url: workoutModel.imageUrl),
@@ -170,8 +170,8 @@ class WorkoutWidget extends ConsumerWidget {
                       Row(
                         children: [
                           workoutModel.likes.contains(user!.uid)
-                              ? Icon(Icons.bookmark_rounded)
-                              : Icon(Icons.bookmark_outline_rounded),
+                              ? const Icon(Icons.bookmark_rounded)
+                              : const Icon(Icons.bookmark_outline_rounded),
                           Text(workoutModel.likeCount.toString())
                         ],
                       ),

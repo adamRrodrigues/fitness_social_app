@@ -22,7 +22,7 @@ ThemeData lightTheme = ThemeData(
         secondary: Color(0xffF0F3FF),
         onSecondary: Colors.black,
         surface: Color(0xffE2E2E4)),
-    textTheme: TextTheme(
+    textTheme: const TextTheme(
       titleLarge: TextStyle(color: Colors.black),
       titleMedium: TextStyle(color: Colors.black),
       bodyMedium: TextStyle(color: Colors.black87),

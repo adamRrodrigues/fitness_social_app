@@ -45,7 +45,7 @@ class _FetchingWorkoutScreenState extends State<FetchingWorkoutScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print('id: ' + widget.workoutId);
+    print('id: ${widget.workoutId}');
     return Scaffold(
       body: Center(
         child: Builder(builder: (context) {
@@ -55,9 +55,9 @@ class _FetchingWorkoutScreenState extends State<FetchingWorkoutScreen> {
                 context.pop();
               },
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 10),
                 height: 40,
-                child: CustomButton(
+                child: const CustomButton(
                   buttonText:
                       'Sorry Looks Like this Template no longer exists :(',
                 ),

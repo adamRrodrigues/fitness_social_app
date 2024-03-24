@@ -47,7 +47,7 @@ class PillWidget extends StatelessWidget {
                     onTap: () {
                       delete();
                     },
-                    child: Center(
+                    child: const Center(
                         child: Text(
                       '  X',
                       style: TextStyle(

@@ -4,13 +4,11 @@ class ProgressWidget extends StatelessWidget {
   const ProgressWidget(
       {super.key,
       required this.value,
-      required this.type,
       this.maxValue = 3000,
       this.color = Colors.greenAccent});
 
   final double value;
   final double maxValue;
-  final String type;
   final Color color;
 
   @override
@@ -29,11 +27,7 @@ class ProgressWidget extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    '${value.toInt().toString()}',
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                  Text(
-                    '$type',
+                    value.toInt().toString(),
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ],
@@ -46,6 +40,7 @@ class ProgressWidget extends StatelessWidget {
                 backgroundColor: Theme.of(context).colorScheme.secondary,
                 value: value / maxValue,
                 color: color,
+                strokeCap: StrokeCap.round,
               ),
             ),
           ],

@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:fitness_social_app/models/workout_post_model.dart';
 import 'package:fitness_social_app/widgets/custom_button.dart';
 import 'package:fitness_social_app/widgets/image_widget.dart';
@@ -82,183 +84,188 @@ class _RunWorkoutState extends ConsumerState<RunWorkout> {
       body: Builder(builder: (context) {
         if (!showDone) {
           return SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    widget.workouts.length > 1
-                        ? Container(
-                            // height: 400,
-                            width: 70,
-                            padding: const EdgeInsets.all(16.0),
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              itemCount: widget.workouts.length,
-                              itemBuilder: (context, index) {
-                                return TimelineTile(
-                                  isFirst: index == 0 ? true : false,
-                                  isLast: widget.workouts.length == index + 1
-                                      ? true
-                                      : false,
-                                  beforeLineStyle: LineStyle(
-                                      color: currentWorkout >= index
-                                          ? Theme.of(context)
-                                              .colorScheme
-                                              .primary
-                                          : Theme.of(context)
-                                              .colorScheme
-                                              .secondary),
-                                  indicatorStyle: IndicatorStyle(
-                                      width: 25,
-                                      height: 25,
-                                      color: currentWorkout >= index
-                                          ? Theme.of(context)
-                                              .colorScheme
-                                              .primary
-                                          : Theme.of(context)
-                                              .colorScheme
-                                              .secondary),
-                                  afterLineStyle: LineStyle(
-                                      color: currentWorkout >= index
-                                          ? Theme.of(context)
-                                              .colorScheme
-                                              .primary
-                                          : Theme.of(context)
-                                              .colorScheme
-                                              .secondary),
-                                );
-                              },
-                            ),
-                          )
-                        : Container(),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Center(
-                          child: SizedBox(
-                            height: 400,
-                            width: double.infinity,
-                            child: ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: ImageWidget(
-                                    url: widget
-                                        .workouts[currentWorkout].imageUrl)),
+            physics: BouncingScrollPhysics(),
+            child: Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  widget.workouts.length > 1
+                      ? Container(
+                          height: 60,
+                          // width: 60,
+                          padding: const EdgeInsets.all(16.0),
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: widget.workouts.length,
+                            itemBuilder: (context, index) {
+                              return TimelineTile(
+                                // alignment: TimelineAlign.center,
+                                axis: TimelineAxis.horizontal,
+                                isFirst: index == 0 ? true : false,
+                                isLast: widget.workouts.length == index + 1
+                                    ? true
+                                    : false,
+                                beforeLineStyle: LineStyle(
+                                    color: currentWorkout >= index
+                                        ? Theme.of(context).colorScheme.primary
+                                        : Theme.of(context)
+                                            .colorScheme
+                                            .secondary),
+                                indicatorStyle: IndicatorStyle(
+                                    width: 20,
+                                    height: 20,
+                                    color: currentWorkout >= index
+                                        ? Theme.of(context).colorScheme.primary
+                                        : Theme.of(context)
+                                            .colorScheme
+                                            .secondary),
+                                afterLineStyle: LineStyle(
+                                    color: currentWorkout >= index
+                                        ? Theme.of(context).colorScheme.primary
+                                        : Theme.of(context)
+                                            .colorScheme
+                                            .secondary),
+                              );
+                            },
                           ),
-                        ),
+                        )
+                      : Container(),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Center(
+                      child: SizedBox(
+                        height: 300,
+                        child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: ImageWidget(
+                                url: widget.workouts[currentWorkout].imageUrl)),
                       ),
                     ),
-                  ],
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Center(
-                  child: Text(
-                    widget.workouts[currentWorkout].exercises[currentExercise]
-                        ['name'],
-                    style: Theme.of(context).textTheme.titleLarge,
                   ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      showDragHandle: true,
-                      useSafeArea: true,
-                      shape: const RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.vertical(top: Radius.circular(20))),
-                      builder: (context) {
-                        return Padding(
-                          padding: EdgeInsets.only(
-                              bottom: MediaQuery.of(context).viewInsets.bottom),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              widget.workouts[currentWorkout]
-                                  .exercises[currentExercise]['description'],
-                              style: Theme.of(context).textTheme.bodyLarge,
-
-                              // overflow: TextOverflow.ellipsis,
-                              // maxLines: 3,
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.all(8.0),
-                    width: double.infinity,
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Center(
                     child: Text(
                       widget.workouts[currentWorkout].exercises[currentExercise]
-                          ['description'],
-                      style: Theme.of(context).textTheme.bodySmall,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 2,
+                          ['name'],
+                      style: Theme.of(context).textTheme.titleLarge,
                     ),
                   ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    CircularStepProgressIndicator(
-                      width: 100,
-                      height: 100,
-                      totalSteps: widget.workouts[currentWorkout]
-                          .exercises[currentExercise]['sets'],
-                      currentStep: currentSet,
-                      selectedColor: Theme.of(context).colorScheme.primary,
-                      unselectedColor: Theme.of(context).colorScheme.secondary,
-                      roundedCap: (p0, p1) => true,
-                      // padding:3.75,
-                    ),
-                    Center(
-                      child: Column(
-                        children: [
-                          Text(
-                            "${widget.workouts[currentWorkout].exercises[currentExercise]['reps']}x \n reps",
-                            style: Theme.of(context).textTheme.titleMedium,
-                            textAlign: TextAlign.center,
-                          ),
-                          // Text(
-                          //   "reps",
-                          //   style: Theme.of(context).textTheme.titleMedium,
-                          // ),
-                        ],
+                  GestureDetector(
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        showDragHandle: true,
+                        useSafeArea: true,
+                        shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(20))),
+                        builder: (context) {
+                          return Container(
+                            constraints: BoxConstraints(
+                              minHeight: 200
+                            ),
+                            padding: EdgeInsets.only(
+                                bottom:
+                                    MediaQuery.of(context).viewInsets.bottom),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                widget.workouts[currentWorkout]
+                                    .exercises[currentExercise]['description'],
+                                style: Theme.of(context).textTheme.bodyLarge,
+
+                                // overflow: TextOverflow.ellipsis,
+                                // maxLines: 3,
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(8.0),
+                      width: double.infinity,
+                      child: Text(
+                        widget.workouts[currentWorkout]
+                            .exercises[currentExercise]['description'],
+                        style: Theme.of(context).textTheme.bodySmall,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
                       ),
                     ),
-                  ],
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Text("Exercises left"),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: StepProgressIndicator(
-                    totalSteps:
-                        widget.workouts[currentWorkout].exercises.length,
-                    padding: 2,
-                    currentStep: currentExercise + 1,
-                    roundedEdges: Radius.circular(5),
-                    selectedColor: Theme.of(context).colorScheme.primary,
-                    unselectedColor: Theme.of(context).colorScheme.secondary,
                   ),
-                )
-              ],
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      CircularStepProgressIndicator(
+                        width: 100,
+                        height: 100,
+                        totalSteps: widget.workouts[currentWorkout]
+                            .exercises[currentExercise]['sets'],
+                        currentStep: currentSet,
+                        selectedColor: Theme.of(context).colorScheme.primary,
+                        unselectedColor:
+                            Theme.of(context).colorScheme.secondary,
+                        roundedCap: (p0, p1) => true,
+                        // padding:3.75,
+                      ),
+                      Center(
+                        child: Column(
+                          children: [
+                            Text(
+                              "${widget.workouts[currentWorkout].exercises[currentExercise]['reps']}x \n reps",
+                              style: Theme.of(context).textTheme.titleMedium,
+                              textAlign: TextAlign.center,
+                            ),
+                            // Text(
+                            //   "reps",
+                            //   style: Theme.of(context).textTheme.titleMedium,
+                            // ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(
+                        "Weight: ${widget.workouts[currentWorkout].exercises[currentExercise]['weight'].toString()} kgs"),
+                  ),
+                  const Padding(
+                    padding:  EdgeInsets.all(8.0),
+                    child:  Text("Exercises left"),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: StepProgressIndicator(
+                      totalSteps:
+                          widget.workouts[currentWorkout].exercises.length,
+                      padding: 2,
+                      currentStep: currentExercise + 1,
+                      roundedEdges: const Radius.circular(5),
+                      selectedColor: Theme.of(context).colorScheme.primary,
+                      unselectedColor: Theme.of(context).colorScheme.secondary,
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
         } else {
-          return Center(
+          return const Center(
             child: Text("Workout Completed"),
           );
         }

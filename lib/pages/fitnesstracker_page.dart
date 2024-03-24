@@ -63,17 +63,17 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage>
       body: NestedScrollView(
         headerSliverBuilder: (context, innerBoxIsScrolled) => [
           SliverAppBar(
-            title: Text("My Fitness"),
+            title: const Text("My Fitness"),
             elevation: 0,
             backgroundColor: Theme.of(context).colorScheme.background,
             floating: true,
-            actionsIconTheme: IconThemeData(size: 28),
+            actionsIconTheme: const IconThemeData(size: 28),
             actions: [
               Padding(
                 padding: const EdgeInsets.only(right: 16.0),
                 child: GestureDetector(
                   onTap: () {},
-                  child: Icon(Icons.bookmark_rounded),
+                  child: const Icon(Icons.bookmark_rounded),
                 ),
               ),
               Padding(
@@ -83,7 +83,7 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage>
                     context.pushNamed(RouteConstants.viewUserStatsScreen,
                         pathParameters: {'id': user.uid});
                   },
-                  child: Icon(Icons.bar_chart_rounded),
+                  child: const Icon(Icons.bar_chart_rounded),
                 ),
               )
             ],
@@ -123,7 +123,7 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage>
                           child: Container(
                             height: 300,
                             decoration: BoxDecoration(
-                                color: Theme.of(context)  .colorScheme.surface,
+                                color: Theme.of(context).colorScheme.surface,
                                 borderRadius: BorderRadius.circular(20)),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -136,25 +136,23 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage>
                                   height: 30,
                                 ),
                                 const ProgressWidget(
-                                          type: 'steps',
-                                          value: 2500,
-                                          color: Color(0xffFF8080)),
+                                    value: 2500, color: Color(0xffFF8080)),
                               ],
                             ),
                           ),
                         ),
                       ),
-                      FutureBuilder(
-                        future: FirebaseFirestore.instance
+                      StreamBuilder(
+                        stream: FirebaseFirestore.instance
                             .collection('user_stats')
                             .doc(user.uid)
-                            .get(),
+                            .snapshots(),
                         builder: (context, snapshot) {
+                          int workoutStreak = 0;
                           if (snapshot.hasData &&
                               snapshot.connectionState ==
-                                  ConnectionState.done) {
-                            final workoutStreak =
-                                snapshot.data!.get('workoutStreak');
+                                  ConnectionState.active) {
+                            workoutStreak = snapshot.data!.get('workoutStreak');
                             return Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Material(
@@ -179,10 +177,9 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage>
                                         height: 30,
                                       ),
                                       ProgressWidget(
-                                          type: 'days',
                                           value: workoutStreak.toDouble(),
                                           maxValue: 7,
-                                          color: Color(0xffFF8080)),
+                                          color: Colors.greenAccent),
                                     ],
                                   ),
                                 ),
@@ -212,7 +209,10 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage>
                                       const SizedBox(
                                         height: 30,
                                       ),
-                                      const CircularProgressIndicator()
+                                      ProgressWidget(
+                                          value: workoutStreak.toDouble(),
+                                          maxValue: 7,
+                                          color: Colors.greenAccent),
                                     ],
                                   ),
                                 ),
@@ -277,7 +277,7 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage>
                     currentDay: currentDay,
                   );
                 } else {
-                  return Text('Fetching routine');
+                  return const Text('Fetching routine');
                 }
               })
             ],

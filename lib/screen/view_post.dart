@@ -150,7 +150,7 @@ class _ViewPostState extends ConsumerState<ViewPost> {
                       return Padding(
                         padding: EdgeInsets.only(
                             bottom: MediaQuery.of(context).viewInsets.bottom),
-                        child: Container(
+                        child: SizedBox(
                           height: 600,
                           child: Stack(
                             fit: StackFit.expand,
@@ -162,7 +162,7 @@ class _ViewPostState extends ConsumerState<ViewPost> {
                                     ? SizedBox(
                                         height: 520,
                                         child: ListView.builder(
-                                          physics: BouncingScrollPhysics(),
+                                          physics: const BouncingScrollPhysics(),
                                           shrinkWrap: true,
 
                                           itemCount: comments.length,
@@ -276,7 +276,7 @@ class _ViewPostState extends ConsumerState<ViewPost> {
               const Icon(Icons.share_outlined),
             ],
           ),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
         ],

@@ -39,7 +39,7 @@ class _AuthStateState extends ConsumerState<AuthState> {
               return const MainPage();
             } else {
               createAccount();
-              return Center(
+              return const Center(
                 child: Text("Creating Your Account"),
               );
             }

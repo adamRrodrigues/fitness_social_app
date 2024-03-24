@@ -53,7 +53,7 @@ class _HomePageState extends ConsumerState<HomePage>
                       return Expanded(
                         child: Center(
                           child: ListView(
-                            children: [
+                            children: const [
                               Center(
                                 child: Text('You Are Not Following Any users'),
                               ),
@@ -63,7 +63,7 @@ class _HomePageState extends ConsumerState<HomePage>
                       );
                     }
                   } else {
-                    return Center(
+                    return const Center(
                       child: CircularProgressIndicator(),
                     );
                   }

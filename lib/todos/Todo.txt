@@ -1,14 +1,16 @@
 Doing: 
-user stats page
+fix create exercise page
 saved workouts, my workouts pages
 workout streaks
 
 Next: 
+user stats page
 edit profile page
-add amounts for meal ingredients
 
 
 Done:
+add weights to run workout
+add amounts for meal ingredients
 long press posts for options
 fix discover page
 view meal page 

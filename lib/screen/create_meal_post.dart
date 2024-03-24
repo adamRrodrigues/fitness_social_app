@@ -160,14 +160,14 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost> {
                           children: [
                             GestureDetector(
                               onTap: () => selectImage('Camera'),
-                              child: BottomModalItem(
+                              child: const BottomModalItem(
                                   text: "Click a picture",
                                   icon: Icons.photo_outlined),
                             ),
                             const Divider(),
                             GestureDetector(
                               onTap: () => selectImage('Gallery'),
-                              child: BottomModalItem(
+                              child: const BottomModalItem(
                                   text: "Choose from gallery",
                                   icon: Icons.camera_alt_outlined),
                             ),
@@ -261,12 +261,12 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost> {
                                               categoryController.text = '';
                                             });
                                           },
-                                          child: Icon(Icons.add),
+                                          child: const Icon(Icons.add),
                                         ),
                                       ],
                                     ),
-                                    Divider(),
-                                    Center(
+                                    const Divider(),
+                                    const Center(
                                       child: Text("Popular Tags: "),
                                     ),
                                     Expanded(
@@ -288,7 +288,7 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost> {
                                                   title:
                                                       Text(popularTags[index]),
                                                 ),
-                                                Divider()
+                                                const Divider()
                                               ],
                                             ),
                                           );
@@ -301,7 +301,7 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost> {
                             },
                           );
                         },
-                        child: Icon(Icons.add),
+                        child: const Icon(Icons.add),
                       )
                     ],
                   ),
@@ -318,7 +318,7 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost> {
                     ? Expanded(
                         child: ListView.builder(
                           shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
+                          physics: const NeverScrollableScrollPhysics(),
                           itemCount: mealDraft!.ingredients.length,
                           itemBuilder: (context, index) {
                             return Column(
@@ -326,7 +326,7 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost> {
                                 ListTile(
                                   title: Text(mealDraft!.ingredients[index]),
                                 ),
-                                Divider()
+                                const Divider()
                               ],
                             );
                           },
@@ -377,12 +377,12 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost> {
                                     ingredientController.text = '';
                                   });
                                 },
-                                child: Icon(Icons.add),
+                                child: const Icon(Icons.add),
                               ),
                             ],
                           ),
-                          Divider(),
-                          Center(
+                          const Divider(),
+                          const Center(
                             child: Text("Popular Ingredients: "),
                           ),
                           Expanded(
@@ -403,7 +403,7 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost> {
                                       ListTile(
                                         title: Text(commonIngredients[index]),
                                       ),
-                                      Divider()
+                                      const Divider()
                                     ],
                                   ),
                                 );

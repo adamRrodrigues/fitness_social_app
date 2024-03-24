@@ -47,7 +47,7 @@ class _WorkoutFeedState extends ConsumerState<WorkoutFeed>
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           physics: const BouncingScrollPhysics(),
           emptyBuilder: (context) {
-            return Center(
+            return const Center(
               child: Text('Nothing To See Here'),
             );
           },
@@ -83,7 +83,7 @@ class _WorkoutFeedState extends ConsumerState<WorkoutFeed>
           scrollDirection: Axis.horizontal,
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           emptyBuilder: (context) {
-            return Center(
+            return const Center(
               child: Text('Nothing To See Here'),
             );
           },

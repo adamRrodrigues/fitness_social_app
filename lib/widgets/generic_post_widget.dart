@@ -80,7 +80,7 @@ class _GenericPostWidgetState extends ConsumerState<GenericPostWidget> {
                             icon: Icons.delete_rounded,
                           ))
                       : Container(),
-                  Divider(),
+                  const Divider(),
                   GestureDetector(
                       onTap: () {
                         context.pop();

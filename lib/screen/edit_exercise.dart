@@ -7,7 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:numberpicker/numberpicker.dart';
 
 class EditExercise extends StatefulWidget {
-  EditExercise(
+  const EditExercise(
       {Key? key,
       required this.editingExercise,
       required this.exercises,
@@ -57,7 +57,7 @@ class _EditExerciseState extends State<EditExercise> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('create an exercise'),
+        title: const Text('create an exercise'),
         backgroundColor: Theme.of(context).colorScheme.background,
         elevation: 0,
       ),
@@ -67,12 +67,12 @@ class _EditExerciseState extends State<EditExercise> {
           children: [
             CustomTextField(
                 textController: nameController, hintText: 'exercise name'),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             CustomTextField(
                 textController: descriptionController, hintText: 'description'),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Row(
@@ -147,7 +147,7 @@ class _EditExerciseState extends State<EditExercise> {
                       },
                     ),
                     Text('Weight: $weightValue' 'kgs'),
-                    SizedBox(
+                    const SizedBox(
                       height: 40,
                     ),
                     Padding(
@@ -227,7 +227,7 @@ class _EditExerciseState extends State<EditExercise> {
                       },
                     ),
                     Text('Hours: $hours'),
-                    SizedBox(
+                    const SizedBox(
                       height: 40,
                     ),
                     Padding(
@@ -288,7 +288,7 @@ class _EditExerciseState extends State<EditExercise> {
                 );
               }
             }),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
           ],
@@ -296,7 +296,7 @@ class _EditExerciseState extends State<EditExercise> {
       ),
       bottomNavigationBar: BottomAppBar(
         height: 60,
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         color: Colors.transparent,
         elevation: 0,
         child: GestureDetector(
@@ -334,7 +334,7 @@ class _EditExerciseState extends State<EditExercise> {
                     .snackBarMessage('Exercise must have a name', Colors.red));
               }
             },
-            child: CustomButton(buttonText: 'Done')),
+            child: const CustomButton(buttonText: 'Done')),
       ),
     );
   }

@@ -21,7 +21,7 @@ ThemeData darkTheme = ThemeData(
         error: Colors.redAccent,
         surface: Color(0xff1B1B1C)),
     textTheme: TextTheme(
-      titleLarge: TextStyle(
+      titleLarge: const TextStyle(
         color: Colors.white,
         fontSize: 20,
       ),

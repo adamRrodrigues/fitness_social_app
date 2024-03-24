@@ -18,7 +18,7 @@ class UserTile extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           // color: Theme.of(context).colorScheme.secondary,
-          color: Color.fromARGB(255, 32, 31, 31),
+          color: const Color.fromARGB(255, 32, 31, 31),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: Theme.of(context).colorScheme.primary,

@@ -38,7 +38,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
         },
         onRefresh: () async {
           Future.delayed(
-            Duration(seconds: 0),
+            const Duration(seconds: 0),
             () {
               setState(() {});
             },
@@ -151,7 +151,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                                   text: "Create a Post",
                                                   iconRequired: false,
                                                 )),
-                                            Divider(),
+                                            const Divider(),
                                             GestureDetector(
                                                 onTap: () {
                                                   context.pop();
@@ -164,7 +164,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                                   text: "Create a Workout",
                                                   iconRequired: false,
                                                 )),
-                                            Divider(),
+                                            const Divider(),
                                             GestureDetector(
                                                 onTap: () {
                                                   context.pop();

@@ -1,6 +1,5 @@
 import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/services/auth_service.dart';
-import 'package:fitness_social_app/services/user_services.dart';
 import 'package:fitness_social_app/widgets/custom_button.dart';
 import 'package:fitness_social_app/widgets/text_widget.dart';
 import 'package:flutter/material.dart';

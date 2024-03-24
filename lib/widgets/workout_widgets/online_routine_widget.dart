@@ -80,7 +80,7 @@ class OnlineRoutineWidget extends ConsumerWidget {
                         });
                   },
                 )
-              : Center(child: const Text('No Wokouts for this day'));
+              : const Center(child: Text('No Wokouts for this day'));
         } else {
           return const Center(child: CircularProgressIndicator());
         }

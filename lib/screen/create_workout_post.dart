@@ -270,12 +270,12 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                                               categoryController.text = '';
                                             });
                                           },
-                                          child: Icon(Icons.add),
+                                          child: const Icon(Icons.add),
                                         ),
                                       ],
                                     ),
-                                    Divider(),
-                                    Center(
+                                    const Divider(),
+                                    const Center(
                                       child: Text("Popular Tags: "),
                                     ),
                                     Expanded(
@@ -297,7 +297,7 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                                                   title:
                                                       Text(popularTags[index]),
                                                 ),
-                                                Divider()
+                                                const Divider()
                                               ],
                                             ),
                                           );
@@ -310,7 +310,7 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                             },
                           );
                         },
-                        child: Icon(Icons.add),
+                        child: const Icon(Icons.add),
                       )
                     ],
                   ),
@@ -321,12 +321,12 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                       textController: titleController,
                       hintText: 'Give Your Workout a Name'),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 workoutDraft!.exercises.isNotEmpty
                     ? ListView.builder(
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
                         itemCount: workoutDraft!.exercises.length,
                         itemBuilder: (context, index) {
@@ -351,14 +351,14 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                           );
                         },
                       )
-                    : Center(
+                    : const Center(
                         child: Text('Any exercises you add will appear here'))
               ],
             ),
           ),
           bottomNavigationBar: BottomAppBar(
             height: 60,
-            padding: EdgeInsets.all(8),
+            padding: const EdgeInsets.all(8),
             color: Colors.transparent,
             elevation: 0,
             child: GestureDetector(
@@ -366,7 +366,7 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                   context.pushNamed(RouteConstants.createExercise,
                       extra: workoutDraft!.exercises);
                 },
-                child: CustomButton(buttonText: 'Add Exercise')),
+                child: const CustomButton(buttonText: 'Add Exercise')),
           ),
         ),
       ),

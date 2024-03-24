@@ -169,7 +169,7 @@ class _UserProfileState extends ConsumerState<UserProfile> {
                                           userServices!.unfollowUser(
                                               widget.thisUser.uid);
                                         },
-                                        child: CustomButton(
+                                        child: const CustomButton(
                                             buttonText: "Unfollow"));
                                   } else {
                                     return GestureDetector(
@@ -181,7 +181,7 @@ class _UserProfileState extends ConsumerState<UserProfile> {
                                               .followUser(widget.thisUser.uid);
                                         },
                                         child:
-                                            CustomButton(buttonText: "Follow"));
+                                            const CustomButton(buttonText: "Follow"));
                                   }
                                 } else {
                                   return const CustomButton(
@@ -192,7 +192,7 @@ class _UserProfileState extends ConsumerState<UserProfile> {
                         }
                       }),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 30,
                     ),
                     Expanded(
@@ -202,7 +202,7 @@ class _UserProfileState extends ConsumerState<UserProfile> {
                                 pathParameters: {'id': widget.thisUser.uid},
                                 extra: 0);
                           },
-                          child: CustomButton(
+                          child: const CustomButton(
                               primary: false, buttonText: 'View Routine')),
                     ),
                   ],

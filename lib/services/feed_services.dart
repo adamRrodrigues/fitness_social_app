@@ -8,7 +8,7 @@ class FeedServices {
   List<String> following = [];
 
   Query<GenericPost> fetchPosts(uid) {
-    final postQuery;
+    final Query<GenericPost> postQuery;
     postQuery = FirebaseFirestore.instance
         .collection('generic_posts')
         .where('uid', whereIn: following)
@@ -34,7 +34,7 @@ class FeedServices {
   }
 
   Query<WorkoutModel> fetchWorkouts() {
-    final postQuery;
+    final CollectionReference<WorkoutModel> postQuery;
     postQuery = FirebaseFirestore.instance
         .collection('workout_templates_demo')
         .withConverter(
@@ -46,7 +46,7 @@ class FeedServices {
   }
 
   Query<MealModel> fetchMeals() {
-    final postQuery;
+    final CollectionReference<MealModel> postQuery;
     postQuery = FirebaseFirestore.instance
         .collection('meals_demo')
         .withConverter(

@@ -39,7 +39,7 @@ class VviewMealPlanScreenState extends State<ViewMealPlanScreen> {
 
     return Scaffold(
         appBar: AppBar(
-          title: Text("My Meal Plan"),
+          title: const Text("My Meal Plan"),
           elevation: 0,
         ),
         body: SafeArea(
@@ -76,7 +76,7 @@ class VviewMealPlanScreenState extends State<ViewMealPlanScreen> {
                     }
                     return ListView.builder(
                       shrinkWrap: true,
-                      physics: BouncingScrollPhysics(),
+                      physics: const BouncingScrollPhysics(),
                       itemCount: meals.length,
                       itemBuilder: (context, index) {
                         return ListTile(
@@ -85,12 +85,12 @@ class VviewMealPlanScreenState extends State<ViewMealPlanScreen> {
                       },
                     );
                   } else {
-                    return Center(
+                    return const Center(
                       child: Text("No meals added to this plan yet"),
                     );
                   }
                 } else {
-                  return Center(
+                  return const Center(
                     child: CircularProgressIndicator(),
                   );
                 }
@@ -103,7 +103,7 @@ class VviewMealPlanScreenState extends State<ViewMealPlanScreen> {
             padding: const EdgeInsets.all(8),
             color: Colors.transparent,
             elevation: 0,
-            child: user!.uid == widget.uid
+            child: user.uid == widget.uid
                 ? GestureDetector(
                     onTap: () {
                       context.pushNamed(RouteConstants.searchMealsScreen,

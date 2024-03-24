@@ -47,7 +47,7 @@ class MealWidget extends ConsumerWidget {
                             icon: Icons.delete_rounded,
                           ))
                       : Container(),
-                  Divider(),
+                  const Divider(),
                   GestureDetector(
                       onTap: () {
                         context.pop();
@@ -64,7 +64,7 @@ class MealWidget extends ConsumerWidget {
         );
       },
       child: Padding(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         child: Material(
           elevation: 4,
           borderRadius: BorderRadius.circular(10),
@@ -82,7 +82,7 @@ class MealWidget extends ConsumerWidget {
                     height: 200,
                     width: double.infinity,
                     child: ClipRRect(
-                      borderRadius: BorderRadius.only(
+                      borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(10),
                           topRight: Radius.circular(10)),
                       child: ImageWidget(url: meal.image),
@@ -99,11 +99,11 @@ class MealWidget extends ConsumerWidget {
                     itemCount: 3 > meal.ingredients.length
                         ? meal.ingredients.length
                         : 3,
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
                       return ListTile(
-                        leading: Icon(
+                        leading: const Icon(
                           Icons.circle,
                         ),
                         minLeadingWidth: 10,

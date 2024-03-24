@@ -25,7 +25,7 @@ class ExerciseWidget extends StatelessWidget {
                     : Icons.line_weight,
                 size: 48,
               ),
-              SizedBox(
+              const SizedBox(
                 width: 20,
               ),
               Column(
