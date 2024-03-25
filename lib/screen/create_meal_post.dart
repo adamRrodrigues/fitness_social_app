@@ -146,7 +146,7 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost> {
               )
             ],
             body: SingleChildScrollView(
-              physics: BouncingScrollPhysics(),
+              physics: const BouncingScrollPhysics(),
               child: Column(
                 children: [
                   GestureDetector(

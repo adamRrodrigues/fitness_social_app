@@ -15,7 +15,6 @@ import 'package:fitness_social_app/widgets/custom_button.dart';
 import 'package:fitness_social_app/widgets/pill_widget.dart';
 import 'package:fitness_social_app/widgets/text_widget.dart';
 import 'package:fitness_social_app/widgets/workout_widgets/exercise_widget.dart';
-import 'package:fitness_social_app/widgets/workout_widgets/local_exercise_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

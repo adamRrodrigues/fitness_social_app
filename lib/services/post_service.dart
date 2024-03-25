@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -238,7 +237,7 @@ class WorkoutPostServices {
             return Center(
               child: Column(
                 children: [
-                  Text("Creating Template"),
+                  const Text("Creating Template"),
                   CircularProgressIndicator(value: i / exercises.length),
                 ],
               ),

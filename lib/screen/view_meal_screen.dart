@@ -68,7 +68,7 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
               physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
                 return Animate(
-                  effects: [SlideEffect()],
+                  effects: const [SlideEffect()],
                   child: ListTile(
                     dense: true,
                     title: Text(

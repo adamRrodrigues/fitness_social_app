@@ -91,7 +91,7 @@ class _RunWorkoutState extends ConsumerState<RunWorkout> {
             builder: (context, showDone, child) {
               if (!showDone) {
                 return SingleChildScrollView(
-                  physics: BouncingScrollPhysics(),
+                  physics: const BouncingScrollPhysics(),
                   child: Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -194,7 +194,7 @@ class _RunWorkoutState extends ConsumerState<RunWorkout> {
                                                     fit: StackFit.passthrough,
                                                     alignment: Alignment.center,
                                                     children: [
-                                                      Center(
+                                                      const Center(
                                                         child:
                                                             CircularProgressIndicator(),
                                                       ),
@@ -206,7 +206,7 @@ class _RunWorkoutState extends ConsumerState<RunWorkout> {
                                                     ],
                                                   );
                                                 }
-                                                return Center(
+                                                return const Center(
                                                   child:
                                                       CircularProgressIndicator(),
                                                 );
@@ -256,7 +256,7 @@ class _RunWorkoutState extends ConsumerState<RunWorkout> {
                                       top: Radius.circular(20))),
                               builder: (context) {
                                 return Container(
-                                  constraints: BoxConstraints(minHeight: 200),
+                                  constraints: const BoxConstraints(minHeight: 200),
                                   padding: EdgeInsets.only(
                                       bottom: MediaQuery.of(context)
                                           .viewInsets
@@ -395,7 +395,7 @@ class _RunWorkoutState extends ConsumerState<RunWorkout> {
                             ),
                           ],
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 10,
                         ),
                         Padding(

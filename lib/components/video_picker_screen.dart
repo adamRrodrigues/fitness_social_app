@@ -69,7 +69,7 @@ class _VideoPickerScreenState extends ConsumerState<VideoPickerScreen> {
                   child: AspectRatio(
                     aspectRatio: 0.55,
                     child: video == null
-                        ? Center(
+                        ? const Center(
                             child: Icon(
                               Icons.play_circle_outline_rounded,
                               size: 64,

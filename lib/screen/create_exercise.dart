@@ -1,9 +1,7 @@
 import 'dart:io';
 
 import 'package:fitness_social_app/commons/commons.dart';
-import 'package:fitness_social_app/components/video_picker_screen.dart';
 import 'package:fitness_social_app/main.dart';
-import 'package:fitness_social_app/models/exercise_model.dart';
 import 'package:fitness_social_app/services/drafts.dart';
 import 'package:fitness_social_app/widgets/custom_button.dart';
 import 'package:fitness_social_app/widgets/text_widget.dart';
@@ -98,7 +96,7 @@ class _CreateExerciseState extends ConsumerState<CreateExercise> {
           elevation: 0,
         ),
         body: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
+          physics: const BouncingScrollPhysics(),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -120,7 +118,7 @@ class _CreateExerciseState extends ConsumerState<CreateExercise> {
                       child: AspectRatio(
                         aspectRatio: 0.55,
                         child: video == null
-                            ? Center(
+                            ? const Center(
                                 child: Icon(
                                   Icons.play_circle_outline_rounded,
                                   size: 64,
@@ -233,7 +231,7 @@ class _CreateExerciseState extends ConsumerState<CreateExercise> {
                               });
                             },
                           ),
-                          Text(
+                          const Text(
                             ".",
                             style: TextStyle(fontSize: 32),
                           ),

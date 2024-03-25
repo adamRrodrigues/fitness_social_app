@@ -108,7 +108,7 @@ class _LocalExerciseEditScreenState
         return true;
       },
       child: Scaffold(
-        appBar: AppBar(title: Text("Edit Exercise"), actions: [
+        appBar: AppBar(title: const Text("Edit Exercise"), actions: [
           GestureDetector(
               onTap: () async {
                 calculateTime();
@@ -139,7 +139,7 @@ class _LocalExerciseEditScreenState
         ]),
         body: SafeArea(
           child: SingleChildScrollView(
-            physics: BouncingScrollPhysics(),
+            physics: const BouncingScrollPhysics(),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -250,7 +250,7 @@ class _LocalExerciseEditScreenState
                                 });
                               },
                             ),
-                            Text(
+                            const Text(
                               ".",
                               style: TextStyle(fontSize: 32),
                             ),
