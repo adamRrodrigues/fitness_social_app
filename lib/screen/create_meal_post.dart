@@ -10,10 +10,12 @@ import 'package:fitness_social_app/widgets/bottom_modal_item_widget.dart';
 import 'package:fitness_social_app/widgets/custom_button.dart';
 import 'package:fitness_social_app/widgets/pill_widget.dart';
 import 'package:fitness_social_app/widgets/text_widget.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 class CreateMealPost extends ConsumerStatefulWidget {
   const CreateMealPost({Key? key}) : super(key: key);
@@ -332,20 +334,33 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost> {
                           physics: const BouncingScrollPhysics(),
                           itemCount: mealDraft!.ingredients.length,
                           itemBuilder: (context, index) {
-                            return ListTile(
+                            return Slidable(
+
+                              endActionPane: ActionPane(
+                                  extentRatio: 0.3,
+                                  motion: const ScrollMotion(),
+                                  children: [
+                                    SlidableAction(
+                                      
+                                      // An action can be bigger than the others.
+                                      autoClose: true,
+                                      flex: 1,
+                                      onPressed: (context) {
+                                        setState(() {
+                                          mealDraft!.ingredients
+                                              .removeAt(index);
+                                        });
+                                      },
+                                      backgroundColor: Colors.redAccent,
+                                      foregroundColor: Colors.white,
+                                      icon: Icons.delete,
+                                      label: 'Remove',
+                                    ),
+                                  ]),
                               key: ValueKey(index),
-                              title: Text(mealDraft!.ingredients[index]),
-                              leading: Icon(Icons.menu),
-                              trailing: GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    mealDraft!.ingredients.removeAt(index);
-                                  });
-                                },
-                                child: Icon(
-                                  Icons.delete_outline_rounded,
-                                  color: Colors.red,
-                                ),
+                              child: ListTile(
+                                title: Text(mealDraft!.ingredients[index]),
+                                leading: Icon(Icons.menu),
                               ),
                             );
                           },
@@ -396,6 +411,7 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost> {
                                         .add(ingredientController.text);
                                     ingredientController.text = '';
                                   });
+                                  context.pop();
                                 },
                                 child: const Icon(Icons.add),
                               ),

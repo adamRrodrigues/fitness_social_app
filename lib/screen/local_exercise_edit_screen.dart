@@ -47,18 +47,28 @@ class _LocalExerciseEditScreenState
   File? finalVideo;
   void selectImage() async {
     try {
-      vController!.dispose();
       video = await ImagePicker().pickVideo(
           source: ImageSource.gallery,
-          maxDuration: const Duration(seconds: 10));
+          maxDuration: const Duration(milliseconds: 10));
       finalVideo = File(video!.path);
       vController = VideoPlayerController.file(finalVideo!,
           videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true))
         ..initialize().then((value) {
-          setState(() {});
-          vController!.setVolume(0);
-          vController!.setLooping(true);
-          vController!.play();
+          if (vController!.value.duration.inSeconds > 20) {
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                backgroundColor: Colors.red,
+                content: Text(
+                  "Video Duration cannot be more than 20 seconds",
+                  style: TextStyle(color: Colors.white),
+                )));
+            finalVideo = null;
+            vController!.dispose();
+          } else {
+            setState(() {});
+            vController!.setVolume(0);
+            vController!.setLooping(true);
+            vController!.play();
+          }
         });
     } catch (e) {
       print(e);
@@ -145,16 +155,24 @@ class _LocalExerciseEditScreenState
               children: [
                 Center(
                   child: GestureDetector(
-                    onLongPress: () => selectImage(),
+                    onTap: () => selectImage(),
                     child: SizedBox(
                       height: 400,
                       child: AspectRatio(
                           aspectRatio: 0.65,
                           child: Builder(builder: (context) {
-                            if (vController!.value.isInitialized) {
-                              return VideoPlayer(vController!);
-                            } else {
+                            try {
+                              if (vController!.value.isInitialized) {
+                                return VideoPlayer(vController!);
+                              } else {}
                               return Container();
+                            } catch (e) {
+                              return Center(
+                                child: Icon(
+                                  Icons.play_circle_outline_rounded,
+                                  size: 64,
+                                ),
+                              );
                             }
                           })),
                     ),

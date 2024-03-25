@@ -341,7 +341,7 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                               //     "index": index
                               //   },
                               // );
-                              context.pushNamed(RouteConstants.editExercise,
+                              context.pushNamed(RouteConstants.localEditWorkout,
                                   extra: {
                                     "editingExercise":
                                         workoutDraft!.exercises[index],

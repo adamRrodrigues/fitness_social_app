@@ -410,7 +410,7 @@ class _CreateExerciseState extends ConsumerState<CreateExercise> {
             elevation: 0,
             child: GestureDetector(
                 onTap: () {
-                  if (nameController.text.isNotEmpty && finalVideo != null) {
+                  if (nameController.text.isNotEmpty) {
                     if (selected == options[0]) {
                       LocalExerciseModel exerciseModel = LocalExerciseModel(
                           time: totalTime,
