@@ -12,6 +12,7 @@ import 'package:fitness_social_app/themes/dark_theme.dart';
 import 'package:fitness_social_app/themes/light_theme.dart';
 import 'package:fitness_social_app/utlis/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final userProvider = Provider((ref) => FirebaseAuth.instance.currentUser);
@@ -28,6 +29,8 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
   runApp(const ProviderScope(child: MyApp()));
 }

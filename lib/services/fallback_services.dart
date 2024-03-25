@@ -80,4 +80,14 @@ class FallbackService {
       }
     }
   }
+
+  Future createSaved() async {
+    var querySnapshots = await users.get();
+    for (var doc in querySnapshots.docs) {
+      await FirebaseFirestore.instance
+          .collection("saved")
+          .doc(doc.id)
+          .set({"posts": List.empty()});
+    }
+  }
 }

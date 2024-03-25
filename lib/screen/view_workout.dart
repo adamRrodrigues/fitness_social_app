@@ -1,10 +1,12 @@
 import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:fitness_social_app/models/workout_post_model.dart';
+import 'package:fitness_social_app/screen/view_exercise_screen.dart';
 import 'package:fitness_social_app/services/post_service.dart';
 import 'package:fitness_social_app/widgets/image_widget.dart';
 import 'package:fitness_social_app/widgets/pill_widget.dart';
 import 'package:fitness_social_app/widgets/workout_widgets/exercise_widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
@@ -30,16 +32,18 @@ class ViewWorkout extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(4.0),
               child: Container(
-                  height: 300,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: GestureDetector(
-                      onTap: () {
-                        showImageViewerPager(context, imageProvider);
-                      },
-                      child: ImageWidget(url: workoutModel.imageUrl))).animate().shimmer(),
+                      height: 300,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: GestureDetector(
+                          onTap: () {
+                            showImageViewerPager(context, imageProvider);
+                          },
+                          child: ImageWidget(url: workoutModel.imageUrl)))
+                  .animate()
+                  .shimmer(),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -75,10 +79,20 @@ class ViewWorkout extends StatelessWidget {
                     itemBuilder: (context, index) {
                       final exerciseModel = WorkoutPostServices()
                           .mapExercise(workoutModel.exercises[index]);
-                      return Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: ExerciseWidget(exerciseModel: exerciseModel),
-                      ).animate().shimmer();
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(context, CupertinoPageRoute(
+                            builder: (context) {
+                              return ViewExerciseScreen(
+                                  exerciseModel: exerciseModel);
+                            },
+                          ));
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: ExerciseWidget(exerciseModel: exerciseModel),
+                        ).animate().shimmer(),
+                      );
                     },
                   )
                 : const Text('Any exercises you add will appear here')

@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class WorkoutWidget extends ConsumerWidget {
+class WorkoutWidget extends ConsumerStatefulWidget {
   const WorkoutWidget(
       {Key? key,
       required this.workoutModel,
@@ -24,22 +24,40 @@ class WorkoutWidget extends ConsumerWidget {
   final bool? mini;
   final int day;
   final bool selection;
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    User? user = ref.read(userProvider);
+  _WorkoutWidgetState createState() => _WorkoutWidgetState();
+}
+
+class _WorkoutWidgetState extends ConsumerState<WorkoutWidget> {
+  User? user;
+  bool liked = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    user = ref.read(userProvider);
+    liked = widget.workoutModel.likes.contains(user!.uid);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        if (selection) {
-          if (user.uid == workoutModel.uid) {
-            RoutineServices().updateRoutine(
-                user.uid, day, workoutModel.postId, workoutModel.templateId);
+        if (widget.selection) {
+          if (user!.uid == widget.workoutModel.uid) {
+            RoutineServices().updateRoutine(user!.uid, widget.day,
+                widget.workoutModel.postId, widget.workoutModel.templateId);
           } else {
-            context.pushNamed(RouteConstants.editWorkout,
-                extra: {"workoutModel": workoutModel, "day": day});
+            context.pushNamed(RouteConstants.editWorkout, extra: {
+              "workoutModel": widget.workoutModel,
+              "day": widget.day
+            });
           }
         } else {
           context.pushNamed(RouteConstants.viewWorkoutScreen,
-              extra: workoutModel);
+              extra: widget.workoutModel);
         }
       },
       onLongPress: () {
@@ -57,7 +75,7 @@ class WorkoutWidget extends ConsumerWidget {
               child: ListView(
                 shrinkWrap: true,
                 children: [
-                  workoutModel.uid == user.uid
+                  widget.workoutModel.uid == user!.uid
                       ? GestureDetector(
                           onTap: () async {
                             showDialog(
@@ -69,7 +87,7 @@ class WorkoutWidget extends ConsumerWidget {
                               },
                             );
                             await WorkoutPostServices()
-                                .deletePost(workoutModel.postId);
+                                .deletePost(widget.workoutModel.postId);
                             if (context.mounted) {
                               context.pop();
                             }
@@ -110,45 +128,80 @@ class WorkoutWidget extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(
-                  height: 200,
-                  width: double.infinity,
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(10),
-                        topRight: Radius.circular(10)),
-                    child: ImageWidget(url: workoutModel.imageUrl),
-                  ),
+                Stack(
+                  children: [
+                    SizedBox(
+                      height: 200,
+                      width: double.infinity,
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(10),
+                            topRight: Radius.circular(10)),
+                        child: ImageWidget(url: widget.workoutModel.imageUrl),
+                      ),
+                    ),
+                    widget.workoutModel.postId == widget.workoutModel.templateId
+                        ? Positioned(
+                            right: 0,
+                            child: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  liked = !liked;
+
+                                  WorkoutPostServices().addToSavedWorkouts(
+                                      user!.uid,
+                                      widget.workoutModel.templateId,
+                                      liked);
+                                });
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  children: [
+                                    liked
+                                        ? const Icon(Icons.bookmark_rounded)
+                                        : const Icon(
+                                            Icons.bookmark_outline_rounded),
+                                    Text(widget.workoutModel.likeCount
+                                        .toString())
+                                  ],
+                                ),
+                              ),
+                            ),
+                          )
+                        : Container()
+                  ],
                 ),
                 SizedBox(
                   height: 35,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: workoutModel.categories.length,
+                    itemCount: widget.workoutModel.categories.length,
                     itemBuilder: (context, index) {
                       return Padding(
                         padding: const EdgeInsets.all(4.0),
                         child: PillWidget(
                             editable: false,
-                            name: workoutModel.categories[index],
+                            name: widget.workoutModel.categories[index],
                             delete: () {},
                             active: false),
                       );
                     },
                   ),
                 ),
-                mini == false
+                widget.mini == false
                     ? MiniProfie(
-                        userId: workoutModel.uid,
+                        userId: widget.workoutModel.uid,
                       )
                     : Container(),
                 Builder(builder: (context) {
-                  if (workoutModel.postId != workoutModel.templateId) {
+                  if (widget.workoutModel.postId !=
+                      widget.workoutModel.templateId) {
                     return GestureDetector(
                         onTap: () {
                           context.pushNamed(
                               RouteConstants.fetchingWorkoutScreen,
-                              extra: workoutModel.templateId);
+                              extra: widget.workoutModel.templateId);
                         },
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -169,24 +222,17 @@ class WorkoutWidget extends ConsumerWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          workoutModel.workoutName,
+                          widget.workoutModel.workoutName,
                           style: Theme.of(context).textTheme.titleLarge,
                         ),
-                      ),
-                      Row(
-                        children: [
-                          workoutModel.likes.contains(user!.uid)
-                              ? const Icon(Icons.bookmark_rounded)
-                              : const Icon(Icons.bookmark_outline_rounded),
-                          Text(workoutModel.likeCount.toString())
-                        ],
                       ),
                     ],
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text("${workoutModel.exercises.length} Exercises"),
+                  child:
+                      Text("${widget.workoutModel.exercises.length} Exercises"),
                 ),
               ],
             ),

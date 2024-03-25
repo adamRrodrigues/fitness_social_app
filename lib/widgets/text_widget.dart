@@ -6,6 +6,7 @@ class CustomTextField extends StatelessWidget {
       required this.textController,
       required this.hintText,
       this.obscure = false,
+      this.textInputType = TextInputType.text,
       this.focusNode})
       : super(key: key);
 
@@ -13,6 +14,7 @@ class CustomTextField extends StatelessWidget {
   final String hintText;
   final bool obscure;
   final FocusNode? focusNode;
+  final TextInputType textInputType;
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +26,7 @@ class CustomTextField extends StatelessWidget {
         focusNode: focusNode,
         autofocus: false,
         controller: textController,
+        keyboardType: textInputType,
         cursorColor: Colors.white,
         style: Theme.of(context).textTheme.titleMedium,
         obscureText: obscure,

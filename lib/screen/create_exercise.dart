@@ -109,14 +109,14 @@ class _CreateExerciseState extends ConsumerState<CreateExercise> {
                   },
                   child: Center(
                     child: Container(
-                      height: 500,
+                      height: 300,
                       decoration: BoxDecoration(
                           border: Border.all(
                               width: 2,
                               color: Theme.of(context).colorScheme.secondary),
                           borderRadius: BorderRadius.circular(10)),
                       child: AspectRatio(
-                        aspectRatio: 0.55,
+                        aspectRatio: 1,
                         child: video == null
                             ? const Center(
                                 child: Icon(
@@ -202,193 +202,198 @@ class _CreateExerciseState extends ConsumerState<CreateExercise> {
                   ),
                 ],
               ),
-              const SizedBox(
-                height: 60,
+              SizedBox(
+                height: 20,
               ),
               Builder(builder: (context) {
                 if (selected == options[0]) {
-                  return Column(
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                      Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              NumberPicker(
+                                itemHeight: 50,
+                                itemWidth: 60,
+                                minValue: 0,
+                                infiniteLoop: true,
+                                itemCount: 3,
+                                maxValue: 99,
+                                value: nominalValue.toInt(),
+                                selectedTextStyle: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                    fontSize: 38),
+                                onChanged: (value) {
+                                  setState(() {
+                                    nominalValue = value;
+                                    weightValue =
+                                        nominalValue + decimalValue / 10;
+                                  });
+                                },
+                              ),
+                              const Text(
+                                ".",
+                                style: TextStyle(fontSize: 32),
+                              ),
+                              NumberPicker(
+                                itemHeight: 50,
+                                itemWidth: 60,
+                                minValue: 0,
+                                infiniteLoop: true,
+                                itemCount: 3,
+                                maxValue: 9,
+                                value: decimalValue.toInt(),
+                                selectedTextStyle: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                    fontSize: 38),
+                                onChanged: (value) {
+                                  setState(() {
+                                    decimalValue = value;
+                                    weightValue =
+                                        nominalValue + decimalValue / 10;
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                          Text('Weight: $weightValue' 'kgs'),
+                        ],
+                      ),
+                      Column(
                         children: [
                           NumberPicker(
                             itemHeight: 50,
-                            itemWidth: 60,
+                            itemWidth: 50,
                             minValue: 0,
                             infiniteLoop: true,
                             itemCount: 3,
-                            maxValue: 99,
-                            value: nominalValue.toInt(),
+                            maxValue: 8,
                             selectedTextStyle: TextStyle(
                                 color: Theme.of(context).colorScheme.primary,
                                 fontSize: 38),
+                            value: setValue,
                             onChanged: (value) {
                               setState(() {
-                                nominalValue = value;
-                                weightValue = nominalValue + decimalValue / 10;
+                                setValue = value;
                               });
                             },
                           ),
-                          const Text(
-                            ".",
-                            style: TextStyle(fontSize: 32),
-                          ),
-                          NumberPicker(
-                            itemHeight: 50,
-                            itemWidth: 60,
-                            minValue: 0,
-                            infiniteLoop: true,
-                            itemCount: 3,
-                            maxValue: 9,
-                            value: decimalValue.toInt(),
-                            selectedTextStyle: TextStyle(
-                                color: Theme.of(context).colorScheme.primary,
-                                fontSize: 38),
-                            onChanged: (value) {
-                              setState(() {
-                                decimalValue = value;
-                                weightValue = nominalValue + decimalValue / 10;
-                              });
-                            },
-                          ),
+                          Text('Sets: $setValue'),
                         ],
                       ),
-                      Text('Weight: $weightValue' 'kgs'),
-                      const SizedBox(
-                        height: 40,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('Reps: $repValue'),
-                            NumberPicker(
-                              itemHeight: 50,
-                              itemWidth: 50,
-                              minValue: 0,
-                              infiniteLoop: true,
-                              axis: Axis.horizontal,
-                              itemCount: 3,
-                              maxValue: 25,
-                              selectedTextStyle: TextStyle(
-                                  color: Theme.of(context).colorScheme.primary,
-                                  fontSize: 38),
-                              value: repValue,
-                              onChanged: (value) {
-                                setState(() {
-                                  repValue = value;
-                                });
-                              },
-                            ),
-                            const SizedBox(
-                              height: 40,
-                            ),
-                            Text('Sets: $setValue'),
-                            NumberPicker(
-                              itemHeight: 50,
-                              itemWidth: 50,
-                              minValue: 0,
-                              infiniteLoop: true,
-                              itemCount: 3,
-                              axis: Axis.horizontal,
-                              maxValue: 8,
-                              selectedTextStyle: TextStyle(
-                                  color: Theme.of(context).colorScheme.primary,
-                                  fontSize: 38),
-                              value: setValue,
-                              onChanged: (value) {
-                                setState(() {
-                                  setValue = value;
-                                });
-                              },
-                            ),
-                          ],
-                        ),
+                      Column(
+                        children: [
+                          NumberPicker(
+                            itemHeight: 50,
+                            itemWidth: 50,
+                            minValue: 0,
+                            infiniteLoop: true,
+                            itemCount: 3,
+                            maxValue: 25,
+                            selectedTextStyle: TextStyle(
+                                color: Theme.of(context).colorScheme.primary,
+                                fontSize: 38),
+                            value: repValue,
+                            onChanged: (value) {
+                              setState(() {
+                                repValue = value;
+                              });
+                            },
+                          ),
+                          Text('Reps: $repValue'),
+                        ],
                       ),
                     ],
                   );
                 } else {
-                  return Column(
-                    children: [
-                      NumberPicker(
-                        itemHeight: 50,
-                        itemWidth: 50,
-                        minValue: 0,
-                        infiniteLoop: true,
-                        itemCount: 2,
-                        maxValue: 24,
-                        value: hours.toInt(),
-                        selectedTextStyle: TextStyle(
-                            color: Theme.of(context).colorScheme.primary,
-                            fontSize: 38),
-                        onChanged: (value) {
-                          setState(() {
-                            hours = value;
-                          });
-                        },
-                      ),
-                      Text('Hours: $hours'),
-                      const SizedBox(
-                        height: 40,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  return Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Column(
                           children: [
-                            Column(
-                              children: [
-                                NumberPicker(
-                                  itemHeight: 50,
-                                  itemWidth: 50,
-                                  minValue: 0,
-                                  infiniteLoop: true,
-                                  itemCount: 2,
-                                  maxValue: 60,
-                                  selectedTextStyle: TextStyle(
-                                      color:
-                                          Theme.of(context).colorScheme.primary,
-                                      fontSize: 38),
-                                  value: minutes,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      minutes = value;
-                                    });
-                                  },
-                                ),
-                                Text('Minutes: $minutes'),
-                              ],
+                            NumberPicker(
+                              itemHeight: 50,
+                              itemWidth: 50,
+                              minValue: 0,
+                              infiniteLoop: true,
+                              itemCount: 2,
+                              maxValue: 24,
+                              value: hours.toInt(),
+                              selectedTextStyle: TextStyle(
+                                  color: Theme.of(context).colorScheme.primary,
+                                  fontSize: 38),
+                              onChanged: (value) {
+                                setState(() {
+                                  hours = value;
+                                });
+                              },
                             ),
-                            Column(
-                              children: [
-                                NumberPicker(
-                                  itemHeight: 50,
-                                  itemWidth: 50,
-                                  minValue: 0,
-                                  infiniteLoop: true,
-                                  itemCount: 2,
-                                  maxValue: 60,
-                                  selectedTextStyle: TextStyle(
-                                      color:
-                                          Theme.of(context).colorScheme.primary,
-                                      fontSize: 38),
-                                  value: seconds,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      seconds = value;
-                                    });
-                                  },
-                                ),
-                                Text('Seconds: $seconds'),
-                              ],
-                            ),
+                            Text('Hrs: $hours'),
                           ],
                         ),
-                      ),
-                    ],
+                        Text(
+                          ":",
+                          style: TextStyle(fontSize: 32),
+                        ),
+                        Column(
+                          children: [
+                            NumberPicker(
+                              itemHeight: 50,
+                              itemWidth: 50,
+                              minValue: 0,
+                              infiniteLoop: true,
+                              itemCount: 2,
+                              maxValue: 60,
+                              selectedTextStyle: TextStyle(
+                                  color: Theme.of(context).colorScheme.primary,
+                                  fontSize: 38),
+                              value: minutes,
+                              onChanged: (value) {
+                                setState(() {
+                                  minutes = value;
+                                });
+                              },
+                            ),
+                            Text('Min: $minutes'),
+                          ],
+                        ),
+                        Text(
+                          ":",
+                          style: TextStyle(fontSize: 32),
+                        ),
+                        Column(
+                          children: [
+                            NumberPicker(
+                              itemHeight: 50,
+                              itemWidth: 50,
+                              minValue: 0,
+                              infiniteLoop: true,
+                              itemCount: 2,
+                              maxValue: 60,
+                              selectedTextStyle: TextStyle(
+                                  color: Theme.of(context).colorScheme.primary,
+                                  fontSize: 38),
+                              value: seconds,
+                              onChanged: (value) {
+                                setState(() {
+                                  seconds = value;
+                                });
+                              },
+                            ),
+                            Text('Sec: $seconds'),
+                          ],
+                        ),
+                      ],
+                    ),
                   );
                 }
               }),

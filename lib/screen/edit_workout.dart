@@ -12,9 +12,11 @@ import 'package:fitness_social_app/services/post_service.dart';
 import 'package:fitness_social_app/services/routine_services.dart';
 import 'package:fitness_social_app/utlis/utils.dart';
 import 'package:fitness_social_app/widgets/custom_button.dart';
+import 'package:fitness_social_app/widgets/image_widget.dart';
 import 'package:fitness_social_app/widgets/pill_widget.dart';
 import 'package:fitness_social_app/widgets/text_widget.dart';
 import 'package:fitness_social_app/widgets/workout_widgets/exercise_widget.dart';
+import 'package:fitness_social_app/widgets/workout_widgets/local_exercise_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -75,7 +77,7 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
     for (int i = 0; i < widget.workoutModel.exercises.length; i++) {
       final exerciseModel =
           WorkoutPostServices().mapExercise(widget.workoutModel.exercises[i]);
-      // workoutDraft!.exercises.add(exerciseModel);
+      workoutDraft!.fetchedExercises.add(exerciseModel);
     }
     loadingExercises = false;
 
@@ -118,11 +120,11 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                   }
                   if (titleController.text.isNotEmpty &&
                       // image != null &&
-                      widget.workoutModel.exercises.isNotEmpty) {
+                      workoutDraft!.fetchedExercises.isNotEmpty) {
                     WorkoutModel workoutModel = WorkoutModel(
                         workoutName: titleController.text,
                         categories: widget.workoutModel.categories,
-                        exercises: widget.workoutModel.exercises,
+                        exercises: List.empty(),
                         uid: user!.uid,
                         imageUrl: imageUrl,
                         postId: '',
@@ -132,7 +134,6 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                         likes: List.empty(),
                         privacy: 'public');
 
-                    print(widget.workoutModel.exercises.length);
 
                     showDialog(
                       barrierDismissible: false,
@@ -143,16 +144,9 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                     );
 
                     try {
-                      List<ExerciseModel> exercises = [];
-                      for (var i = 0;
-                          i < widget.workoutModel.exercises.length;
-                          i++) {
-                        exercises.add(WorkoutPostServices()
-                            .mapExercise(widget.workoutModel.exercises[i]));
-                      }
                       String futureString = await WorkoutPostServices()
-                          .templateToWorkout(
-                              workoutModel, exercises, context);
+                          .templateToWorkout(workoutModel,
+                              workoutDraft!.fetchedExercises);
                       await RoutineServices().updateRoutine(user!.uid,
                           widget.day, futureString, widget.workoutModel.postId);
                       if (image != null) {
@@ -162,9 +156,8 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
                           Commons().snackBarMessage(e.toString(), Colors.red));
-                      print(e);
                     }
-                    routine!.addToRoutine(widget.day, workoutModel);
+                    // routine!.addToRoutine(widget.day, workoutModel);
 
                     if (context.mounted) {
                       context.pop();
@@ -249,10 +242,7 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                                 color: Theme.of(context).colorScheme.secondary),
                             borderRadius: BorderRadius.circular(10)),
                         child: image == null
-                            ? const Center(
-                                child:
-                                    Icon(size: 48, Icons.add_a_photo_outlined),
-                              )
+                            ? ImageWidget(url: widget.workoutModel.imageUrl)
                             : ClipRRect(
                                 borderRadius: BorderRadius.circular(10),
                                 child: Image.memory(
@@ -359,29 +349,49 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                     ? ListView.builder(
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
-                        itemCount: widget.workoutModel.exercises.length,
+                        itemCount: workoutDraft!.fetchedExercises.length,
                         itemBuilder: (context, index) {
-                          ExerciseModel exerciseModel = WorkoutPostServices()
-                              .mapExercise(
-                                  widget.workoutModel.exercises[index]);
-                          return Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: GestureDetector(
-                              onTap: () {
-                                context.pushNamed(
-                                  RouteConstants.editExercise,
-                                  extra: {
-                                    "editingExercise":
-                                        workoutDraft!.exercises[index],
-                                    "exercises": workoutDraft!.exercises,
-                                    "index": index
+                          return Builder(builder: (context) {
+                            if (workoutDraft!
+                                    .fetchedExercises[index].runtimeType ==
+                                ExerciseModel) {
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    context.pushNamed(
+                                      RouteConstants.editExercise,
+                                      extra: {
+                                        "editingExercise": workoutDraft!
+                                            .fetchedExercises[index],
+                                        "exercises":
+                                            workoutDraft!.fetchedExercises,
+                                        "index": index
+                                      },
+                                    );
                                   },
-                                );
-                              },
-                              child:
-                                  ExerciseWidget(exerciseModel: exerciseModel),
-                            ),
-                          );
+                                  child: ExerciseWidget(
+                                      exerciseModel: workoutDraft!
+                                          .fetchedExercises[index]),
+                                ),
+                              );
+                            } else {
+                              return GestureDetector(
+                                onTap: () {
+                                  context.pushNamed(
+                                      RouteConstants.localEditWorkout,
+                                      extra: {
+                                        "editingExercise":
+                                            workoutDraft!.fetchedExercises[index],
+                                        "index": index
+                                      });
+                                },
+                                child: LocalExerciseWidget(
+                                    exerciseModel:
+                                        workoutDraft!.fetchedExercises[index]),
+                              );
+                            }
+                          });
                         },
                       )
                     : const Text('Loading')
@@ -396,7 +406,7 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
             child: GestureDetector(
                 onTap: () {
                   context.pushNamed(RouteConstants.createExercise,
-                      extra: workoutDraft!.exercises);
+                      extra: workoutDraft!.fetchedExercises);
                 },
                 child: const CustomButton(buttonText: 'Add Exercise')),
           ),

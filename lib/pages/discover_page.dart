@@ -110,10 +110,10 @@ class _DiscoverPageState extends ConsumerState<DiscoverPage>
                 section(context, "Workouts"),
                 SizedBox(
                   height: 450,
-                  child: FutureBuilder(
-                    future: wokrouts.get(),
+                  child: StreamBuilder(
+                    stream: wokrouts.snapshots(),
                     builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.done) {
+                      if (snapshot.connectionState == ConnectionState.active) {
                         final data = snapshot.data!.docs
                             .where((element) => element.id != user!.uid)
                             .toList();

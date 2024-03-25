@@ -20,7 +20,7 @@ class _FallBackScreenState extends State<FallBackScreen> {
             child: GestureDetector(
                 onTap: () {
                   setState(() {
-                    FallbackService().createUserStats();
+                    FallbackService().createSaved();
                   });
                 },
                 child: const CustomButton(buttonText: 'create user stats')),

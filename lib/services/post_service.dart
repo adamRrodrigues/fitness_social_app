@@ -119,6 +119,8 @@ class WorkoutPostServices {
   Future postWorkout(WorkoutModel workoutModel, Uint8List image,
       List<LocalExerciseModel> exercises) async {
     await workoutPosts.add(workoutModel.toMap()).then((value) async {
+      List<String> videoUrls = [];
+
       await users.doc(thisUser!.uid).update({
         'posts': FieldValue.arrayUnion([value.id]),
       });
@@ -137,8 +139,10 @@ class WorkoutPostServices {
               value.id,
               "exercise${i.toString()}");
           exercise['imageUrl'] = exerciseVideo;
+          videoUrls.add(exerciseVideo);
         } catch (e) {
           exercise['imageUrl'] = "";
+          videoUrls.add("");
         }
         await workoutPosts.doc(value.id).update({
           'postId': value.id,
@@ -155,12 +159,7 @@ class WorkoutPostServices {
           Map<String, dynamic> exercise = exercises[i].toMap();
 
           try {
-            String exerciseVideo = await StorageServices().storeVideo(
-                'workoutPostImages',
-                exercises[i].video!,
-                value.id,
-                "exercise${i.toString()}");
-            exercise['imageUrl'] = exerciseVideo;
+            exercise['imageUrl'] = videoUrls[i];
           } catch (e) {
             exercise['imageUrl'] = "";
           }
@@ -225,33 +224,39 @@ class WorkoutPostServices {
     return exercise;
   }
 
-  Future<String> templateToWorkout(WorkoutModel workoutModel,
-      List<ExerciseModel> exercises, BuildContext context) async {
+  Future<String> templateToWorkout(
+      WorkoutModel workoutModel, List<dynamic> exercises) async {
     String id = "";
     await workoutPosts.add(workoutModel.toMap()).then((value) async {
       id = value.id;
       for (int i = 0; i < exercises.length; i++) {
-        showDialog(
-          context: context,
-          builder: (context) {
-            return Center(
-              child: Column(
-                children: [
-                  const Text("Creating Template"),
-                  CircularProgressIndicator(value: i / exercises.length),
-                ],
-              ),
-            );
-          },
-        );
-        Map<String, dynamic> exercise = exercises[i].toMap();
-        await workoutPosts.doc(value.id).update({
-          'postId': value.id,
-          'exercises': FieldValue.arrayUnion([exercise]),
-        });
+        if (exercises.runtimeType == ExerciseModel) {
+          Map<String, dynamic> exercise = exercises[i].toMap();
+          await workoutPosts.doc(value.id).update({
+            'postId': value.id,
+            'exercises': FieldValue.arrayUnion([exercise]),
+          });
+          print(exercise);
+        } else {
+          Map<String, dynamic> exercise = exercises[i].toMap();
+          try {
+            String exerciseVideo = await StorageServices().storeVideo(
+                'workoutPostImages',
+                exercises[i].video!,
+                value.id,
+                "exercise${i.toString()}");
+            exercise['imageUrl'] = exerciseVideo;
+          } catch (e) {
+            // exercise['imageUrl'] = "";
+          }
+          await workoutPosts.doc(value.id).update({
+            'postId': value.id,
+            'exercises': FieldValue.arrayUnion([exercise])
+          });
+          print(exercise);
+        }
       }
     });
-      context.pop();
     return id;
   }
 
@@ -274,6 +279,32 @@ class WorkoutPostServices {
         .doc(thisUser!.uid)
         .update({
       'posts': FieldValue.arrayRemove([id])
+    });
+  }
+
+  Future addToSavedWorkouts(String uid, String templateId, bool liked) async {
+    if (liked) {
+      await workoutTemplates.doc(templateId).update({
+        "likes": FieldValue.arrayUnion([uid]),
+        "likeCount": FieldValue.increment(1)
+      });
+      await FirebaseFirestore.instance.collection('saved').doc(uid).update({
+        "posts": FieldValue.arrayUnion([templateId])
+      });
+    } else {
+      await workoutTemplates.doc(templateId).update({
+        "likes": FieldValue.arrayRemove([uid]),
+        "likeCount": FieldValue.increment(-1)
+      });
+      await FirebaseFirestore.instance.collection('saved').doc(uid).update({
+        "posts": FieldValue.arrayRemove([templateId])
+      });
+    }
+  }
+
+  Future removeFromSavedWorkouts(String templateId, String uid) async {
+    await FirebaseFirestore.instance.collection('saved').doc(uid).update({
+      "posts": FieldValue.arrayRemove([templateId])
     });
   }
 }

@@ -9,6 +9,7 @@ import 'package:fitness_social_app/screen/create_exercise.dart';
 import 'package:fitness_social_app/screen/create_meal_post.dart';
 import 'package:fitness_social_app/screen/create_post.dart';
 import 'package:fitness_social_app/screen/create_workout_post.dart';
+import 'package:fitness_social_app/screen/edit_exercise.dart';
 import 'package:fitness_social_app/screen/edit_workout.dart';
 import 'package:fitness_social_app/screen/fetching_workout_screen.dart';
 import 'package:fitness_social_app/screen/local_exercise_edit_screen.dart';
@@ -17,6 +18,7 @@ import 'package:fitness_social_app/screen/run_workou.dart';
 import 'package:fitness_social_app/screen/search_meals.dart';
 import 'package:fitness_social_app/screen/search_workouts.dart';
 import 'package:fitness_social_app/screen/user_page.dart';
+import 'package:fitness_social_app/screen/user_saved_workouts.dart';
 import 'package:fitness_social_app/screen/user_stats_screen.dart';
 import 'package:fitness_social_app/screen/view_meal_plan.dart';
 import 'package:fitness_social_app/screen/view_meal_screen.dart';
@@ -112,6 +114,18 @@ final GoRouter appRouter = GoRouter(
             GoRoute(
               path: 'editExercisePage',
               name: RouteConstants.editExercise,
+              pageBuilder: (context, state) {
+                // ExerciseModel exerciseModel = state.extra as ExerciseModel;
+                final exerciseParams = state.extra! as Map<String, dynamic>;
+                return CupertinoPage(
+                    child: EditExercise(
+                        editingExercise: exerciseParams["editingExercise"],
+                        index: exerciseParams['index']));
+              },
+            ),
+            GoRoute(
+              path: 'localEditExercisePage',
+              name: RouteConstants.localEditWorkout,
               pageBuilder: (context, state) {
                 // ExerciseModel exerciseModel = state.extra as ExerciseModel;
                 final exerciseParams = state.extra! as Map<String, dynamic>;
@@ -227,6 +241,17 @@ final GoRouter appRouter = GoRouter(
                 final postId = state.pathParameters['id'];
                 return CupertinoPage(
                     child: UserStatsScreen(
+                  uid: postId!,
+                ));
+              },
+            ),
+            GoRoute(
+              path: 'viewUserSavedWorkouts/:id',
+              name: RouteConstants.viewUserSavedWorkouts,
+              pageBuilder: (context, state) {
+                final postId = state.pathParameters['id'];
+                return CupertinoPage(
+                    child: UserSavedWorkouts(
                   uid: postId!,
                 ));
               },

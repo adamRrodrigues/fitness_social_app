@@ -1,17 +1,20 @@
 Doing: 
-fix create exercise page
-saved workouts, my workouts pages
-workout streaks
 
 Next: 
+run workout time based view
+my workouts pages
+workout streaks
 user stats page
 edit profile page
 
 
 Done:
+saved workouts,
 add weights to run workout
 add amounts for meal ingredients
+clean up time based exercise creation
 long press posts for options
+fix create exercise page
 fix discover page
 view meal page 
 run workout page
@@ -19,3 +22,4 @@ update workout widget
 discover page
 meal widget
 create meal post page
+worko on building from workout templates

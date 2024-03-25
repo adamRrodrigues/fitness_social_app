@@ -72,7 +72,10 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage>
               Padding(
                 padding: const EdgeInsets.only(right: 16.0),
                 child: GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    context.pushNamed(RouteConstants.viewUserSavedWorkouts,
+                        pathParameters: {"id": user.uid});
+                  },
                   child: const Icon(Icons.bookmark_rounded),
                 ),
               ),

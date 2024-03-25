@@ -10,6 +10,7 @@ class RouteConstants {
   static String viewMealPlanScreen = 'viewMealPlanScreen';
   static String cameraService = 'cameraService';
   static String editWorkout = "editWorkoutScreen";
+  static String localEditWorkout = "localEditWorkoutScreen";
   static String createExercise = 'createExerciseScreen';
   static String editExercise = 'editExerciseScreen';
   static String viewRoutinePage = 'viewRoutinePage';
@@ -19,4 +20,5 @@ class RouteConstants {
   static String searchMealsScreen = 'SearchMealsScreen';
   static String viewMealScreen = 'viewMealScreen';
   static String viewUserStatsScreen = 'viewUserStatsScreen';
+  static String viewUserSavedWorkouts = 'viewUserSavedWorkouts';
 }

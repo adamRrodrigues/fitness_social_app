@@ -57,11 +57,11 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost> {
   ];
 
   List<String> commonIngredients = [
-    "Beef",
-    "Chiken",
-    "Pork",
-    "Turmeric",
-    "Rice",
+    "2/3 Beef",
+    "1/2 Chiken",
+    "3/4 Pork",
+    "1 pinch Turmeric",
+    "1 cup Rice",
   ];
 
   @override
@@ -277,6 +277,7 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost> {
                                         child: ListView.builder(
                                           shrinkWrap: true,
                                           itemCount: popularTags.length,
+                                          physics: BouncingScrollPhysics(),
                                           itemBuilder: (context, index) {
                                             return GestureDetector(
                                               onTap: () {
@@ -319,22 +320,35 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost> {
                     height: 10,
                   ),
                   mealDraft!.ingredients.isNotEmpty
-                      ? Expanded(
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: mealDraft!.ingredients.length,
-                            itemBuilder: (context, index) {
-                              return Column(
-                                children: [
-                                  ListTile(
-                                    title: Text(mealDraft!.ingredients[index]),
-                                  ),
-                                  const Divider()
-                                ],
-                              );
-                            },
-                          ),
+                      ? ReorderableListView.builder(
+                          shrinkWrap: true,
+                          onReorder: (oldIndex, newIndex) {
+                            String ingredient =
+                                mealDraft!.ingredients.removeAt(oldIndex);
+                            mealDraft!.ingredients.insert(
+                                newIndex > oldIndex ? newIndex -= 1 : newIndex,
+                                ingredient);
+                          },
+                          physics: const BouncingScrollPhysics(),
+                          itemCount: mealDraft!.ingredients.length,
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              key: ValueKey(index),
+                              title: Text(mealDraft!.ingredients[index]),
+                              leading: Icon(Icons.menu),
+                              trailing: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    mealDraft!.ingredients.removeAt(index);
+                                  });
+                                },
+                                child: Icon(
+                                  Icons.delete_outline_rounded,
+                                  color: Colors.red,
+                                ),
+                              ),
+                            );
+                          },
                         )
                       : const Center(
                           child:
@@ -394,6 +408,7 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost> {
                           Expanded(
                             child: ListView.builder(
                               shrinkWrap: true,
+                              physics: BouncingScrollPhysics(),
                               itemCount: commonIngredients.length,
                               itemBuilder: (context, index) {
                                 return GestureDetector(

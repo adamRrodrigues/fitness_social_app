@@ -42,7 +42,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   height: 70,
                 ),
                 CustomTextField(
-                    textController: emailController, hintText: 'email'),
+                    textController: emailController, hintText: 'email', textInputType: TextInputType.emailAddress),
                 const SizedBox(
                   height: 20,
                 ),

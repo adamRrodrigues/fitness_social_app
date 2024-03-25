@@ -42,9 +42,6 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
     "Cardio",
     "Legs",
     "Back",
-    "Back",
-    "Back",
-    "Back"
   ];
 
   void selectImage(String mode) async {

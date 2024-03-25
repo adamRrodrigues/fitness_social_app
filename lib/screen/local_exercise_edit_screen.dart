@@ -333,86 +333,91 @@ class _LocalExerciseEditScreenState
                       ],
                     );
                   } else {
-                    return Column(
-                      children: [
-                        NumberPicker(
-                          itemHeight: 50,
-                          itemWidth: 50,
-                          minValue: 0,
-                          infiniteLoop: true,
-                          itemCount: 2,
-                          maxValue: 24,
-                          value: hours.toInt(),
-                          selectedTextStyle: TextStyle(
-                              color: Theme.of(context).colorScheme.primary,
-                              fontSize: 38),
-                          onChanged: (value) {
-                            setState(() {
-                              hours = value;
-                            });
-                          },
-                        ),
-                        Text('Hours: $hours'),
-                        const SizedBox(
-                          height: 40,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    return Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Column(
                             children: [
-                              Column(
-                                children: [
-                                  NumberPicker(
-                                    itemHeight: 50,
-                                    itemWidth: 50,
-                                    minValue: 0,
-                                    infiniteLoop: true,
-                                    itemCount: 2,
-                                    maxValue: 60,
-                                    selectedTextStyle: TextStyle(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
-                                        fontSize: 38),
-                                    value: minutes,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        minutes = value;
-                                      });
-                                    },
-                                  ),
-                                  Text('Minutes: $minutes'),
-                                ],
+                              NumberPicker(
+                                itemHeight: 50,
+                                itemWidth: 50,
+                                minValue: 0,
+                                infiniteLoop: true,
+                                itemCount: 2,
+                                maxValue: 24,
+                                value: hours.toInt(),
+                                selectedTextStyle: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                    fontSize: 38),
+                                onChanged: (value) {
+                                  setState(() {
+                                    hours = value;
+                                  });
+                                },
                               ),
-                              Column(
-                                children: [
-                                  NumberPicker(
-                                    itemHeight: 50,
-                                    itemWidth: 50,
-                                    minValue: 0,
-                                    infiniteLoop: true,
-                                    itemCount: 2,
-                                    maxValue: 60,
-                                    selectedTextStyle: TextStyle(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
-                                        fontSize: 38),
-                                    value: seconds,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        seconds = value;
-                                      });
-                                    },
-                                  ),
-                                  Text('Seconds: $seconds'),
-                                ],
-                              ),
+                              Text('Hrs: $hours'),
                             ],
                           ),
-                        ),
-                      ],
+                          Text(
+                            ":",
+                            style: TextStyle(fontSize: 32),
+                          ),
+                          Column(
+                            children: [
+                              NumberPicker(
+                                itemHeight: 50,
+                                itemWidth: 50,
+                                minValue: 0,
+                                infiniteLoop: true,
+                                itemCount: 2,
+                                maxValue: 60,
+                                selectedTextStyle: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                    fontSize: 38),
+                                value: minutes,
+                                onChanged: (value) {
+                                  setState(() {
+                                    minutes = value;
+                                  });
+                                },
+                              ),
+                              Text('Min: $minutes'),
+                            ],
+                          ),
+                          Text(
+                            ":",
+                            style: TextStyle(fontSize: 32),
+                          ),
+                          Column(
+                            children: [
+                              NumberPicker(
+                                itemHeight: 50,
+                                itemWidth: 50,
+                                minValue: 0,
+                                infiniteLoop: true,
+                                itemCount: 2,
+                                maxValue: 60,
+                                selectedTextStyle: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                    fontSize: 38),
+                                value: seconds,
+                                onChanged: (value) {
+                                  setState(() {
+                                    seconds = value;
+                                  });
+                                },
+                              ),
+                              Text('Sec: $seconds'),
+                            ],
+                          ),
+                        ],
+                      ),
                     );
                   }
                 }),
