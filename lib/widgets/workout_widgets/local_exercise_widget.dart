@@ -1,10 +1,10 @@
-import 'package:fitness_social_app/models/exercise_model.dart';
+import 'package:fitness_social_app/services/drafts.dart';
 import 'package:flutter/material.dart';
 
-class ExerciseWidget extends StatelessWidget {
-  const ExerciseWidget({Key? key, required this.exerciseModel})
+class LocalExerciseWidget extends StatelessWidget {
+  const LocalExerciseWidget({Key? key, required this.exerciseModel})
       : super(key: key);
-  final ExerciseModel exerciseModel;
+  final LocalExerciseModel exerciseModel;
 
   @override
   Widget build(BuildContext context) {
@@ -35,15 +35,15 @@ class ExerciseWidget extends StatelessWidget {
                   SizedBox(
                       width: 220,
                       child: Text(
-                    exerciseModel.description,
-                    overflow: TextOverflow.ellipsis,
-                  ))
+                        exerciseModel.description,
+                        overflow: TextOverflow.ellipsis,
+                      ))
                 ],
               ),
             ],
           ),
           exerciseModel.type == 'sets'
-              ? Text('Sets: ${exerciseModel.sets.toString()}x')
+              ? Text('${exerciseModel.sets.toString()}x')
               : Text('${exerciseModel.time.toString()} min')
         ]),
       ),

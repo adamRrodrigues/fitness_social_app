@@ -5,6 +5,7 @@ import 'package:fitness_social_app/commons/commons.dart';
 import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/models/workout_post_model.dart';
 import 'package:fitness_social_app/routing/route_constants.dart';
+import 'package:fitness_social_app/screen/local_exercise_edit_screen.dart';
 import 'package:fitness_social_app/services/drafts.dart';
 import 'package:fitness_social_app/services/post_service.dart';
 import 'package:fitness_social_app/utlis/utils.dart';
@@ -13,6 +14,8 @@ import 'package:fitness_social_app/widgets/custom_button.dart';
 import 'package:fitness_social_app/widgets/pill_widget.dart';
 import 'package:fitness_social_app/widgets/text_widget.dart';
 import 'package:fitness_social_app/widgets/workout_widgets/exercise_widget.dart';
+import 'package:fitness_social_app/widgets/workout_widgets/local_exercise_widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -127,7 +130,10 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                       // await WorkoutPostServices()
                       //     .postTemplate(workoutModel, workoutDraft!.exercises);
                       await WorkoutPostServices().postWorkout(
-                          workoutModel, image!, workoutDraft!.exercises);
+                        workoutModel,
+                        image!,
+                        workoutDraft!.exercises,
+                      );
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
                           Commons().snackBarMessage(e.toString(), Colors.red));
@@ -332,19 +338,25 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                         itemBuilder: (context, index) {
                           return InkWell(
                             onTap: () {
-                              context.pushNamed(
-                                RouteConstants.editExercise,
-                                extra: {
-                                  "editingExercise":
-                                      workoutDraft!.exercises[index],
-                                  "exercises": workoutDraft!.exercises,
-                                  "index": index
-                                },
-                              );
+                              // context.pushNamed(
+                              //   RouteConstants.editExercise,
+                              //   extra: {
+                              //     "editingExercise":
+                              //         workoutDraft!.exercises[index],
+                              //     "exercises": workoutDraft!.exercises,
+                              //     "index": index
+                              //   },
+                              // );
+                              context.pushNamed(RouteConstants.editExercise,
+                                  extra: {
+                                    "editingExercise":
+                                        workoutDraft!.exercises[index],
+                                    "index": index
+                                  });
                             },
                             child: Padding(
                               padding: const EdgeInsets.all(4.0),
-                              child: ExerciseWidget(
+                              child: LocalExerciseWidget(
                                   exerciseModel:
                                       workoutDraft!.exercises[index]),
                             ),

@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,7 +7,10 @@ import 'package:fitness_social_app/models/comment_model.dart';
 import 'package:fitness_social_app/models/exercise_model.dart';
 import 'package:fitness_social_app/models/generic_post_model.dart';
 import 'package:fitness_social_app/models/workout_post_model.dart';
+import 'package:fitness_social_app/services/drafts.dart';
 import 'package:fitness_social_app/services/storage_services.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class GenericPostServices {
   final thisUser = FirebaseAuth.instance.currentUser;
@@ -114,14 +118,29 @@ class WorkoutPostServices {
   String id = "";
 
   Future postWorkout(WorkoutModel workoutModel, Uint8List image,
-      List<ExerciseModel> exercises) async {
+      List<LocalExerciseModel> exercises) async {
     await workoutPosts.add(workoutModel.toMap()).then((value) async {
       await users.doc(thisUser!.uid).update({
-        'posts': FieldValue.arrayUnion([value.id])
+        'posts': FieldValue.arrayUnion([value.id]),
       });
+
+      String thumbnail = await StorageServices()
+          .postThumbnail('workoutPostImages', value.id, image);
+
+      await workoutPosts.doc(value.id).update({'imageUrl': thumbnail});
 
       for (int i = 0; i < exercises.length; i++) {
         Map<String, dynamic> exercise = exercises[i].toMap();
+        try {
+          String exerciseVideo = await StorageServices().storeVideo(
+              'workoutPostImages',
+              exercises[i].video!,
+              value.id,
+              "exercise${i.toString()}");
+          exercise['imageUrl'] = exerciseVideo;
+        } catch (e) {
+          exercise['imageUrl'] = "";
+        }
         await workoutPosts.doc(value.id).update({
           'postId': value.id,
           'templateId': value.id,
@@ -129,19 +148,23 @@ class WorkoutPostServices {
         });
       }
 
-      String thumbnail = await StorageServices()
-          .postThumbnail('workoutPostImages', value.id, image);
-
-      await workoutPosts.doc(value.id).update({'imageUrl': thumbnail});
-
-      print(value.id);
-
       await workoutTemplates
           .doc(value.id)
           .set(workoutModel.toMap())
           .then((e) async {
         for (int i = 0; i < exercises.length; i++) {
           Map<String, dynamic> exercise = exercises[i].toMap();
+
+          try {
+            String exerciseVideo = await StorageServices().storeVideo(
+                'workoutPostImages',
+                exercises[i].video!,
+                value.id,
+                "exercise${i.toString()}");
+            exercise['imageUrl'] = exerciseVideo;
+          } catch (e) {
+            exercise['imageUrl'] = "";
+          }
           await workoutTemplates.doc(value.id).update({
             'postId': value.id,
             'templateId': value.id,
@@ -171,12 +194,31 @@ class WorkoutPostServices {
     return thisPost;
   }
 
+  WorkoutModel mapDocPostFuture(Map<String, dynamic> data) {
+    final thisPost = WorkoutModel(
+        workoutName: data['workoutName'],
+        categories: List.from(data['categories']),
+        exercises: List.from(data['exercises']),
+        uid: data['uid'],
+        postId: data['postId'],
+        templateId: data['templateId'],
+        privacy: data['privacy'],
+        imageUrl: data['imageUrl'],
+        likeCount: data['likeCount'],
+        likes: List.from(data['likes']),
+        createdAt: data['createdAt']);
+    print(thisPost);
+    return thisPost;
+  }
+
   ExerciseModel mapExercise(dynamic exerciseModel) {
     final exercise = ExerciseModel(
         name: exerciseModel['name'],
         description: exerciseModel['description'],
         type: exerciseModel['type'],
         time: exerciseModel['time'],
+        imageUrl: exerciseModel['imageUrl'],
+        toolName: exerciseModel['toolName'],
         weight: exerciseModel['weight'],
         reps: exerciseModel['reps'],
         sets: exerciseModel['sets']);
@@ -184,12 +226,25 @@ class WorkoutPostServices {
     return exercise;
   }
 
-  Future<String> templateToWorkout(
-      WorkoutModel workoutModel, List<ExerciseModel> exercises) async {
+  Future<String> templateToWorkout(WorkoutModel workoutModel,
+      List<ExerciseModel> exercises, BuildContext context) async {
     String id = "";
     await workoutPosts.add(workoutModel.toMap()).then((value) async {
       id = value.id;
       for (int i = 0; i < exercises.length; i++) {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return Center(
+              child: Column(
+                children: [
+                  Text("Creating Template"),
+                  CircularProgressIndicator(value: i / exercises.length),
+                ],
+              ),
+            );
+          },
+        );
         Map<String, dynamic> exercise = exercises[i].toMap();
         await workoutPosts.doc(value.id).update({
           'postId': value.id,
@@ -197,6 +252,7 @@ class WorkoutPostServices {
         });
       }
     });
+      context.pop();
     return id;
   }
 

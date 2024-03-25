@@ -1,5 +1,4 @@
 import 'package:fitness_social_app/auth/auth_state.dart';
-import 'package:fitness_social_app/models/exercise_model.dart';
 import 'package:fitness_social_app/models/generic_post_model.dart';
 import 'package:fitness_social_app/models/meal_model.dart';
 import 'package:fitness_social_app/models/user_model.dart';
@@ -10,9 +9,9 @@ import 'package:fitness_social_app/screen/create_exercise.dart';
 import 'package:fitness_social_app/screen/create_meal_post.dart';
 import 'package:fitness_social_app/screen/create_post.dart';
 import 'package:fitness_social_app/screen/create_workout_post.dart';
-import 'package:fitness_social_app/screen/edit_exercise.dart';
 import 'package:fitness_social_app/screen/edit_workout.dart';
 import 'package:fitness_social_app/screen/fetching_workout_screen.dart';
+import 'package:fitness_social_app/screen/local_exercise_edit_screen.dart';
 import 'package:fitness_social_app/screen/run_routine.dart';
 import 'package:fitness_social_app/screen/run_workou.dart';
 import 'package:fitness_social_app/screen/search_meals.dart';
@@ -24,6 +23,7 @@ import 'package:fitness_social_app/screen/view_meal_screen.dart';
 import 'package:fitness_social_app/screen/view_post.dart';
 import 'package:fitness_social_app/screen/view_routine.dart';
 import 'package:fitness_social_app/screen/view_workout.dart';
+import 'package:fitness_social_app/services/drafts.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
 
@@ -101,8 +101,8 @@ final GoRouter appRouter = GoRouter(
               path: 'createExercisePage',
               name: RouteConstants.createExercise,
               pageBuilder: (context, state) {
-                List<ExerciseModel> exercises =
-                    state.extra as List<ExerciseModel>;
+                List<LocalExerciseModel> exercises =
+                    state.extra as List<LocalExerciseModel>;
                 return CupertinoPage(
                     child: CreateExercise(
                   exercises: exercises,
@@ -116,9 +116,8 @@ final GoRouter appRouter = GoRouter(
                 // ExerciseModel exerciseModel = state.extra as ExerciseModel;
                 final exerciseParams = state.extra! as Map<String, dynamic>;
                 return CupertinoPage(
-                    child: EditExercise(
-                        editingExercise: exerciseParams["editingExercise"],
-                        exercises: exerciseParams["exercises"],
+                    child: LocalExerciseEditScreen(
+                        localExerciseModel: exerciseParams["editingExercise"],
                         index: exerciseParams['index']));
               },
             ),

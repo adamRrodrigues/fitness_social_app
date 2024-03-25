@@ -145,197 +145,203 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost> {
                 floating: true,
               )
             ],
-            body: Column(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      showDragHandle: true,
-                      useSafeArea: true,
-                      builder: (context) {
-                        return ListView(
-                          shrinkWrap: true,
-                          children: [
-                            GestureDetector(
-                              onTap: () => selectImage('Camera'),
-                              child: const BottomModalItem(
-                                  text: "Click a picture",
-                                  icon: Icons.photo_outlined),
-                            ),
-                            const Divider(),
-                            GestureDetector(
-                              onTap: () => selectImage('Gallery'),
-                              child: const BottomModalItem(
-                                  text: "Choose from gallery",
-                                  icon: Icons.camera_alt_outlined),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(14),
-                    child: Container(
-                      height: 300,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                              color: Theme.of(context).colorScheme.secondary),
-                          borderRadius: BorderRadius.circular(10)),
-                      child: mealDraft!.image == null
-                          ? const Center(
-                              child: Icon(size: 48, Icons.add_a_photo_outlined),
-                            )
-                          : ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: Image.memory(
-                                mealDraft!.image!,
-                                fit: BoxFit.cover,
+            body: SingleChildScrollView(
+              physics: BouncingScrollPhysics(),
+              child: Column(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        showDragHandle: true,
+                        useSafeArea: true,
+                        builder: (context) {
+                          return ListView(
+                            shrinkWrap: true,
+                            children: [
+                              GestureDetector(
+                                onTap: () => selectImage('Camera'),
+                                child: const BottomModalItem(
+                                    text: "Click a picture",
+                                    icon: Icons.photo_outlined),
                               ),
-                            ),
+                              const Divider(),
+                              GestureDetector(
+                                onTap: () => selectImage('Gallery'),
+                                child: const BottomModalItem(
+                                    text: "Choose from gallery",
+                                    icon: Icons.camera_alt_outlined),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(14),
+                      child: Container(
+                        height: 300,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                color: Theme.of(context).colorScheme.secondary),
+                            borderRadius: BorderRadius.circular(10)),
+                        child: mealDraft!.image == null
+                            ? const Center(
+                                child:
+                                    Icon(size: 48, Icons.add_a_photo_outlined),
+                              )
+                            : ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Image.memory(
+                                  mealDraft!.image!,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                      ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: SizedBox(
-                          height: 35,
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: SizedBox(
+                            height: 35,
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: mealDraft!.categories.length,
+                              itemBuilder: (context, index) {
+                                return Padding(
+                                  padding: const EdgeInsets.all(4.0),
+                                  child: PillWidget(
+                                      editable: true,
+                                      delete: () {
+                                        delete(index);
+                                      },
+                                      name: mealDraft!.categories[index],
+                                      active: false),
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                        FloatingActionButton(
+                          mini: true,
+                          backgroundColor:
+                              Theme.of(context).colorScheme.primary,
+                          onPressed: () {
+                            focusNode.requestFocus();
+
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              showDragHandle: true,
+                              useSafeArea: true,
+                              shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.vertical(
+                                      top: Radius.circular(20))),
+                              builder: (context) {
+                                return SizedBox(
+                                  height: 450,
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: CustomTextField(
+                                                focusNode: focusNode,
+                                                textController:
+                                                    categoryController,
+                                                hintText: 'add a category'),
+                                          ),
+                                          FloatingActionButton(
+                                            mini: true,
+                                            onPressed: () {
+                                              setState(() {
+                                                mealDraft!.categories.add(
+                                                    categoryController.text);
+                                                categoryController.text = '';
+                                              });
+                                            },
+                                            child: const Icon(Icons.add),
+                                          ),
+                                        ],
+                                      ),
+                                      const Divider(),
+                                      const Center(
+                                        child: Text("Popular Tags: "),
+                                      ),
+                                      Expanded(
+                                        child: ListView.builder(
+                                          shrinkWrap: true,
+                                          itemCount: popularTags.length,
+                                          itemBuilder: (context, index) {
+                                            return GestureDetector(
+                                              onTap: () {
+                                                setState(() {
+                                                  mealDraft!.categories
+                                                      .add(popularTags[index]);
+                                                  context.pop();
+                                                });
+                                              },
+                                              child: Column(
+                                                children: [
+                                                  ListTile(
+                                                    title: Text(
+                                                        popularTags[index]),
+                                                  ),
+                                                  const Divider()
+                                                ],
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                          child: const Icon(Icons.add),
+                        )
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  CustomTextField(
+                      textController: titleController, hintText: "Meal Name"),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  mealDraft!.ingredients.isNotEmpty
+                      ? Expanded(
                           child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: mealDraft!.categories.length,
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: mealDraft!.ingredients.length,
                             itemBuilder: (context, index) {
-                              return Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: PillWidget(
-                                    editable: true,
-                                    delete: () {
-                                      delete(index);
-                                    },
-                                    name: mealDraft!.categories[index],
-                                    active: false),
+                              return Column(
+                                children: [
+                                  ListTile(
+                                    title: Text(mealDraft!.ingredients[index]),
+                                  ),
+                                  const Divider()
+                                ],
                               );
                             },
                           ),
-                        ),
-                      ),
-                      FloatingActionButton(
-                        mini: true,
-                        backgroundColor: Theme.of(context).colorScheme.primary,
-                        onPressed: () {
-                          focusNode.requestFocus();
-
-                          showModalBottomSheet(
-                            context: context,
-                            isScrollControlled: true,
-                            showDragHandle: true,
-                            useSafeArea: true,
-                            shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.vertical(
-                                    top: Radius.circular(20))),
-                            builder: (context) {
-                              return SizedBox(
-                                height: 450,
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: CustomTextField(
-                                              focusNode: focusNode,
-                                              textController:
-                                                  categoryController,
-                                              hintText: 'add a category'),
-                                        ),
-                                        FloatingActionButton(
-                                          mini: true,
-                                          onPressed: () {
-                                            setState(() {
-                                              mealDraft!.categories
-                                                  .add(categoryController.text);
-                                              categoryController.text = '';
-                                            });
-                                          },
-                                          child: const Icon(Icons.add),
-                                        ),
-                                      ],
-                                    ),
-                                    const Divider(),
-                                    const Center(
-                                      child: Text("Popular Tags: "),
-                                    ),
-                                    Expanded(
-                                      child: ListView.builder(
-                                        shrinkWrap: true,
-                                        itemCount: popularTags.length,
-                                        itemBuilder: (context, index) {
-                                          return GestureDetector(
-                                            onTap: () {
-                                              setState(() {
-                                                mealDraft!.categories
-                                                    .add(popularTags[index]);
-                                                context.pop();
-                                              });
-                                            },
-                                            child: Column(
-                                              children: [
-                                                ListTile(
-                                                  title:
-                                                      Text(popularTags[index]),
-                                                ),
-                                                const Divider()
-                                              ],
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              );
-                            },
-                          );
-                        },
-                        child: const Icon(Icons.add),
-                      )
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                CustomTextField(
-                    textController: titleController, hintText: "Meal Name"),
-                const SizedBox(
-                  height: 10,
-                ),
-                mealDraft!.ingredients.isNotEmpty
-                    ? Expanded(
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: mealDraft!.ingredients.length,
-                          itemBuilder: (context, index) {
-                            return Column(
-                              children: [
-                                ListTile(
-                                  title: Text(mealDraft!.ingredients[index]),
-                                ),
-                                const Divider()
-                              ],
-                            );
-                          },
-                        ),
-                      )
-                    : const Center(
-                        child: Text("Any ingredients you add will appear here"),
-                      )
-              ],
+                        )
+                      : const Center(
+                          child:
+                              Text("Any ingredients you add will appear here"),
+                        )
+                ],
+              ),
             ),
           ),
         ),

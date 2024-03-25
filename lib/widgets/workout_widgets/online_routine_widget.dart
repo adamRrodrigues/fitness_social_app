@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/models/routine_model.dart';
 import 'package:fitness_social_app/models/workout_post_model.dart';
+import 'package:fitness_social_app/services/post_service.dart';
 import 'package:fitness_social_app/services/routine_services.dart';
 import 'package:fitness_social_app/widgets/workout_widgets/workout_widget.dart';
 import 'package:flutter/material.dart';
@@ -61,8 +62,9 @@ class OnlineRoutineWidget extends ConsumerWidget {
                                   snapshot.data!.data() as Map<String, dynamic>;
 
                               final WorkoutModel mappedWorkout =
-                                  RoutineServices()
-                                      .mapSingleRoutineWorkout(thisWorkout);
+                                  WorkoutPostServices()
+                                      .mapDocPostFuture(thisWorkout);
+                              print(mappedWorkout);
 
                               if (routinesStored
                                       .routines[currentDay].workouts.length !=

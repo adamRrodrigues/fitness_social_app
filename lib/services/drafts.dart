@@ -1,11 +1,10 @@
+import 'dart:io';
 import 'dart:typed_data';
-
-import 'package:fitness_social_app/models/exercise_model.dart';
 
 class WorkoutDraft {
   Uint8List? image;
   String workoutName = '';
-  List<ExerciseModel> exercises = [];
+  List<LocalExerciseModel> exercises = [];
   List<String> categories = [];
 }
 
@@ -17,6 +16,39 @@ class MealDraft {
   String description = "";
 }
 
-class Workouts{
-  
+class LocalExerciseModel {
+  final String name;
+  final String description;
+  final String toolName;
+  File? video;
+  final double weight;
+  final int reps;
+  final int sets;
+  final int time;
+  final String type;
+
+  LocalExerciseModel({
+    required this.description,
+    required this.toolName,
+    required this.weight,
+    required this.reps,
+    required this.sets,
+    required this.time,
+    required this.type,
+    required this.name,
+  });
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'name': name,
+      'description': description,
+      'video': "",
+      'toolName': "",
+      'weight': weight,
+      'reps': reps,
+      'sets': sets,
+      'time': time,
+      'type': type
+    };
+  }
 }

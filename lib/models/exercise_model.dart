@@ -4,8 +4,8 @@ import 'dart:convert';
 class ExerciseModel {
   final String name;
   final String description;
-  final String toolName = '';
-  final String imageUrl = '';
+  final String toolName;
+  final String imageUrl;
   final double weight;
   final int reps;
   final int sets;
@@ -14,10 +14,12 @@ class ExerciseModel {
   ExerciseModel({
     required this.name,
     required this.description,
+    this.toolName = "",
     this.weight = 0.0,
     this.reps = 0,
     this.sets = 0,
     this.time = 0,
+    this.imageUrl = '',
     required this.type,
   });
 
@@ -27,6 +29,8 @@ class ExerciseModel {
       double? weight,
       int? reps,
       int? sets,
+      String? imageUrl,
+      String? toolName,
       int? time,
       String? type}) {
     return ExerciseModel(
@@ -36,6 +40,8 @@ class ExerciseModel {
         reps: reps ?? this.reps,
         sets: sets ?? this.sets,
         time: time ?? this.time,
+        imageUrl: imageUrl ?? this.imageUrl,
+        toolName: toolName ?? this.toolName,
         type: type ?? this.type);
   }
 
@@ -43,6 +49,8 @@ class ExerciseModel {
     return <String, dynamic>{
       'name': name,
       'description': description,
+      'imageUrl': imageUrl,
+      'toolName': toolName,
       'weight': weight,
       'reps': reps,
       'sets': sets,
@@ -56,6 +64,8 @@ class ExerciseModel {
       name: map['name'] as String,
       description: map['description'] as String,
       weight: map['weight'] as double,
+      imageUrl: map['imageUrl'] as String,
+      toolName: map['toolName'] as String,
       reps: map['reps'] as int,
       sets: map['sets'] as int,
       time: map['time'] as int,

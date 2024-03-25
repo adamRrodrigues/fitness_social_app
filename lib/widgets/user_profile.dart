@@ -180,8 +180,8 @@ class _UserProfileState extends ConsumerState<UserProfile> {
                                           userServices!
                                               .followUser(widget.thisUser.uid);
                                         },
-                                        child:
-                                            const CustomButton(buttonText: "Follow"));
+                                        child: const CustomButton(
+                                            buttonText: "Follow"));
                                   }
                                 } else {
                                   return const CustomButton(
@@ -199,8 +199,13 @@ class _UserProfileState extends ConsumerState<UserProfile> {
                       child: GestureDetector(
                           onTap: () {
                             context.pushNamed(RouteConstants.viewRoutinePage,
-                                pathParameters: {'id': widget.thisUser.uid},
-                                extra: 0);
+                                pathParameters: {
+                                  'id': widget.thisUser.uid
+                                },
+                                extra: {
+                                  'currentDay': 0,
+                                  'startRoutine': false
+                                });
                           },
                           child: const CustomButton(
                               primary: false, buttonText: 'View Routine')),
@@ -250,10 +255,8 @@ class _UserProfileState extends ConsumerState<UserProfile> {
               ),
               TabBar(
                 indicatorColor: Theme.of(context).colorScheme.primary,
-
                 tabs: [
                   Tab(
-
                       icon: Icon(
                     Icons.post_add,
                     color: Theme.of(context).colorScheme.secondary,

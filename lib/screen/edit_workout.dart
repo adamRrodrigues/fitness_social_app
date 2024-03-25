@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_social_app/commons/commons.dart';
 import 'package:fitness_social_app/main.dart';
+import 'package:fitness_social_app/models/exercise_model.dart';
 import 'package:fitness_social_app/models/routine_model.dart';
 import 'package:fitness_social_app/models/workout_post_model.dart';
 import 'package:fitness_social_app/routing/route_constants.dart';
@@ -14,6 +15,7 @@ import 'package:fitness_social_app/widgets/custom_button.dart';
 import 'package:fitness_social_app/widgets/pill_widget.dart';
 import 'package:fitness_social_app/widgets/text_widget.dart';
 import 'package:fitness_social_app/widgets/workout_widgets/exercise_widget.dart';
+import 'package:fitness_social_app/widgets/workout_widgets/local_exercise_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -74,7 +76,7 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
     for (int i = 0; i < widget.workoutModel.exercises.length; i++) {
       final exerciseModel =
           WorkoutPostServices().mapExercise(widget.workoutModel.exercises[i]);
-      workoutDraft!.exercises.add(exerciseModel);
+      // workoutDraft!.exercises.add(exerciseModel);
     }
     loadingExercises = false;
 
@@ -117,11 +119,11 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                   }
                   if (titleController.text.isNotEmpty &&
                       // image != null &&
-                      workoutDraft!.exercises.isNotEmpty) {
+                      widget.workoutModel.exercises.isNotEmpty) {
                     WorkoutModel workoutModel = WorkoutModel(
                         workoutName: titleController.text,
                         categories: widget.workoutModel.categories,
-                        exercises: List.empty(),
+                        exercises: widget.workoutModel.exercises,
                         uid: user!.uid,
                         imageUrl: imageUrl,
                         postId: '',
@@ -142,9 +144,16 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                     );
 
                     try {
+                      List<ExerciseModel> exercises = [];
+                      for (var i = 0;
+                          i < widget.workoutModel.exercises.length;
+                          i++) {
+                        exercises.add(WorkoutPostServices()
+                            .mapExercise(widget.workoutModel.exercises[i]));
+                      }
                       String futureString = await WorkoutPostServices()
                           .templateToWorkout(
-                              workoutModel, workoutDraft!.exercises);
+                              workoutModel, exercises, context);
                       await RoutineServices().updateRoutine(user!.uid,
                           widget.day, futureString, widget.workoutModel.postId);
                       if (image != null) {
@@ -156,7 +165,7 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                           Commons().snackBarMessage(e.toString(), Colors.red));
                       print(e);
                     }
-                    // routine!.addToRoutine(widget.day, workoutModel);
+                    routine!.addToRoutine(widget.day, workoutModel);
 
                     if (context.mounted) {
                       context.pop();
@@ -351,8 +360,11 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                     ? ListView.builder(
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
-                        itemCount: workoutDraft!.exercises.length,
+                        itemCount: widget.workoutModel.exercises.length,
                         itemBuilder: (context, index) {
+                          ExerciseModel exerciseModel = WorkoutPostServices()
+                              .mapExercise(
+                                  widget.workoutModel.exercises[index]);
                           return Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: GestureDetector(
@@ -367,9 +379,8 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                                   },
                                 );
                               },
-                              child: ExerciseWidget(
-                                  exerciseModel:
-                                      workoutDraft!.exercises[index]),
+                              child:
+                                  ExerciseWidget(exerciseModel: exerciseModel),
                             ),
                           );
                         },

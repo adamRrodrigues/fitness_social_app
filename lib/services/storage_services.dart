@@ -1,7 +1,9 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_picker/image_picker.dart';
 
 class StorageServices {
   final FirebaseStorage storage = FirebaseStorage.instance;
@@ -25,6 +27,19 @@ class StorageServices {
     Reference ref = storage.ref().child(name).child(user!.uid);
 
     UploadTask uploadTask = ref.putData(file);
+
+    TaskSnapshot snap = await uploadTask;
+
+    String downloadUrl = await snap.ref.getDownloadURL();
+
+    return downloadUrl;
+  }
+
+  Future<String> storeVideo(
+      String name, File video, String postId, String vidId) async {
+    Reference ref = storage.ref().child(name).child(postId).child(vidId);
+
+    UploadTask uploadTask = ref.putFile(video);
 
     TaskSnapshot snap = await uploadTask;
 

@@ -3,6 +3,7 @@ import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/models/workout_post_model.dart';
 import 'package:fitness_social_app/routing/route_constants.dart';
 import 'package:fitness_social_app/services/post_service.dart';
+import 'package:fitness_social_app/services/routine_services.dart';
 import 'package:fitness_social_app/widgets/bottom_modal_item_widget.dart';
 import 'package:fitness_social_app/widgets/image_widget.dart';
 import 'package:fitness_social_app/widgets/mini_profie.dart';
@@ -29,8 +30,13 @@ class WorkoutWidget extends ConsumerWidget {
     return GestureDetector(
       onTap: () async {
         if (selection) {
-          context.pushNamed(RouteConstants.editWorkout,
-              extra: {"workoutModel": workoutModel, "day": day});
+          if (user.uid == workoutModel.uid) {
+            RoutineServices().updateRoutine(
+                user.uid, day, workoutModel.postId, workoutModel.templateId);
+          } else {
+            context.pushNamed(RouteConstants.editWorkout,
+                extra: {"workoutModel": workoutModel, "day": day});
+          }
         } else {
           context.pushNamed(RouteConstants.viewWorkoutScreen,
               extra: workoutModel);

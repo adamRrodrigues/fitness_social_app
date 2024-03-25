@@ -3,6 +3,7 @@ import 'package:fitness_social_app/models/meal_model.dart';
 import 'package:fitness_social_app/widgets/image_widget.dart';
 import 'package:fitness_social_app/widgets/pill_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class ViewMealScreen extends StatefulWidget {
   const ViewMealScreen({Key? key, required this.mealModel}) : super(key: key);
@@ -66,11 +67,14 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
-                return ListTile(
-                  dense: true,
-                  title: Text(
-                    widget.mealModel.ingredients[index],
-                    style: Theme.of(context).textTheme.titleSmall,
+                return Animate(
+                  effects: [SlideEffect()],
+                  child: ListTile(
+                    dense: true,
+                    title: Text(
+                      widget.mealModel.ingredients[index],
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
                   ),
                 );
               },
