@@ -54,7 +54,7 @@ class WorkoutSearch extends ConsumerWidget {
                           itemBuilder: (context, index) {
                             final workout =
                                 WorkoutPostServices().mapDocPost(data[index]);
-                            return WorkoutWidget(workoutModel: workout);
+                            return WorkoutWidget(workoutModel: workout, mini: false,);
                           },
                         );
                       } else {

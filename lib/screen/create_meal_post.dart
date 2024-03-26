@@ -25,7 +25,6 @@ class CreateMealPost extends ConsumerStatefulWidget {
 }
 
 class _CreateMealPostState extends ConsumerState<CreateMealPost> {
-  Uint8List? image;
   MealDraft? mealDraft;
   TextEditingController titleController = TextEditingController();
   TextEditingController categoryController = TextEditingController();
@@ -97,7 +96,7 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost> {
                 actions: [
                   GestureDetector(
                     onTap: () async {
-                      if (mealDraft!.mealName != "" &&
+                      if (titleController.text != "" &&
                           mealDraft!.image != null) {
                         showDialog(
                           barrierDismissible: false,
@@ -117,8 +116,6 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost> {
                             tags: mealDraft!.categories);
 
                         try {
-                          // await WorkoutPostServices()
-                          //     .postTemplate(workoutModel, workoutDraft!.exercises);
                           await MealServices()
                               .postMeal(thisMeal, mealDraft!.image!);
                         } catch (e) {
@@ -335,13 +332,11 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost> {
                           itemCount: mealDraft!.ingredients.length,
                           itemBuilder: (context, index) {
                             return Slidable(
-
                               endActionPane: ActionPane(
                                   extentRatio: 0.3,
                                   motion: const ScrollMotion(),
                                   children: [
                                     SlidableAction(
-                                      
                                       // An action can be bigger than the others.
                                       autoClose: true,
                                       flex: 1,

@@ -1,9 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fitness_social_app/feed/meal_feed.dart';
 import 'package:fitness_social_app/main.dart';
+import 'package:fitness_social_app/screen/search_screens/search_meals.dart';
 import 'package:fitness_social_app/screen/search_screens/user_search.dart';
 import 'package:fitness_social_app/screen/search_screens/workout_search.dart';
-import 'package:fitness_social_app/services/feed_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -25,16 +24,18 @@ class SearchScreen extends ConsumerWidget {
             snap: true,
           )
         ],
-        body: Builder(
-          builder: (context) {
-            if (searchType == "Users") {
-              return UserSearch();
-            } else if (searchType == "Workouts") {
-              return WorkoutSearch();
-            } else {
-              return MealFeed(postQuery: FeedServices().fetchMeals());
-            }
-          },
+        body: SafeArea(
+          child: Builder(
+            builder: (context) {
+              if (searchType == "Users") {
+                return UserSearch();
+              } else if (searchType == "Workouts") {
+                return WorkoutSearch();
+              } else {
+                return SearchMeals();
+              }
+            },
+          ),
         ),
       ),
     );

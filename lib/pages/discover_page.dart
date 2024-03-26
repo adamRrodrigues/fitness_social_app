@@ -55,10 +55,8 @@ class _DiscoverPageState extends ConsumerState<DiscoverPage>
               setState(() {});
             },
             child: StreamBuilder(
-                stream: users
-                    .doc(user!.uid)
-                    .collection('following')
-                    .snapshots(),
+                stream:
+                    users.doc(user!.uid).collection('following').snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData &&
                       snapshot.connectionState == ConnectionState.active) {
@@ -156,40 +154,41 @@ class _DiscoverPageState extends ConsumerState<DiscoverPage>
                         ),
                         section(context, "Meals"),
                         SizedBox(
-                          // width: 400,
-                          height: 450,
-                          child: StreamBuilder(
-                            stream: meals.limit(5).snapshots(),
-                            builder: (context, snapshots) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.done) {
-                                final data = snapshot.data!.docs
-                                    .where((element) => element.id != user!.uid)
-                                    .toList();
-
-                                return ListView.builder(
-                                  itemCount: data.length,
-                                  shrinkWrap: true,
-                                  physics: const BouncingScrollPhysics(),
-                                  scrollDirection: Axis.horizontal,
-                                  itemBuilder: (context, index) {
-                                    final thisMeal = mealServices
-                                        .getMealFromDoc(data[index]);
-                                    return SizedBox(
-                                        height: 300,
-                                        width: 370,
-                                        child: MealWidget(
-                                          meal: thisMeal,
-                                        ));
-                                  },
-                                );
-                              } else {
-                                return const Center(
-                                    child: CircularProgressIndicator());
-                              }
-                            },
-                          ),
-                        ),
+                            // width: 400,
+                            height: 450,
+                            child: StreamBuilder(
+                              stream: meals
+                                  .where('uid', isNotEqualTo: user!.uid)
+                                  .snapshots(),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData &&
+                                    snapshot.connectionState ==
+                                        ConnectionState.active) {
+                                  final data = snapshot.data!.docs.toList();
+                                  if (data.isNotEmpty) {
+                                    return ListView.builder(
+                                      shrinkWrap: true,
+                                      physics: NeverScrollableScrollPhysics(),
+                                      itemCount: data.length,
+                                      itemBuilder: (context, index) {
+                                        final meal = MealServices()
+                                            .getMealFromDoc(data[index]);
+                                        return MealWidget(meal: meal);
+                                      },
+                                    );
+                                  } else {
+                                    return Center(
+                                      child: Text(
+                                          "No Meals"),
+                                    );
+                                  }
+                                } else {
+                                  return Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                }
+                              },
+                            )),
                       ],
                     );
                   } else {
