@@ -7,6 +7,7 @@ run workout time based view
 workout streaks
 
 Done:
+search stuff
 view exercise page
 my workouts pages
 saved workouts,
