@@ -9,6 +9,7 @@ import 'package:fitness_social_app/widgets/image_widget.dart';
 import 'package:fitness_social_app/widgets/mini_profie.dart';
 import 'package:fitness_social_app/widgets/pill_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -35,7 +36,6 @@ class _WorkoutWidgetState extends ConsumerState<WorkoutWidget> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     user = ref.read(userProvider);
     liked = widget.workoutModel.likes.contains(user!.uid);
@@ -140,7 +140,7 @@ class _WorkoutWidgetState extends ConsumerState<WorkoutWidget> {
                         child: ImageWidget(url: widget.workoutModel.imageUrl),
                       ),
                     ),
-                    widget.workoutModel.postId == widget.workoutModel.templateId
+                    widget.workoutModel.uid != user!.uid
                         ? Positioned(
                             right: 0,
                             child: GestureDetector(
@@ -238,7 +238,7 @@ class _WorkoutWidgetState extends ConsumerState<WorkoutWidget> {
             ),
           ),
         ),
-      ),
+      ).animate().shimmer(),
     );
   }
 }

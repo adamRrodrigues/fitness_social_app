@@ -33,10 +33,11 @@ class FeedServices {
     return postQuery;
   }
 
-  Query<WorkoutModel> fetchWorkouts() {
-    final CollectionReference<WorkoutModel> postQuery;
+  Query<WorkoutModel> fetchWorkouts(String uid) {
+    final Query<WorkoutModel> postQuery;
     postQuery = FirebaseFirestore.instance
         .collection('workout_templates_demo')
+        .where("uid", isNotEqualTo: uid)
         .withConverter(
           fromFirestore: (snapshot, _) =>
               WorkoutModel.fromMap(snapshot.data()!),

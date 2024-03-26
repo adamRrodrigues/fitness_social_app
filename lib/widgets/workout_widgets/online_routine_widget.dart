@@ -31,7 +31,6 @@ class OnlineRoutineWidget extends ConsumerWidget {
       builder: (context, snapshot) {
         if (snapshot.hasData &&
             snapshot.connectionState == ConnectionState.active) {
-          print(currentDay);
           List<String> workouts = [];
           Map<String, dynamic> data =
               snapshot.data!.data() as Map<String, dynamic>;
@@ -39,7 +38,6 @@ class OnlineRoutineWidget extends ConsumerWidget {
           if (data['workouts'].isNotEmpty) {
             for (int i = 0; i <= data['workouts'].length; i++) {
               workouts.add(['workouts'][0]);
-              print(workouts);
             }
           }
           return data['workouts'].isNotEmpty

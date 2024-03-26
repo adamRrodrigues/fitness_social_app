@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:fitness_social_app/commons/commons.dart';
 import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/services/drafts.dart';
+import 'package:fitness_social_app/widgets/custom_button.dart';
 import 'package:fitness_social_app/widgets/text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -118,35 +120,10 @@ class _LocalExerciseEditScreenState
         return true;
       },
       child: Scaffold(
-        appBar: AppBar(title: const Text("Edit Exercise"), actions: [
-          GestureDetector(
-              onTap: () async {
-                calculateTime();
-                LocalExerciseModel editedExercise = LocalExerciseModel(
-                    description: descriptionController.text,
-                    toolName: "",
-                    weight: weightValue,
-                    reps: repValue,
-                    sets: setValue,
-                    time: totalTime,
-                    type: selected,
-                    name: nameController.text);
-                if (finalVideo != null) {
-                  editedExercise.video = finalVideo;
-                } else {
-                  editedExercise.video = widget.localExerciseModel.video;
-                }
-                workoutDraft!.exercises.removeAt(widget.index);
-
-                workoutDraft!.exercises.insert(widget.index, editedExercise);
-                vController!.dispose();
-                context.pop();
-              },
-              child: const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Icon(Icons.edit_note_rounded),
-              ))
-        ]),
+        appBar: AppBar(
+          title: const Text("Edit Exercise"),
+          elevation: 0,
+        ),
         body: SafeArea(
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
@@ -445,6 +422,36 @@ class _LocalExerciseEditScreenState
               ],
             ),
           ),
+        ),
+        bottomNavigationBar: BottomAppBar(
+          height: 60,
+          padding: const EdgeInsets.all(8),
+          color: Colors.transparent,
+          elevation: 0,
+          child: GestureDetector(
+              onTap: () async {
+                calculateTime();
+                LocalExerciseModel editedExercise = LocalExerciseModel(
+                    description: descriptionController.text,
+                    toolName: "",
+                    weight: weightValue,
+                    reps: repValue,
+                    sets: setValue,
+                    time: totalTime,
+                    type: selected,
+                    name: nameController.text);
+                if (finalVideo != null) {
+                  editedExercise.video = finalVideo;
+                } else {
+                  editedExercise.video = widget.localExerciseModel.video;
+                }
+                workoutDraft!.exercises.removeAt(widget.index);
+
+                workoutDraft!.exercises.insert(widget.index, editedExercise);
+                vController!.dispose();
+                context.pop();
+              },
+              child: const CustomButton(buttonText: 'Done')),
         ),
       ),
     );

@@ -7,6 +7,7 @@ import 'package:fitness_social_app/widgets/bottom_modal_item_widget.dart';
 import 'package:fitness_social_app/widgets/image_widget.dart';
 import 'package:fitness_social_app/widgets/mini_profie.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -120,7 +121,7 @@ class MealWidget extends ConsumerWidget {
             ),
           ),
         ),
-      ),
+      ).animate().shimmer(),
     );
   }
 }

@@ -1,20 +1,21 @@
 Doing: 
-
-Next: 
-run workout time based view
-my workouts pages
-workout streaks
-user stats page
 edit profile page
 
 
+Next: 
+run workout time based view
+workout streaks
+
 Done:
+view exercise page
+my workouts pages
 saved workouts,
 add weights to run workout
 add amounts for meal ingredients
 clean up time based exercise creation
 long press posts for options
 fix create exercise page
+search pages
 fix discover page
 view meal page 
 run workout page

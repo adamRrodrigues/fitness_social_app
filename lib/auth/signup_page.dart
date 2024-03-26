@@ -45,7 +45,9 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                   height: 20,
                 ),
                 CustomTextField(
-                    textController: usernameController, hintText: 'username'),
+                    textController: usernameController,
+                    hintText: 'username',
+                    maxLength: 20),
                 const SizedBox(
                   height: 20,
                 ),
@@ -62,18 +64,21 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                 const SizedBox(
                   height: 50,
                 ),
-                GestureDetector(
-                    onTap: () {
-                      auth!.isRegistering = true;
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: GestureDetector(
+                      onTap: () {
+                        auth!.isRegistering = true;
 
-                      auth!.signUp(
-                        context,
-                        emailController.text,
-                        usernameController.text,
-                        passwordContoller.text,
-                      );
-                    },
-                    child: const CustomButton(buttonText: 'Sign up')),
+                        auth!.signUp(
+                          context,
+                          emailController.text,
+                          usernameController.text.toLowerCase(),
+                          passwordContoller.text,
+                        );
+                      },
+                      child: const CustomButton(buttonText: 'Sign up')),
+                ),
                 const SizedBox(
                   height: 20,
                 ),

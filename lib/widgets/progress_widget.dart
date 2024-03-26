@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class ProgressWidget extends StatelessWidget {
   const ProgressWidget(
@@ -29,7 +30,7 @@ class ProgressWidget extends StatelessWidget {
                   Text(
                     value.toInt().toString(),
                     style: Theme.of(context).textTheme.bodyMedium,
-                  ),
+                  ).animate().fadeIn(),
                 ],
               ),
             ),
@@ -41,7 +42,7 @@ class ProgressWidget extends StatelessWidget {
                 value: value / maxValue,
                 color: color,
                 strokeCap: StrokeCap.round,
-              ),
+              ).animate().rotate(),
             ),
           ],
         ),

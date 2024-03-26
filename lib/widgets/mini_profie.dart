@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fitness_social_app/models/user_model.dart';
 import 'package:fitness_social_app/routing/route_constants.dart';
 import 'package:fitness_social_app/services/user_services.dart';
 import 'package:flutter/material.dart';
@@ -61,7 +62,8 @@ class _MiniProfieState extends State<MiniProfie> {
                             ? Text(
                                 widget.optionalSubText!,
                               )
-                            : const Text(''),
+                            : Text(
+                                "${thisUser.firstName} ${thisUser.lastName}"),
                       ],
                     ),
                   ),
@@ -104,6 +106,40 @@ class _MiniProfieState extends State<MiniProfie> {
           return const Text('Error Loading');
         }
       },
+    );
+  }
+}
+
+class MiniProfileWidget extends StatelessWidget {
+  const MiniProfileWidget({
+    super.key,
+    required this.thisUser,
+  });
+
+  final UserModel thisUser;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        context.pushNamed(RouteConstants.userPage, extra: thisUser);
+      },
+      child: Container(
+        width: 80,
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            CircleAvatar(
+                maxRadius: 30,
+                backgroundImage: NetworkImage(thisUser.profileUrl)),
+            Text(
+              thisUser.username,
+              overflow: TextOverflow.ellipsis,
+            )
+          ],
+        ),
+      ),
     );
   }
 }

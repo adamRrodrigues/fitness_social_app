@@ -107,7 +107,6 @@ class _EditExerciseState extends ConsumerState<EditExercise> {
                     child: Builder(builder: (context) {
                       if (finalVideo == null) {
                         try {
-                          print("Hello");
                           vController = VideoPlayerController.contentUri(
                               Uri.parse(widget.editingExercise.imageUrl),
                               videoPlayerOptions:

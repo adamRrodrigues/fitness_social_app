@@ -21,4 +21,5 @@ class RouteConstants {
   static String viewMealScreen = 'viewMealScreen';
   static String viewUserStatsScreen = 'viewUserStatsScreen';
   static String viewUserSavedWorkouts = 'viewUserSavedWorkouts';
+  static String searchScreen = 'searchScreen';
 }

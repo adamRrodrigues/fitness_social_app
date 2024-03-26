@@ -16,6 +16,7 @@ import 'package:fitness_social_app/screen/local_exercise_edit_screen.dart';
 import 'package:fitness_social_app/screen/run_routine.dart';
 import 'package:fitness_social_app/screen/run_workou.dart';
 import 'package:fitness_social_app/screen/search_meals.dart';
+import 'package:fitness_social_app/screen/search_screens/search_screen.dart';
 import 'package:fitness_social_app/screen/search_workouts.dart';
 import 'package:fitness_social_app/screen/user_page.dart';
 import 'package:fitness_social_app/screen/user_saved_workouts.dart';
@@ -253,6 +254,17 @@ final GoRouter appRouter = GoRouter(
                 return CupertinoPage(
                     child: UserSavedWorkouts(
                   uid: postId!,
+                ));
+              },
+            ),
+            GoRoute(
+              path: 'searchScreen/:searchType',
+              name: RouteConstants.searchScreen,
+              pageBuilder: (context, state) {
+                final searchType = state.pathParameters['searchType'];
+                return CupertinoPage(
+                    child: SearchScreen(
+                  searchType: searchType!,
                 ));
               },
             ),

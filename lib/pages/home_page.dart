@@ -17,16 +17,12 @@ class _HomePageState extends ConsumerState<HomePage>
   User? user;
   FeedServices? feedServices;
 
-  void getFollowing() async {
-    feedServices!.fetchFollowing(user!.uid);
-    print(feedServices!.following);
-  }
+  
 
   @override
   void initState() {
     user = ref.read(userProvider);
     feedServices = ref.read(feedServicesProvider);
-    getFollowing();
     super.initState();
   }
 
@@ -71,5 +67,5 @@ class _HomePageState extends ConsumerState<HomePage>
   }
 
   @override
-  bool get wantKeepAlive => false;
+  bool get wantKeepAlive => true;
 }

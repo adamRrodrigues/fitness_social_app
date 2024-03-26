@@ -7,6 +7,8 @@ class CustomTextField extends StatelessWidget {
       required this.hintText,
       this.obscure = false,
       this.textInputType = TextInputType.text,
+      this.maxLength = 100,
+      this.onChange,
       this.focusNode})
       : super(key: key);
 
@@ -15,6 +17,8 @@ class CustomTextField extends StatelessWidget {
   final bool obscure;
   final FocusNode? focusNode;
   final TextInputType textInputType;
+  final int maxLength;
+  final Function(String)? onChange;
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +30,9 @@ class CustomTextField extends StatelessWidget {
         focusNode: focusNode,
         autofocus: false,
         controller: textController,
+        maxLines: obscure ? 1 : null,
+        maxLength: maxLength,
+        onChanged: onChange,
         keyboardType: textInputType,
         cursorColor: Colors.white,
         style: Theme.of(context).textTheme.titleMedium,

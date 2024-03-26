@@ -19,7 +19,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   void initState() {
     super.initState();
     auth = ref.read(authProvider);
-
   }
 
   @override
@@ -42,7 +41,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   height: 70,
                 ),
                 CustomTextField(
-                    textController: emailController, hintText: 'email', textInputType: TextInputType.emailAddress),
+                    textController: emailController,
+                    hintText: 'email',
+                    maxLength: 100,
+                    textInputType: TextInputType.emailAddress),
                 const SizedBox(
                   height: 20,
                 ),
@@ -54,18 +56,21 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 const SizedBox(
                   height: 50,
                 ),
-                GestureDetector(
-                    onTap: () {
-                      // Navigator.pushReplacement(context, MaterialPageRoute(
-                      //   builder: (context) {
-                      //     return MainPage();
-                      //   },
-                      // ));
-                      auth.isRegistering = false;
-                      auth.signIn(context, emailController.text,
-                          passwordContoller.text);
-                    },
-                    child: const CustomButton(buttonText: 'Sign In')),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: GestureDetector(
+                      onTap: () {
+                        // Navigator.pushReplacement(context, MaterialPageRoute(
+                        //   builder: (context) {
+                        //     return MainPage();
+                        //   },
+                        // ));
+                        auth.isRegistering = false;
+                        auth.signIn(context, emailController.text,
+                            passwordContoller.text);
+                      },
+                      child: const CustomButton(buttonText: 'Sign In')),
+                ),
                 const SizedBox(
                   height: 20,
                 ),

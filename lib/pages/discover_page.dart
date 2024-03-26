@@ -6,8 +6,10 @@ import 'package:fitness_social_app/services/meal_service.dart';
 import 'package:fitness_social_app/services/post_service.dart';
 import 'package:fitness_social_app/services/user_services.dart';
 import 'package:fitness_social_app/widgets/meal_widgets/meal_widget.dart';
+import 'package:fitness_social_app/widgets/mini_profie.dart';
 import 'package:fitness_social_app/widgets/workout_widgets/workout_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -52,135 +54,150 @@ class _DiscoverPageState extends ConsumerState<DiscoverPage>
             onRefresh: () async {
               setState(() {});
             },
-            child: ListView(
-              // crossAxisAlignment: CrossAxisAlignment.start,
-              physics: const BouncingScrollPhysics(),
-              children: [
-                section(context, "People"),
-                FutureBuilder(
-                  future: users.get(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done) {
-                      final data = snapshot.data!.docs
-                          .where((element) => element.id != user!.uid)
-                          .toList();
-
-                      return SizedBox(
-                        height: 120,
-                        child: ListView.builder(
-                          itemCount: data.length > 5 ? 5 : data.length,
-                          shrinkWrap: true,
-                          physics: const BouncingScrollPhysics(),
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, index) {
-                            final thisUser =
-                                UserServices().mapDocUser(data[index]);
-                            return InkWell(
-                              onTap: () {
-                                context.pushNamed(RouteConstants.userPage,
-                                    extra: thisUser);
-                              },
-                              child: Container(
-                                width: 80,
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    CircleAvatar(
-                                        maxRadius: 30,
-                                        backgroundImage:
-                                            NetworkImage(thisUser.profileUrl)),
-                                    Text(
-                                      thisUser.username,
-                                      overflow: TextOverflow.ellipsis,
-                                    )
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      );
-                    } else {
-                      return const Center(child: CircularProgressIndicator());
+            child: StreamBuilder(
+                stream: users
+                    .doc(user!.uid)
+                    .collection('following')
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData &&
+                      snapshot.connectionState == ConnectionState.active) {
+                    final docs = snapshot.data!.docs.toList();
+                    List<String> ids = [user!.uid];
+                    for (var i = 0; i < docs.length; i++) {
+                      ids.add(docs[i].id);
                     }
-                  },
-                ),
-                section(context, "Workouts"),
-                SizedBox(
-                  height: 450,
-                  child: StreamBuilder(
-                    stream: wokrouts.snapshots(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.active) {
-                        final data = snapshot.data!.docs
-                            .where((element) => element.id != user!.uid)
-                            .toList();
+                    return ListView(
+                      // crossAxisAlignment: CrossAxisAlignment.start,
+                      physics: const BouncingScrollPhysics(),
+                      children: [
+                        section(context, "Users"),
+                        StreamBuilder(
+                          stream:
+                              users.where("uid", whereNotIn: ids).snapshots(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.active) {
+                              final data = snapshot.data!.docs.toList();
 
-                        return ListView.builder(
-                          itemCount: data.length > 5 ? 5 : data.length,
-                          shrinkWrap: true,
-                          physics: const BouncingScrollPhysics(),
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, index) {
-                            final thisWorkout =
-                                workoutPostServices.mapDocPost(data[index]);
-                            try {
                               return SizedBox(
-                                  // height: 330,
-                                  width: 370,
-                                  child: WorkoutWidget(
-                                    workoutModel: thisWorkout,
-                                    mini: false,
-                                  ));
-                            } catch (e) {
-                              return Container();
+                                height: 120,
+                                child: ListView.builder(
+                                  itemCount: data.length,
+                                  shrinkWrap: true,
+                                  physics: const BouncingScrollPhysics(),
+                                  scrollDirection: Axis.horizontal,
+                                  itemBuilder: (context, index) {
+                                    final thisUser =
+                                        UserServices().mapDocUser(data[index]);
+                                    return MiniProfileWidget(thisUser: thisUser)
+                                        .animate()
+                                        .shimmer();
+                                  },
+                                ),
+                              );
+                            } else {
+                              return const Center(
+                                  child: CircularProgressIndicator());
                             }
                           },
-                        );
-                      } else {
-                        return const Center(child: CircularProgressIndicator());
-                      }
-                    },
-                  ),
-                ),
-                section(context, "Meals"),
-                SizedBox(
-                  // width: 400,
-                  height: 450,
-                  child: FutureBuilder(
-                    future: meals.get(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.done) {
-                        final data = snapshot.data!.docs
-                            .where((element) => element.id != user!.uid)
-                            .toList();
+                        ),
+                        section(context, "Workouts"),
+                        SizedBox(
+                          height: 400,
+                          child: StreamBuilder(
+                            stream: wokrouts
+                                .where('uid', isNotEqualTo: user!.uid)
+                                .orderBy('uid')
+                                .orderBy('createdAt', descending: true)
+                                .limit(5)
+                                .snapshots(),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData &&
+                                  snapshot.connectionState ==
+                                      ConnectionState.active) {
+                                final data = snapshot.data!.docs.toList();
 
-                        return ListView.builder(
-                          itemCount: data.length > 5 ? 5 : data.length,
-                          shrinkWrap: true,
-                          physics: const BouncingScrollPhysics(),
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, index) {
-                            final thisMeal =
-                                mealServices.getMealFromDoc(data[index]);
-                            return SizedBox(
-                                height: 300,
-                                width: 370,
-                                child: MealWidget(
-                                  meal: thisMeal,
-                                ));
-                          },
-                        );
-                      } else {
-                        return const Center(child: CircularProgressIndicator());
-                      }
-                    },
-                  ),
-                ),
-              ],
-            ),
+                                return Builder(builder: (context) {
+                                  if (data.isNotEmpty) {
+                                    return ListView.builder(
+                                      itemCount: data.length,
+                                      shrinkWrap: true,
+                                      physics: const BouncingScrollPhysics(),
+                                      scrollDirection: Axis.horizontal,
+                                      itemBuilder: (context, index) {
+                                        final thisWorkout = workoutPostServices
+                                            .mapDocPost(data[index]);
+                                        try {
+                                          return SizedBox(
+                                              // height: 330,
+                                              width: 370,
+                                              child: WorkoutWidget(
+                                                workoutModel: thisWorkout,
+                                                mini: false,
+                                              ));
+                                        } catch (e) {
+                                          return Container();
+                                        }
+                                      },
+                                    );
+                                  } else {
+                                    return Center(
+                                      child: Text("No Workouts to display"),
+                                    );
+                                  }
+                                });
+                              } else {
+                                return const Center(
+                                    child: CircularProgressIndicator());
+                              }
+                            },
+                          ),
+                        ),
+                        section(context, "Meals"),
+                        SizedBox(
+                          // width: 400,
+                          height: 450,
+                          child: StreamBuilder(
+                            stream: meals.limit(5).snapshots(),
+                            builder: (context, snapshots) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.done) {
+                                final data = snapshot.data!.docs
+                                    .where((element) => element.id != user!.uid)
+                                    .toList();
+
+                                return ListView.builder(
+                                  itemCount: data.length,
+                                  shrinkWrap: true,
+                                  physics: const BouncingScrollPhysics(),
+                                  scrollDirection: Axis.horizontal,
+                                  itemBuilder: (context, index) {
+                                    final thisMeal = mealServices
+                                        .getMealFromDoc(data[index]);
+                                    return SizedBox(
+                                        height: 300,
+                                        width: 370,
+                                        child: MealWidget(
+                                          meal: thisMeal,
+                                        ));
+                                  },
+                                );
+                              } else {
+                                return const Center(
+                                    child: CircularProgressIndicator());
+                              }
+                            },
+                          ),
+                        ),
+                      ],
+                    );
+                  } else {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                }),
           )),
     );
   }
@@ -196,11 +213,17 @@ class _DiscoverPageState extends ConsumerState<DiscoverPage>
             style: Theme.of(context).textTheme.titleLarge,
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            "See More...",
-            style: Theme.of(context).textTheme.bodySmall,
+        GestureDetector(
+          onTap: () {
+            context.pushNamed(RouteConstants.searchScreen,
+                pathParameters: {'searchType': sectionName});
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              "See More...",
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
           ),
         ),
       ],

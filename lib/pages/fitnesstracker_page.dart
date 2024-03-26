@@ -57,6 +57,7 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     User user = FirebaseAuth.instance.currentUser!;
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,

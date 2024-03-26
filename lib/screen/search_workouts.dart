@@ -15,12 +15,14 @@ class SearchWorkouts extends ConsumerStatefulWidget {
 
 class _SearchWorkoutsState extends ConsumerState<SearchWorkouts> {
   Routine routine = Routine();
+  User? user;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     routine = ref.read(routineProvider);
+    user = ref.read(userProvider);
   }
 
   @override
@@ -38,10 +40,10 @@ class _SearchWorkoutsState extends ConsumerState<SearchWorkouts> {
         children: [
           Expanded(
               child: WorkoutFeed(
-                selection: true,
+            selection: true,
             day: widget.index,
             uid: user!.uid,
-            postQuery: FeedServices().fetchWorkouts(),
+            postQuery: FeedServices().fetchWorkouts(user.uid),
             profileView: false,
           ))
         ],
