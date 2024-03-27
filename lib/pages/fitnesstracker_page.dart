@@ -11,6 +11,8 @@ import 'package:fitness_social_app/widgets/workout_widgets/online_routine_widget
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pedometer/pedometer.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class FitnesstrackerPage extends ConsumerStatefulWidget {
   const FitnesstrackerPage({Key? key}) : super(key: key);
@@ -28,6 +30,8 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage>
   List<WorkoutModel> workouts = [];
   Routine routine = Routine();
   bool routineExists = true;
+  late Stream<StepCount> _stepCountStream;
+  double _steps = 0;
 
   final user = FirebaseAuth.instance.currentUser;
   CollectionReference routines =
@@ -53,6 +57,34 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage>
     // setState(() {
     //   routineExists = true;
     // });
+
+    // initliazlie the pedometer
+    initPedometer();
+  }
+
+  void initPedometer() async {
+    if (await Permission.activityRecognition.request().isGranted) {
+      _stepCountStream = Pedometer.stepCountStream;
+
+      _stepCountStream.listen(onStepCount).onError(onStepCountError);
+    } else {
+      print("testo");
+    }
+
+    if (!mounted) return;
+  }
+
+  void onStepCount(StepCount event) {
+    setState(() {
+      _steps = event.steps.toDouble();
+    });
+  }
+
+  void onStepCountError(error) {
+    print('onStepCountErro : $error');
+    setState(() {
+      _steps = -66;
+    });
   }
 
   @override
@@ -139,8 +171,10 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage>
                                 const SizedBox(
                                   height: 30,
                                 ),
-                                const ProgressWidget(
-                                    value: 2500, color: Color(0xffFF8080)),
+                                ProgressWidget(
+                                    // type: 'steps',
+                                    value: _steps,
+                                    color: Color(0xffFF8080)),
                               ],
                             ),
                           ),
