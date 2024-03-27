@@ -60,7 +60,9 @@ void incrementSet(int setLimit, int exerciseLimit, int workoutLimit) async {
           day!.setDay();
         }
         showDone.value = true;
-        vController!.dispose();
+        try {
+          vController!.dispose();
+        } catch (e) {}
       }
     }
   } else {
@@ -347,103 +349,108 @@ class _RunWorkoutState extends ConsumerState<RunWorkout> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Builder(builder: (context) {
-                            if (widget.workouts[currentWorkout.value]
-                                    .exercises[currentExercise.value]["type"] ==
-                                "sets") {
-                              return Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  ValueListenableBuilder(
-                                      valueListenable: currentSet,
-                                      builder: (context, currentSet, child) {
-                                        return CircularStepProgressIndicator(
-                                          width: 100,
-                                          height: 100,
-                                          totalSteps: widget
-                                                          .workouts[currentWorkout
-                                                              .value]
+                          ValueListenableBuilder(
+                              valueListenable: currentWorkout,
+                              builder: (context, currentWorkout, child) {
+                                if (widget.workouts[currentWorkout]
+                                            .exercises[currentExercise.value]
+                                        ["type"] ==
+                                    "sets") {
+                                  return Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      ValueListenableBuilder(
+                                          valueListenable: currentSet,
+                                          builder:
+                                              (context, currentSet, child) {
+                                            return CircularStepProgressIndicator(
+                                              width: 100,
+                                              height: 100,
+                                              totalSteps: widget
+                                                              .workouts[
+                                                                  currentWorkout]
+                                                              .exercises[
+                                                          currentExercise
+                                                              .value]['sets'] ==
+                                                      0
+                                                  ? 1
+                                                  : widget
+                                                          .workouts[currentWorkout]
                                                           .exercises[
                                                       currentExercise
-                                                          .value]['sets'] ==
-                                                  0
-                                              ? 1
-                                              : widget
-                                                      .workouts[
-                                                          currentWorkout.value]
-                                                      .exercises[
-                                                  currentExercise
-                                                      .value]['sets'],
-                                          currentStep: currentSet,
-                                          selectedColor: Theme.of(context)
-                                              .colorScheme
-                                              .primary,
-                                          unselectedColor: Theme.of(context)
-                                              .colorScheme
-                                              .secondary,
-                                          roundedCap: (p0, p1) => true,
-                                          // padding:3.75,
-                                        );
-                                      }),
-                                  Center(
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          "${widget.workouts[currentWorkout.value].exercises[currentExercise.value]['reps']}x \n reps",
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .titleMedium,
-                                          textAlign: TextAlign.center,
+                                                          .value]['sets'],
+                                              currentStep: currentSet,
+                                              selectedColor: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary,
+                                              unselectedColor: Theme.of(context)
+                                                  .colorScheme
+                                                  .secondary,
+                                              roundedCap: (p0, p1) => true,
+                                              // padding:3.75,
+                                            );
+                                          }),
+                                      Center(
+                                        child: Column(
+                                          children: [
+                                            Text(
+                                              "${widget.workouts[currentWorkout].exercises[currentExercise.value]['reps']}x \n reps",
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .titleMedium,
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            // Text(
+                                            //   "reps",
+                                            //   style: Theme.of(context).textTheme.titleMedium,
+                                            // ),
+                                          ],
                                         ),
-                                        // Text(
-                                        //   "reps",
-                                        //   style: Theme.of(context).textTheme.titleMedium,
-                                        // ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              );
-                            } else {
-                              return ValueListenableBuilder(
-                                  valueListenable: currentSeconds,
-                                  builder: (context, currentSeconds, child) {
-                                    return Stack(
-                                      alignment: Alignment.center,
-                                      children: [
-                                        SizedBox(
-                                          height: 100,
-                                          width: 100,
-                                          child: CircularProgressIndicator(
-                                            value:
-                                                currentSeconds / workoutSeconds,
-                                            backgroundColor: Theme.of(context)
-                                                .colorScheme
-                                                .secondary,
-                                          ),
-                                        ),
-                                        Center(
-                                          child: Column(
-                                            children: [
-                                              Text(
-                                                currentSeconds.toString(),
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .titleMedium,
-                                                textAlign: TextAlign.center,
+                                      ),
+                                    ],
+                                  );
+                                } else {
+                                  return ValueListenableBuilder(
+                                      valueListenable: currentSeconds,
+                                      builder:
+                                          (context, currentSeconds, child) {
+                                        return Stack(
+                                          alignment: Alignment.center,
+                                          children: [
+                                            SizedBox(
+                                              height: 100,
+                                              width: 100,
+                                              child: CircularProgressIndicator(
+                                                value: currentSeconds /
+                                                    workoutSeconds,
+                                                backgroundColor:
+                                                    Theme.of(context)
+                                                        .colorScheme
+                                                        .secondary,
                                               ),
-                                              // Text(
-                                              //   "reps",
-                                              //   style: Theme.of(context).textTheme.titleMedium,
-                                              // ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    );
-                                  });
-                            }
-                          }),
+                                            ),
+                                            Center(
+                                              child: Column(
+                                                children: [
+                                                  Text(
+                                                    currentSeconds.toString(),
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .titleMedium,
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                  // Text(
+                                                  //   "reps",
+                                                  //   style: Theme.of(context).textTheme.titleMedium,
+                                                  // ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        );
+                                      });
+                                }
+                              }),
                           Stack(
                             alignment: Alignment.center,
                             children: [
@@ -501,6 +508,11 @@ class _RunWorkoutState extends ConsumerState<RunWorkout> {
                   ),
                 );
               } else {
+                try {
+                  vController!.dispose();
+                } catch (e) {
+                  
+                }
                 return const Center(
                   child: Text("Workout Completed"),
                 );
@@ -575,7 +587,9 @@ class _RunWorkoutState extends ConsumerState<RunWorkout> {
                                   day!.setDay();
                                 }
                                 showDone.value = true;
-                                vController!.dispose();
+                                try {
+                                  vController!.dispose();
+                                } catch (e) {}
                               }
                             }
                           }
