@@ -1,12 +1,14 @@
 Doing: 
-run workout time based view
+fix disconver page
 
 Next: 
-fix disconver page
-edit profile page
 landing pages 
+edit profile page
+add slideables too workout and meal creations
+
 
 Done:
+run workout time based view
 workout streaks
 fix view exercise screen
 search stuff

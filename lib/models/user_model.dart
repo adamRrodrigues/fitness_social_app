@@ -58,7 +58,7 @@ class UserModel {
         posts: List.from(
           (map['posts'] as List),
         ),
-        profileUrl: '');
+        profileUrl: map['profileUrl']);
   }
 
   String toJson() => json.encode(toMap());

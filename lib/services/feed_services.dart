@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fitness_social_app/models/generic_post_model.dart';
 import 'package:fitness_social_app/models/meal_model.dart';
+import 'package:fitness_social_app/models/user_model.dart';
 import 'package:fitness_social_app/models/workout_post_model.dart';
 import 'package:fitness_social_app/services/user_services.dart';
 
@@ -16,6 +17,19 @@ class FeedServices {
         .withConverter(
           fromFirestore: (snapshot, _) => GenericPost.fromMap(snapshot.data()!),
           toFirestore: (post, _) => post.toMap(),
+        );
+    return postQuery;
+  }
+
+  Query<UserModel> fetchNonFollowedUsers(String uid) {
+    final Query<UserModel> postQuery;
+
+    postQuery = FirebaseFirestore.instance
+        .collection('users')
+        .where('uid', whereNotIn: following)
+        .withConverter(
+          fromFirestore: (snapshot, _) => UserModel.fromMap(snapshot.data()!),
+          toFirestore: (value, options) => value.toMap(),
         );
     return postQuery;
   }

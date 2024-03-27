@@ -17,8 +17,6 @@ class _HomePageState extends ConsumerState<HomePage>
   User? user;
   FeedServices? feedServices;
 
-  
-
   @override
   void initState() {
     user = ref.read(userProvider);
@@ -43,8 +41,12 @@ class _HomePageState extends ConsumerState<HomePage>
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
                     if (feedServices!.following.isNotEmpty) {
-                      return PostFeedWidget( profileView: false,
-                          postQuery: feedServices!.fetchPosts(user!.uid), noPostsMessage: "None of the users you follow have any posts </3",);
+                      return PostFeedWidget(
+                        profileView: false,
+                        postQuery: feedServices!.fetchPosts(user!.uid),
+                        noPostsMessage:
+                            "None of the users you follow have any posts </3",
+                      );
                     } else {
                       return Expanded(
                         child: Center(

@@ -2,14 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/routing/route_constants.dart';
+import 'package:fitness_social_app/services/feed_services.dart';
 import 'package:fitness_social_app/services/meal_service.dart';
 import 'package:fitness_social_app/services/post_service.dart';
-import 'package:fitness_social_app/services/user_services.dart';
-import 'package:fitness_social_app/widgets/meal_widgets/meal_widget.dart';
-import 'package:fitness_social_app/widgets/mini_profie.dart';
-import 'package:fitness_social_app/widgets/workout_widgets/workout_widget.dart';
+import 'package:fitness_social_app/widgets/discover_sections/discover_page_meals.dart';
+import 'package:fitness_social_app/widgets/discover_sections/discover_page_workouts.dart';
+import 'package:fitness_social_app/widgets/discover_sections/discover_page_users.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -30,11 +29,13 @@ class _DiscoverPageState extends ConsumerState<DiscoverPage>
   User? user;
   WorkoutPostServices workoutPostServices = WorkoutPostServices();
   MealServices mealServices = MealServices();
+  FeedServices? feedServices;
 
   @override
   void initState() {
-    user = ref.read(userProvider);
     super.initState();
+    user = ref.read(userProvider);
+    feedServices = ref.read(feedServicesProvider);
   }
 
   @override
@@ -51,153 +52,31 @@ class _DiscoverPageState extends ConsumerState<DiscoverPage>
             elevation: 0,
           ),
           body: RefreshIndicator(
-            onRefresh: () async {
-              setState(() {});
-            },
-            child: StreamBuilder(
-                stream:
-                    users.doc(user!.uid).collection('following').snapshots(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData &&
-                      snapshot.connectionState == ConnectionState.active) {
-                    final docs = snapshot.data!.docs.toList();
-                    List<String> ids = [user!.uid];
-                    for (var i = 0; i < docs.length; i++) {
-                      ids.add(docs[i].id);
-                    }
-                    return ListView(
-                      // crossAxisAlignment: CrossAxisAlignment.start,
-                      physics: const BouncingScrollPhysics(),
-                      children: [
-                        section(context, "Users"),
-                        StreamBuilder(
-                          stream:
-                              users.where("uid", whereNotIn: ids).snapshots(),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.active) {
-                              final data = snapshot.data!.docs.toList();
-
-                              return SizedBox(
-                                height: 120,
-                                child: ListView.builder(
-                                  itemCount: data.length,
-                                  shrinkWrap: true,
-                                  physics: const BouncingScrollPhysics(),
-                                  scrollDirection: Axis.horizontal,
-                                  itemBuilder: (context, index) {
-                                    final thisUser =
-                                        UserServices().mapDocUser(data[index]);
-                                    return MiniProfileWidget(thisUser: thisUser)
-                                        .animate()
-                                        .shimmer();
-                                  },
-                                ),
-                              );
-                            } else {
-                              return const Center(
-                                  child: CircularProgressIndicator());
-                            }
-                          },
-                        ),
-                        section(context, "Workouts"),
-                        SizedBox(
-                          height: 400,
-                          child: StreamBuilder(
-                            stream: wokrouts
-                                .where('uid', isNotEqualTo: user!.uid)
-                                .orderBy('uid')
-                                .orderBy('createdAt', descending: true)
-                                .limit(5)
-                                .snapshots(),
-                            builder: (context, snapshot) {
-                              if (snapshot.hasData &&
-                                  snapshot.connectionState ==
-                                      ConnectionState.active) {
-                                final data = snapshot.data!.docs.toList();
-
-                                return Builder(builder: (context) {
-                                  if (data.isNotEmpty) {
-                                    return ListView.builder(
-                                      itemCount: data.length,
-                                      shrinkWrap: true,
-                                      physics: const BouncingScrollPhysics(),
-                                      scrollDirection: Axis.horizontal,
-                                      itemBuilder: (context, index) {
-                                        final thisWorkout = workoutPostServices
-                                            .mapDocPost(data[index]);
-                                        try {
-                                          return SizedBox(
-                                              // height: 330,
-                                              width: 370,
-                                              child: WorkoutWidget(
-                                                workoutModel: thisWorkout,
-                                                mini: false,
-                                              ));
-                                        } catch (e) {
-                                          return Container();
-                                        }
-                                      },
-                                    );
-                                  } else {
-                                    return Center(
-                                      child: Text("No Workouts to display"),
-                                    );
-                                  }
-                                });
-                              } else {
-                                return const Center(
-                                    child: CircularProgressIndicator());
-                              }
-                            },
-                          ),
-                        ),
-                        section(context, "Meals"),
-                        SizedBox(
-                            // width: 400,
-                            height: 450,
-                            child: StreamBuilder(
-                              stream: meals
-                                  .where('uid', isNotEqualTo: user!.uid)
-                                  .snapshots(),
-                              builder: (context, snapshot) {
-                                if (snapshot.hasData &&
-                                    snapshot.connectionState ==
-                                        ConnectionState.active) {
-                                  final data = snapshot.data!.docs.toList();
-                                  if (data.isNotEmpty) {
-                                    return ListView.builder(
-                                      shrinkWrap: true,
-                                      physics: NeverScrollableScrollPhysics(),
-                                      itemCount: data.length,
-                                      itemBuilder: (context, index) {
-                                        final meal = MealServices()
-                                            .getMealFromDoc(data[index]);
-                                        return MealWidget(meal: meal);
-                                      },
-                                    );
-                                  } else {
-                                    return Center(
-                                      child: Text(
-                                          "No Meals"),
-                                    );
-                                  }
-                                } else {
-                                  return Center(
-                                    child: CircularProgressIndicator(),
-                                  );
-                                }
-                              },
-                            )),
-                      ],
-                    );
-                  } else {
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                }),
-          )),
+              onRefresh: () async {
+                setState(() {});
+              },
+              child: SingleChildScrollView(
+                physics: BouncingScrollPhysics(),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: section(context, "Users"),
+                    ),
+                    DiscoverPageUsers(user: user),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: section(context, "Workouts"),
+                    ),
+                    DiscoverPageWorkouts(user: user),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: section(context, "Meals"),
+                    ),
+                    DiscoverPageMeals(user: user),
+                  ],
+                ),
+              ))),
     );
   }
 
