@@ -42,7 +42,10 @@ class MealServices {
         description: data['description'],
         uid: data['uid'],
         postId: data['postId'],
+        calories: data['calories'],
         image: data['image'],
+        likes: List.from(data['likes']),
+        steps: List.from(data['steps']),
         ingredients: List.from(data['ingredients']),
         tags: List.from(data['tags']));
     return meal;

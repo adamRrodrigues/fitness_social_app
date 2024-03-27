@@ -54,4 +54,10 @@ class RoutineServices {
       ])
     });
   }
+
+  Future removeFromMealPlan(String mealId, int day) async {
+    routines.doc(user!.uid).collection('day $day').doc('meals').update({
+      'meals': FieldValue.arrayRemove([mealId])
+    });
+  }
 }

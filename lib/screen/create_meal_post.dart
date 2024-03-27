@@ -109,9 +109,12 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost> {
                         MealModel thisMeal = MealModel(
                             mealName: titleController.text,
                             description: mealDraft!.description,
+                            calories: 0.0,
                             uid: "",
                             postId: "",
                             image: "",
+                            likes: List.empty(),
+                            steps: List.empty(),
                             ingredients: mealDraft!.ingredients,
                             tags: mealDraft!.categories);
 

@@ -10,6 +10,9 @@ class MealModel {
   final String postId;
   final String image;
   final List<dynamic> ingredients;
+  final double calories;
+  final List<String> likes;
+  final List<String> steps;
   final List<String> tags;
   MealModel({
     required this.mealName,
@@ -18,6 +21,9 @@ class MealModel {
     required this.postId,
     required this.image,
     required this.ingredients,
+    required this.calories,
+    required this.likes,
+    required this.steps,
     required this.tags,
   });
 
@@ -28,6 +34,9 @@ class MealModel {
     String? postId,
     String? image,
     List<dynamic>? ingredients,
+    double? calories,
+    List<String>? likes,
+    List<String>? steps,
     List<String>? tags,
   }) {
     return MealModel(
@@ -37,6 +46,9 @@ class MealModel {
       postId: postId ?? this.postId,
       image: image ?? this.image,
       ingredients: ingredients ?? this.ingredients,
+      calories: calories ?? this.calories,
+      likes: likes ?? this.likes,
+      steps: steps ?? this.steps,
       tags: tags ?? this.tags,
     );
   }
@@ -49,6 +61,9 @@ class MealModel {
       'postId': postId,
       'image': image,
       'ingredients': ingredients,
+      'calories': calories,
+      'likes': likes,
+      'steps': steps,
       'tags': tags,
     };
   }
@@ -61,7 +76,10 @@ class MealModel {
       postId: map['postId'] as String,
       image: map['image'] as String,
       ingredients: List<dynamic>.from((map['ingredients'] as List<dynamic>)),
-      tags: List<String>.from((map['tags'] as List<dynamic>)),
+      calories: map['calories'] as double,
+      likes: List<String>.from((map['likes'] as List<String>)),
+      steps: List<String>.from((map['steps'] as List<String>)),
+      tags: List<String>.from((map['tags'] as List<String>)),
     );
   }
 
@@ -72,7 +90,7 @@ class MealModel {
 
   @override
   String toString() {
-    return 'MealModel(mealName: $mealName, description: $description, uid: $uid, postId: $postId, image: $image, ingredients: $ingredients, tags: $tags)';
+    return 'MealModel(mealName: $mealName, description: $description, uid: $uid, postId: $postId, image: $image, ingredients: $ingredients, calories: $calories, likes: $likes, steps: $steps, tags: $tags)';
   }
 
   @override
@@ -85,6 +103,9 @@ class MealModel {
         other.postId == postId &&
         other.image == image &&
         listEquals(other.ingredients, ingredients) &&
+        other.calories == calories &&
+        listEquals(other.likes, likes) &&
+        listEquals(other.steps, steps) &&
         listEquals(other.tags, tags);
   }
 
@@ -96,6 +117,9 @@ class MealModel {
         postId.hashCode ^
         image.hashCode ^
         ingredients.hashCode ^
+        calories.hashCode ^
+        likes.hashCode ^
+        steps.hashCode ^
         tags.hashCode;
   }
 }

@@ -95,19 +95,21 @@ class VviewMealPlanScreenState extends State<ViewMealPlanScreen> {
                                   if (snapshot.hasData &&
                                       snapshot.connectionState ==
                                           ConnectionState.done) {
-                                    // try {
-                                    Map<String, dynamic> thisWorkout =
-                                        snapshot.data!.data()
-                                            as Map<String, dynamic>;
+                                    try {
+                                      Map<String, dynamic> thisMeal =
+                                          snapshot.data!.data()
+                                              as Map<String, dynamic>;
 
-                                    final MealModel mappedWorkout =
-                                        RoutineServices()
-                                            .mapSingleRoutineMeal(thisWorkout);
+                                      final MealModel mappedMeal =
+                                          RoutineServices()
+                                              .mapSingleRoutineMeal(thisMeal);
 
-                                    return MealWidget(meal: mappedWorkout);
-                                    // } catch (e) {
-                                    // return Container();
-                                    // }
+                                      return MealWidget(meal: mappedMeal);
+                                    } catch (e) {
+                                      RoutineServices().removeFromMealPlan(
+                                          meals[index], currentDay);
+                                      return Container();
+                                    }
                                   } else {
                                     return const Center(
                                         child: CircularProgressIndicator());
