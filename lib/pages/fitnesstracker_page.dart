@@ -31,7 +31,7 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage>
   Routine routine = Routine();
   bool routineExists = true;
   late Stream<StepCount> _stepCountStream;
-  double _steps = 0;
+  ValueNotifier<double> _steps = ValueNotifier(0);
 
   final user = FirebaseAuth.instance.currentUser;
   CollectionReference routines =
@@ -75,16 +75,16 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage>
   }
 
   void onStepCount(StepCount event) {
-    setState(() {
-      _steps = event.steps.toDouble();
-    });
+    // setState(() {
+    _steps.value = event.steps.toDouble();
+    // });
   }
 
   void onStepCountError(error) {
     print('onStepCountErro : $error');
-    setState(() {
-      _steps = -66;
-    });
+    // setState(() {
+    _steps.value = -69;
+    // });
   }
 
   @override
@@ -151,35 +151,42 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage>
                     scrollDirection: Axis.vertical,
                     childAspectRatio: (1 / 1.3),
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Material(
-                          elevation: 2,
-                          borderRadius: BorderRadius.circular(20),
-                          child: Container(
-                            height: 300,
-                            decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.surface,
-                                borderRadius: BorderRadius.circular(20)),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  "Steps",
-                                  style: Theme.of(context).textTheme.titleLarge,
+                      ValueListenableBuilder(
+                          valueListenable: _steps,
+                          builder: (context, _steps, child) {
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Material(
+                                elevation: 2,
+                                borderRadius: BorderRadius.circular(20),
+                                child: Container(
+                                  height: 300,
+                                  decoration: BoxDecoration(
+                                      color:
+                                          Theme.of(context).colorScheme.surface,
+                                      borderRadius: BorderRadius.circular(20)),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "Steps",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleLarge,
+                                      ),
+                                      const SizedBox(
+                                        height: 30,
+                                      ),
+                                      ProgressWidget(
+                                          // type: 'steps',
+                                          value: _steps,
+                                          color: Color(0xffFF8080)),
+                                    ],
+                                  ),
                                 ),
-                                const SizedBox(
-                                  height: 30,
-                                ),
-                                ProgressWidget(
-                                    // type: 'steps',
-                                    value: _steps,
-                                    color: Color(0xffFF8080)),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
+                              ),
+                            );
+                          }),
                       StreamBuilder(
                         stream: FirebaseFirestore.instance
                             .collection('user_stats')

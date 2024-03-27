@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_social_app/models/generic_post_model.dart';
 import 'package:fitness_social_app/models/meal_model.dart';
 import 'package:fitness_social_app/models/user_model.dart';
@@ -7,6 +8,7 @@ import 'package:fitness_social_app/services/user_services.dart';
 
 class FeedServices {
   List<String> following = [];
+  User user = FirebaseAuth.instance.currentUser!;
 
   Query<GenericPost> fetchPosts(uid) {
     final Query<GenericPost> postQuery;
@@ -73,7 +75,8 @@ class FeedServices {
 
   Query<WorkoutModel> fetchUserWorkouts(uid) {
     final postQuery = FirebaseFirestore.instance
-        .collection('workout_templates_demo')
+        .collection(
+            user.uid == uid ? 'user_workouts_demo' : 'workout_templates_demo')
         .where('uid', isEqualTo: uid)
         .withConverter(
           fromFirestore: (snapshot, _) =>
