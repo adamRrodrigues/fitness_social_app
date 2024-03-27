@@ -8,6 +8,7 @@ import 'package:fitness_social_app/services/shared_preferences.dart';
 import 'package:fitness_social_app/widgets/custom_button.dart';
 import 'package:fitness_social_app/widgets/image_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
@@ -473,7 +474,7 @@ class _RunWorkoutState extends ConsumerState<RunWorkout> {
                                           .secondary,
                                       roundedCap: (p0, p1) => true,
                                       // padding:3.75,
-                                    );
+                                    ).animate().rotate();
                                   }),
                               Center(
                                 child: Column(
