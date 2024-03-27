@@ -55,6 +55,8 @@ dependencies:
   flutter_rating_stars: ^1.0.3+4
   step_progress_indicator: ^1.0.2
   reorderables: ^0.6.0
+  pedometer: ^4.0.1
+  permission_handler: ^11.0.1
   timeline_tile: ^2.0.0
   video_player: ^2.8.3
   flutter_animate: ^4.5.0
