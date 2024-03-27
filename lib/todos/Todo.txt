@@ -1,12 +1,12 @@
 Doing: 
-edit profile page
-
+run workout time based view
 
 Next: 
-run workout time based view
-workout streaks
+edit profile page
 
 Done:
+workout streaks
+fix view exercise screen
 search stuff
 view exercise page
 my workouts pages

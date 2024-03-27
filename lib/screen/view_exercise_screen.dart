@@ -1,5 +1,8 @@
 import 'package:fitness_social_app/models/exercise_model.dart';
+import 'package:fitness_social_app/screen/view_video_screen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:modals/modals.dart';
 import 'package:video_player/video_player.dart';
 
 class ViewExerciseScreen extends StatefulWidget {
@@ -29,176 +32,205 @@ class _ViewExerciseScreenState extends State<ViewExerciseScreen> {
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         ),
         body: SafeArea(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Center(
-                child: SizedBox(
-                  height: 400,
-                  child: AspectRatio(
-                      aspectRatio: 0.65,
-                      child: Builder(builder: (context) {
-                        try {
-                          vController = VideoPlayerController.contentUri(
-                              Uri.parse(widget.exerciseModel.imageUrl),
-                              videoPlayerOptions:
-                                  VideoPlayerOptions(mixWithOthers: true))
-                            ..initialize().then((value) {
-                              vController!.setVolume(0);
-                              vController!.setLooping(true);
-                              vController!.pause();
-                            });
-                          if (!vController!.value.isInitialized) {
-                            return Stack(
-                              children: [
-                                Center(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      CircularProgressIndicator(),
-                                      Text("Fetching Video Please Wait")
-                                    ],
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Center(
+                  child: SizedBox(
+                    height: 400,
+                    child: AspectRatio(
+                        aspectRatio: 0.65,
+                        child: Builder(builder: (context) {
+                          try {
+                            vController = VideoPlayerController.contentUri(
+                                Uri.parse(widget.exerciseModel.imageUrl),
+                                videoPlayerOptions:
+                                    VideoPlayerOptions(mixWithOthers: true))
+                              ..initialize().then((value) {
+                                vController!.setVolume(0);
+                                vController!.setLooping(true);
+                                vController!.pause();
+                              });
+                            if (!vController!.value.isInitialized) {
+                              return Stack(
+                                children: [
+                                  Center(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        CircularProgressIndicator(),
+                                        Text("Fetching Video Please Wait")
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                GestureDetector(
-                                    onTap: () {
-                                      if (vController!.value.isPlaying) {
-                                        vController!.pause();
-                                      } else {
-                                        vController!.play();
-                                      }
-                                    },
-                                    child: VideoPlayer(vController!)),
-                              ],
+                                  Padding(
+                                    padding: EdgeInsets.all(8),
+                                    child: ClipRRect(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(10)),
+                                      child: AspectRatio(
+                                        aspectRatio:
+                                            0.65,
+                                        child: GestureDetector(
+                                            onDoubleTap: () {
+                                              // vController!.dispose();
+                                              Navigator.push(context,
+                                                  CupertinoPageRoute(
+                                                builder: (context) {
+                                                  return ViewVideoScreen(
+                                                      videoPlayerController:
+                                                          vController!);
+                                                },
+                                              ));
+                                            },
+                                            onTap: () {
+                                              if (vController!
+                                                  .value.isPlaying) {
+                                                vController!.pause();
+                                              } else {
+                                                vController!.play();
+                                              }
+                                            },
+                                            child: VideoPlayer(vController!)),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            } else {
+                              return Container();
+                            }
+                          } catch (e) {
+                            return Center(
+                              child: Icon(
+                                Icons.play_circle_outline_rounded,
+                                size: 64,
+                              ),
                             );
-                          } else {
-                            return Container();
                           }
-                        } catch (e) {
-                          return Center(
-                            child: Icon(
-                              Icons.play_circle_outline_rounded,
-                              size: 64,
-                            ),
-                          );
-                        }
-                      })),
+                        })),
+                  ),
                 ),
-              ),
-              Builder(
-                builder: (context) {
-                  if (widget.exerciseModel.type == "sets") {
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Column(
-                          children: [
-                            Text(
-                              widget.exerciseModel.weight.toString(),
-                              style: Theme.of(context).textTheme.titleLarge,
-                            ),
-                            Text(
-                              "Weight",
-                              style: Theme.of(context).textTheme.bodySmall,
-                            )
-                          ],
-                        ),
-                        Text(
-                          "|",
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                        Column(
-                          children: [
-                            Text(
-                              widget.exerciseModel.sets.toString(),
-                              style: Theme.of(context).textTheme.titleLarge,
-                            ),
-                            Text(
-                              "Sets",
-                              style: Theme.of(context).textTheme.bodySmall,
-                            )
-                          ],
-                        ),
-                        Text(
-                          "|",
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                        Column(
-                          children: [
-                            Text(
-                              widget.exerciseModel.reps.toString(),
-                              style: Theme.of(context).textTheme.titleLarge,
-                            ),
-                            Text(
-                              "Reps",
-                              style: Theme.of(context).textTheme.bodySmall,
-                            )
-                          ],
-                        ),
-                      ],
-                    );
-                  } else {
-                    int hours = widget.exerciseModel.time ~/ 60;
-                    int minutes = widget.exerciseModel.time % 60;
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Column(
-                          children: [
-                            Text(
-                              hours.toString(),
-                              style: Theme.of(context).textTheme.titleLarge,
-                            ),
-                            Text(
-                              "Hrs",
-                              style: Theme.of(context).textTheme.bodySmall,
-                            )
-                          ],
-                        ),
-                        Text(
-                          "|",
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                        Column(
-                          children: [
-                            Text(
-                              minutes.toString(),
-                              style: Theme.of(context).textTheme.titleLarge,
-                            ),
-                            Text(
-                              "Min",
-                              style: Theme.of(context).textTheme.bodySmall,
-                            )
-                          ],
-                        ),
-                        Text(
-                          "|",
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                        Column(
-                          children: [
-                            Text(
-                              0.toString(),
-                              style: Theme.of(context).textTheme.titleLarge,
-                            ),
-                            Text(
-                              "Sec",
-                              style: Theme.of(context).textTheme.bodySmall,
-                            )
-                          ],
-                        ),
-                      ],
-                    );
-                  }
-                },
-              ),
-              Text(
-                widget.exerciseModel.description,
-                style: Theme.of(context).textTheme.titleMedium,
-                maxLines: null,
-                overflow: TextOverflow.clip,
-              )
-            ],
+                Builder(
+                  builder: (context) {
+                    if (widget.exerciseModel.type == "sets") {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Column(
+                            children: [
+                              Text(
+                                widget.exerciseModel.weight.toString(),
+                                style: Theme.of(context).textTheme.titleLarge,
+                              ),
+                              Text(
+                                "Weight",
+                                style: Theme.of(context).textTheme.bodySmall,
+                              )
+                            ],
+                          ),
+                          Text(
+                            "|",
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                          Column(
+                            children: [
+                              Text(
+                                widget.exerciseModel.sets.toString(),
+                                style: Theme.of(context).textTheme.titleLarge,
+                              ),
+                              Text(
+                                "Sets",
+                                style: Theme.of(context).textTheme.bodySmall,
+                              )
+                            ],
+                          ),
+                          Text(
+                            "|",
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                          Column(
+                            children: [
+                              Text(
+                                widget.exerciseModel.reps.toString(),
+                                style: Theme.of(context).textTheme.titleLarge,
+                              ),
+                              Text(
+                                "Reps",
+                                style: Theme.of(context).textTheme.bodySmall,
+                              )
+                            ],
+                          ),
+                        ],
+                      );
+                    } else {
+                      int hours = widget.exerciseModel.time ~/ 60;
+                      int minutes = widget.exerciseModel.time % 60;
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Column(
+                            children: [
+                              Text(
+                                hours.toString(),
+                                style: Theme.of(context).textTheme.titleLarge,
+                              ),
+                              Text(
+                                "Hrs",
+                                style: Theme.of(context).textTheme.bodySmall,
+                              )
+                            ],
+                          ),
+                          Text(
+                            "|",
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                          Column(
+                            children: [
+                              Text(
+                                minutes.toString(),
+                                style: Theme.of(context).textTheme.titleLarge,
+                              ),
+                              Text(
+                                "Min",
+                                style: Theme.of(context).textTheme.bodySmall,
+                              )
+                            ],
+                          ),
+                          Text(
+                            "|",
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                          Column(
+                            children: [
+                              Text(
+                                0.toString(),
+                                style: Theme.of(context).textTheme.titleLarge,
+                              ),
+                              Text(
+                                "Sec",
+                                style: Theme.of(context).textTheme.bodySmall,
+                              )
+                            ],
+                          ),
+                        ],
+                      );
+                    }
+                  },
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    widget.exerciseModel.description,
+                    style: Theme.of(context).textTheme.titleMedium,
+                    maxLines: null,
+                    overflow: TextOverflow.clip,
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),

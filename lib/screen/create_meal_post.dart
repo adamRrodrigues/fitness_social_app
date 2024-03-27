@@ -107,7 +107,7 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost> {
                           },
                         );
                         MealModel thisMeal = MealModel(
-                            mealName: mealDraft!.mealName,
+                            mealName: titleController.text,
                             description: mealDraft!.description,
                             uid: "",
                             postId: "",

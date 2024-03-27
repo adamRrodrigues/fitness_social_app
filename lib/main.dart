@@ -7,6 +7,7 @@ import 'package:fitness_social_app/services/auth_service.dart';
 import 'package:fitness_social_app/services/drafts.dart';
 import 'package:fitness_social_app/services/feed_services.dart';
 import 'package:fitness_social_app/services/post_service.dart';
+import 'package:fitness_social_app/services/shared_preferences.dart';
 import 'package:fitness_social_app/services/user_services.dart';
 import 'package:fitness_social_app/themes/dark_theme.dart';
 import 'package:fitness_social_app/themes/light_theme.dart';
@@ -16,6 +17,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final userProvider = Provider((ref) => FirebaseAuth.instance.currentUser);
+final dayProvider = Provider((ref) => Day());
 final userServicesProvider = Provider((ref) => UserServices());
 final authProvider = Provider((ref) => Auth());
 final genericPostServicesProvider = Provider((ref) => GenericPostServices());

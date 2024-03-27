@@ -73,6 +73,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                             ref.invalidate(userServicesProvider);
                             ref.invalidate(utilProvider);
                             ref.invalidate(draftProvider);
+                            ref.invalidate(routineProvider);
                           },
                           child: const Icon(Icons.logout_outlined),
                         ),

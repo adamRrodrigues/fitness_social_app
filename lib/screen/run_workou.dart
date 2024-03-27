@@ -1,4 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/models/workout_post_model.dart';
+import 'package:fitness_social_app/services/shared_preferences.dart';
 import 'package:fitness_social_app/widgets/custom_button.dart';
 import 'package:fitness_social_app/widgets/image_widget.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +25,8 @@ ValueNotifier<int> currentExercise = ValueNotifier(0);
 ValueNotifier<int> currentSet = ValueNotifier(1);
 ValueNotifier<bool> showDone = ValueNotifier(false);
 VideoPlayerController? vController;
+Day? day;
+User? user;
 
 bool checkLimits(int current, int limit) {
   if (current == limit) {
@@ -30,7 +36,7 @@ bool checkLimits(int current, int limit) {
   }
 }
 
-void incrementSet(int setLimit, int exerciseLimit, int workoutLimit) {
+void incrementSet(int setLimit, int exerciseLimit, int workoutLimit) async {
   //check workout limit
   if (checkLimits(currentSet.value, setLimit)) {
     currentSet.value = 1;
@@ -42,7 +48,15 @@ void incrementSet(int setLimit, int exerciseLimit, int workoutLimit) {
         currentExercise.value = 0;
         currentSet.value = 1;
       } else {
+        if (await day!.checkDay()) {
+          await FirebaseFirestore.instance
+              .collection('user_stats')
+              .doc(user!.uid)
+              .update({"workoutStreak": FieldValue.increment(1)});
+          day!.setDay();
+        }
         showDone.value = true;
+        vController!.dispose();
       }
     }
   } else {
@@ -72,6 +86,14 @@ void reset() {
 }
 
 class _RunWorkoutState extends ConsumerState<RunWorkout> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    day = ref.read(dayProvider);
+    user = ref.read(userProvider);
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -256,7 +278,8 @@ class _RunWorkoutState extends ConsumerState<RunWorkout> {
                                       top: Radius.circular(20))),
                               builder: (context) {
                                 return Container(
-                                  constraints: const BoxConstraints(minHeight: 200),
+                                  constraints:
+                                      const BoxConstraints(minHeight: 200),
                                   padding: EdgeInsets.only(
                                       bottom: MediaQuery.of(context)
                                           .viewInsets
@@ -442,6 +465,7 @@ class _RunWorkoutState extends ConsumerState<RunWorkout> {
                       onTap: () {
                         if (showDone.value) {
                           context.pop();
+                          
                           try {
                             vController!.dispose();
                           } catch (e) {}
