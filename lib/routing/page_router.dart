@@ -104,8 +104,8 @@ final GoRouter appRouter = GoRouter(
               path: 'createExercisePage',
               name: RouteConstants.createExercise,
               pageBuilder: (context, state) {
-                List<LocalExerciseModel> exercises =
-                    state.extra as List<LocalExerciseModel>;
+                List<dynamic> exercises =
+                    state.extra as List<dynamic>;
                 return CupertinoPage(
                     child: CreateExercise(
                   exercises: exercises,

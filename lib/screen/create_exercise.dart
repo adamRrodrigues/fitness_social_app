@@ -14,7 +14,7 @@ import 'package:video_player/video_player.dart';
 
 class CreateExercise extends ConsumerStatefulWidget {
   const CreateExercise({Key? key, required this.exercises}) : super(key: key);
-  final List<LocalExerciseModel> exercises;
+  final List<dynamic> exercises;
 
   @override
   _CreateExerciseState createState() => _CreateExerciseState();
@@ -109,14 +109,14 @@ class _CreateExerciseState extends ConsumerState<CreateExercise> {
                   },
                   child: Center(
                     child: Container(
-                      height: 300,
+                      height: 400,
                       decoration: BoxDecoration(
                           border: Border.all(
                               width: 2,
                               color: Theme.of(context).colorScheme.secondary),
                           borderRadius: BorderRadius.circular(10)),
                       child: AspectRatio(
-                        aspectRatio: 1,
+                        aspectRatio: 0.65,
                         child: video == null
                             ? const Center(
                                 child: Icon(

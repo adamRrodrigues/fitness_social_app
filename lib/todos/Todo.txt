@@ -2,7 +2,9 @@ Doing:
 run workout time based view
 
 Next: 
+fix disconver page
 edit profile page
+landing pages 
 
 Done:
 workout streaks
