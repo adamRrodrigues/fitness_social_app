@@ -129,7 +129,9 @@ class _RunWorkoutState extends ConsumerState<RunWorkout> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        vController!.dispose();
+        try {
+          vController!.dispose();
+        } catch (e) {}
         return true;
       },
       child: Scaffold(
