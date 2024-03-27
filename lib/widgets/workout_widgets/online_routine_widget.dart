@@ -62,7 +62,6 @@ class OnlineRoutineWidget extends ConsumerWidget {
                               final WorkoutModel mappedWorkout =
                                   WorkoutPostServices()
                                       .mapDocPostFuture(thisWorkout);
-                              print(mappedWorkout);
 
                               if (routinesStored
                                       .routines[currentDay].workouts.length !=

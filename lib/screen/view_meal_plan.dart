@@ -1,8 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fitness_social_app/models/meal_model.dart';
 import 'package:fitness_social_app/routing/route_constants.dart';
+import 'package:fitness_social_app/services/meal_service.dart';
+import 'package:fitness_social_app/services/routine_services.dart';
 import 'package:fitness_social_app/widgets/custom_button.dart';
 import 'package:fitness_social_app/widgets/custom_calender.dart';
+import 'package:fitness_social_app/widgets/meal_widgets/meal_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -43,60 +47,93 @@ class VviewMealPlanScreenState extends State<ViewMealPlanScreen> {
           elevation: 0,
         ),
         body: SafeArea(
-            child: Column(
-          children: [
-            CustomCalender(
-              currentDay: currentDay,
-              dates: dates,
-              today: now,
-              func: (data) {
-                setState(() {
-                  currentDay = data;
-                });
-              },
-            ),
-            StreamBuilder(
-              stream: FirebaseFirestore.instance
-                  .collection('routines')
-                  .doc(user!.uid)
-                  .collection('day $currentDay')
-                  .doc('meals')
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.active &&
-                    snapshot.hasData) {
-                  List<String> meals = [];
-                  Map<String, dynamic> data =
-                      snapshot.data!.data() as Map<String, dynamic>;
+            child: SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
+          child: Column(
+            children: [
+              CustomCalender(
+                currentDay: currentDay,
+                dates: dates,
+                today: now,
+                func: (data) {
+                  setState(() {
+                    currentDay = data;
+                  });
+                },
+              ),
+              StreamBuilder(
+                stream: FirebaseFirestore.instance
+                    .collection('routines')
+                    .doc(user!.uid)
+                    .collection('day $currentDay')
+                    .doc('meals')
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.active &&
+                      snapshot.hasData) {
+                    List<String> meals = [];
+                    Map<String, dynamic> data =
+                        snapshot.data!.data() as Map<String, dynamic>;
 
-                  if (data['meals'].isNotEmpty) {
-                    for (int i = 0; i <= data['meals'].length; i++) {
-                      meals.add(['meals'][0]);
-                      // print(workouts);
-                    }
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      physics: const BouncingScrollPhysics(),
-                      itemCount: meals.length,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          title: Text(meals[index]),
+                    if (data['meals'].isNotEmpty) {
+                      for (int i = 0; i <= data['meals'].length; i++) {
+                        meals.add(data['meals'][0]);
+                        print(meals);
+                      }
+                      if (meals.isNotEmpty) {
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          physics: const BouncingScrollPhysics(),
+                          itemCount: meals.length,
+                          itemBuilder: (context, index) {
+                            return FutureBuilder(
+                                future: FirebaseFirestore.instance
+                                    .collection('meals_demo')
+                                    .doc(meals[index])
+                                    .get(),
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasData &&
+                                      snapshot.connectionState ==
+                                          ConnectionState.done) {
+                                    // try {
+                                    Map<String, dynamic> thisWorkout =
+                                        snapshot.data!.data()
+                                            as Map<String, dynamic>;
+
+                                    final MealModel mappedWorkout =
+                                        RoutineServices()
+                                            .mapSingleRoutineMeal(thisWorkout);
+
+                                    return MealWidget(meal: mappedWorkout);
+                                    // } catch (e) {
+                                    // return Container();
+                                    // }
+                                  } else {
+                                    return const Center(
+                                        child: CircularProgressIndicator());
+                                  }
+                                });
+                          },
                         );
-                      },
-                    );
+                      } else {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                    } else {
+                      return const Center(
+                        child: Text("No meals added to this plan yet"),
+                      );
+                    }
                   } else {
                     return const Center(
-                      child: Text("No meals added to this plan yet"),
+                      child: CircularProgressIndicator(),
                     );
                   }
-                } else {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-              },
-            )
-          ],
+                },
+              )
+            ],
+          ),
         )),
         bottomNavigationBar: BottomAppBar(
             height: 60,
@@ -106,7 +143,8 @@ class VviewMealPlanScreenState extends State<ViewMealPlanScreen> {
             child: user.uid == widget.uid
                 ? GestureDetector(
                     onTap: () {
-                      context.pushNamed(RouteConstants.searchMealsScreen,
+                      context.pushNamed(RouteConstants.searchScreen,
+                          pathParameters: {"searchType": "Add To Meal Plan"},
                           extra: currentDay);
                     },
                     child: const CustomButton(buttonText: 'Add Meal'))

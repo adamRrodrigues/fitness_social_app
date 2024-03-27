@@ -28,7 +28,7 @@ class _CustomeCalenderState extends State<CustomCalender> {
       padding: const EdgeInsets.all(8.0),
       child: Material(
         borderRadius: BorderRadius.circular(10),
-        elevation: 4,
+        elevation: 2,
         child: Container(
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
           child: SizedBox(

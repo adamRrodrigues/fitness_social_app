@@ -1,14 +1,18 @@
 Doing: 
-fix disconver page
+
 
 Next: 
 landing pages 
 edit profile page
 add slideables too workout and meal creations
-
+add saving for meals
+save routine button should do something
 
 Done:
+add meals to meal plan
+fix disconver page
 run workout time based view
+show user workouts while adding to routine
 workout streaks
 fix view exercise screen
 search stuff

@@ -47,8 +47,9 @@ class _WorkoutWidgetState extends ConsumerState<WorkoutWidget> {
       onTap: () async {
         if (widget.selection) {
           if (user!.uid == widget.workoutModel.uid) {
-            RoutineServices().updateRoutine(user!.uid, widget.day,
+            await RoutineServices().updateRoutine(user!.uid, widget.day,
                 widget.workoutModel.postId, widget.workoutModel.templateId);
+            context.pop();
           } else {
             context.pushNamed(RouteConstants.editWorkout, extra: {
               "workoutModel": widget.workoutModel,
@@ -116,7 +117,7 @@ class _WorkoutWidgetState extends ConsumerState<WorkoutWidget> {
       child: Container(
         padding: const EdgeInsets.all(8.0),
         child: Material(
-          elevation: 4,
+          elevation: 2,
           borderRadius: BorderRadius.circular(10),
           color: Theme.of(context).colorScheme.surface,
           child: Container(

@@ -64,6 +64,7 @@ class _UserSearchState extends ConsumerState<UserSearch> {
                                 stream: searchController.text == ""
                                     ? users
                                         .where("uid", whereNotIn: ids)
+                                        .limit(5)
                                         .snapshots()
                                     : users
                                         .where("username",
@@ -72,6 +73,7 @@ class _UserSearchState extends ConsumerState<UserSearch> {
                                         .where("username",
                                             isLessThanOrEqualTo:
                                                 "${searchTerm.trim()}\uf7ff")
+                                        .limit(5)
                                         .snapshots(),
                                 builder: (context, snapshot) {
                                   if (snapshot.hasData &&

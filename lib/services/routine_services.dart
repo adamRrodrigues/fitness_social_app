@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fitness_social_app/models/meal_model.dart';
 import 'package:fitness_social_app/models/routine_model.dart';
 import 'package:fitness_social_app/models/workout_post_model.dart';
 
@@ -37,6 +38,12 @@ class RoutineServices {
     final thisUser = WorkoutModel.fromMap(data);
 
     return thisUser;
+  }
+
+  MealModel mapSingleRoutineMeal(Map<String, dynamic> data) {
+    final thisMeal = MealModel.fromMap(data);
+
+    return thisMeal;
   }
 
   Future removeFromWorkoutRoutine(

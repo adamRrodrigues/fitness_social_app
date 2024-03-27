@@ -104,8 +104,7 @@ final GoRouter appRouter = GoRouter(
               path: 'createExercisePage',
               name: RouteConstants.createExercise,
               pageBuilder: (context, state) {
-                List<dynamic> exercises =
-                    state.extra as List<dynamic>;
+                List<dynamic> exercises = state.extra as List<dynamic>;
                 return CupertinoPage(
                     child: CreateExercise(
                   exercises: exercises,
@@ -262,8 +261,10 @@ final GoRouter appRouter = GoRouter(
               name: RouteConstants.searchScreen,
               pageBuilder: (context, state) {
                 final searchType = state.pathParameters['searchType'];
+                int currentDay = state.extra as int;
                 return CupertinoPage(
                     child: SearchScreen(
+                  currentDay: currentDay,
                   searchType: searchType!,
                 ));
               },
