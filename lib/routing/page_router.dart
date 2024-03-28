@@ -15,6 +15,7 @@ import 'package:fitness_social_app/screen/fetching_workout_screen.dart';
 import 'package:fitness_social_app/screen/local_exercise_edit_screen.dart';
 import 'package:fitness_social_app/screen/run_routine.dart';
 import 'package:fitness_social_app/screen/run_workou.dart';
+import 'package:fitness_social_app/screen/search_screens/followage_screen.dart';
 import 'package:fitness_social_app/screen/search_screens/search_screen.dart';
 import 'package:fitness_social_app/screen/search_workouts.dart';
 import 'package:fitness_social_app/screen/user_page.dart';
@@ -257,6 +258,17 @@ final GoRouter appRouter = GoRouter(
                     child: SearchScreen(
                   currentDay: currentDay,
                   searchType: searchType!,
+                ));
+              },
+            ),
+            GoRoute(
+              path: 'followageScreen/:type',
+              name: RouteConstants.followageScreen,
+              pageBuilder: (context, state) {
+                final searchType = state.pathParameters['type'];
+                return CupertinoPage(
+                    child: FollowageScreen(
+                  type: searchType!,
                 ));
               },
             ),

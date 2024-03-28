@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fitness_social_app/feed/meal_feed.dart';
 import 'package:fitness_social_app/feed/workout_feed.dart';
 import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/models/user_model.dart';
@@ -116,7 +117,7 @@ class _UserProfileState extends ConsumerState<UserProfile> {
     }
 
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -244,12 +245,26 @@ class _UserProfileState extends ConsumerState<UserProfile> {
                             CountWidget(
                                 amount: widget.thisUser.posts.length.toString(),
                                 type: 'posts'),
-                            CountWidget(
-                                amount: followers.toString(),
-                                type: 'followers'),
-                            CountWidget(
-                                amount: following.toString(),
-                                type: 'following'),
+                            GestureDetector(
+                              onTap: () {
+                                context.pushNamed(
+                                    RouteConstants.followageScreen,
+                                    pathParameters: {"type": "followers"});
+                              },
+                              child: CountWidget(
+                                  amount: (followers - 1).toString(),
+                                  type: 'followers'),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                context.pushNamed(
+                                    RouteConstants.followageScreen,
+                                    pathParameters: {"type": "following"});
+                              },
+                              child: CountWidget(
+                                  amount: (following - 1).toString(),
+                                  type: 'following'),
+                            ),
                           ],
                         );
                       } else {
@@ -280,13 +295,19 @@ class _UserProfileState extends ConsumerState<UserProfile> {
                   )),
                   Tab(
                       icon: Icon(
-                    Icons.run_circle_outlined,
+                    Icons.fitness_center_rounded,
+                    color: Theme.of(context).colorScheme.secondary,
+                  )),
+                  Tab(
+                      icon: Icon(
+                    Icons.food_bank_rounded,
                     color: Theme.of(context).colorScheme.secondary,
                   )),
                 ],
               ),
               Expanded(
                 child: TabBarView(
+                  physics: BouncingScrollPhysics(),
                   children: [
                     PostFeedWidget(
                         profileView: true,
@@ -297,7 +318,8 @@ class _UserProfileState extends ConsumerState<UserProfile> {
                       uid: widget.thisUser.uid,
                       postQuery:
                           FeedServices().fetchUserWorkouts(widget.thisUser.uid),
-                    )
+                    ),
+                    MealFeed(postQuery: FeedServices().fetchMeals())
                   ],
                 ),
               )

@@ -9,6 +9,7 @@ import 'package:fitness_social_app/services/user_services.dart';
 class FeedServices {
   User user = FirebaseAuth.instance.currentUser!;
   List<String> following = [];
+  List<String> followers = [];
 
   Query<GenericPost> fetchPosts(uid) {
     final Query<GenericPost> postQuery;
@@ -107,6 +108,10 @@ class FeedServices {
 
   Stream fetchFollowing(uid) async* {
     following = await UserServices().fetchFollowing(uid);
+  }
+
+  Stream fetchFollowers(uid) async* {
+    following = await UserServices().fetchFollowers(uid);
   }
 
   Stream fetchUserRoutine(String uid, int day) async* {
