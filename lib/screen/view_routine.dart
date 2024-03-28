@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/models/routine_model.dart';
 import 'package:fitness_social_app/routing/route_constants.dart';
+import 'package:fitness_social_app/services/routine_services.dart';
 import 'package:fitness_social_app/widgets/custom_button.dart';
 import 'package:fitness_social_app/widgets/custom_calender.dart';
 import 'package:fitness_social_app/widgets/workout_widgets/online_routine_widget.dart';
@@ -24,6 +25,7 @@ class ViewRoutine extends ConsumerStatefulWidget {
 class _ViewRoutineState extends ConsumerState<ViewRoutine>
     with AutomaticKeepAliveClientMixin {
   DateTime now = DateTime.now();
+  DateTime today = DateTime.now();
   int currentDay = 0;
   List<DateTime> dates = [];
 
@@ -34,6 +36,7 @@ class _ViewRoutineState extends ConsumerState<ViewRoutine>
     super.initState();
     currentDay = widget.currentDay;
     DateTime firstDayOfWeek = now.subtract(Duration(days: currentDay));
+    today = now;
     routine = ref.read(routineProvider);
     for (int i = 0; i < 7; i++) {
       final day = firstDayOfWeek.add(Duration(days: i));
@@ -57,7 +60,7 @@ class _ViewRoutineState extends ConsumerState<ViewRoutine>
               CustomCalender(
                 currentDay: currentDay,
                 dates: dates,
-                today: now,
+                today: today,
                 func: (data) {
                   setState(() {
                     currentDay = data;
@@ -81,9 +84,18 @@ class _ViewRoutineState extends ConsumerState<ViewRoutine>
                   },
                   child: const CustomButton(buttonText: 'Add Workout'))
               : GestureDetector(
-                  onTap: () {
-                    // context.pushNamed(RouteConstants.searchWorkoutScreen,
-                    //     extra: currentDay);
+                  onTap: () async {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      },
+                    );
+                    await RoutineServices()
+                        .saveRoutine(user.uid, widget.uid, currentDay);
+                    context.pop();
                   },
                   child: const CustomButton(buttonText: 'Save Routine')),
         ));

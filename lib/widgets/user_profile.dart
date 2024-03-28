@@ -40,6 +40,11 @@ class _UserProfileState extends ConsumerState<UserProfile> {
   GenericPostServices? genericPostServices;
   FeedServices? feedServices;
 
+  DateTime now = DateTime.now();
+  DateTime today = DateTime.now();
+  int currentDay = 0;
+  List<DateTime> dates = [];
+
   Future getFollowage() async {
     await FirebaseFirestore.instance
         .collection('users')
@@ -71,6 +76,18 @@ class _UserProfileState extends ConsumerState<UserProfile> {
     userServices = ref.read(userServicesProvider);
     genericPostServices = ref.read(genericPostServicesProvider);
     feedServices = ref.read(feedServicesProvider);
+    currentDay = now.weekday;
+    if (currentDay == 7) {
+      currentDay = 0;
+    }
+    print("day $currentDay");
+    DateTime firstDayOfWeek = now.subtract(Duration(days: currentDay));
+    today = now;
+
+    for (int i = 0; i < 7; i++) {
+      final day = firstDayOfWeek.add(Duration(days: i));
+      dates.add(day);
+    }
   }
 
   @override
@@ -203,7 +220,7 @@ class _UserProfileState extends ConsumerState<UserProfile> {
                                   'id': widget.thisUser.uid
                                 },
                                 extra: {
-                                  'currentDay': 0,
+                                  'currentDay': currentDay,
                                   'startRoutine': false
                                 });
                           },

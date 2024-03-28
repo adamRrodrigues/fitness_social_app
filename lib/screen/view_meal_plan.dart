@@ -76,8 +76,8 @@ class VviewMealPlanScreenState extends State<ViewMealPlanScreen> {
                         snapshot.data!.data() as Map<String, dynamic>;
 
                     if (data['meals'].isNotEmpty) {
-                      for (int i = 0; i <= data['meals'].length; i++) {
-                        meals.add(data['meals'][0]);
+                      for (int i = 0; i < data['meals'].length; i++) {
+                        meals.add(data['meals'][i]);
                         print(meals);
                       }
                       if (meals.isNotEmpty) {

@@ -188,7 +188,6 @@ class WorkoutPostServices {
         likeCount: data['likeCount'],
         likes: List.from(data['likes']),
         createdAt: data['createdAt']);
-    print(thisPost);
     return thisPost;
   }
 
@@ -205,7 +204,6 @@ class WorkoutPostServices {
         likeCount: data['likeCount'],
         likes: List.from(data['likes']),
         createdAt: data['createdAt']);
-    print(thisPost);
     return thisPost;
   }
 
@@ -222,6 +220,41 @@ class WorkoutPostServices {
         sets: exerciseModel['sets']);
 
     return exercise;
+  }
+
+  Future editWorkout(
+      WorkoutModel workoutModel, List<dynamic> exercises, String editId) async {
+    await workoutPosts
+        .doc(editId)
+        .set(workoutModel.toMap())
+        .then((value) async {
+      for (int i = 0; i < exercises.length; i++) {
+        if (exercises.runtimeType == ExerciseModel) {
+          Map<String, dynamic> exercise = exercises[i].toMap();
+          await workoutPosts.doc(editId).update({
+            'postId': editId,
+            'exercises': FieldValue.arrayUnion([exercise]),
+          });
+        } else {
+          Map<String, dynamic> exercise = exercises[i].toMap();
+          try {
+            String exerciseVideo = await StorageServices().storeVideo(
+                'workoutPostImages',
+                exercises[i].video!,
+                editId,
+                "exercise${i.toString()}");
+            exercise['imageUrl'] = exerciseVideo;
+          } catch (e) {
+            // exercise['imageUrl'] = "";
+          }
+          await workoutPosts.doc(editId).update({
+            'postId': editId,
+            'exercises': FieldValue.arrayUnion([exercise])
+          });
+          print(exercise);
+        }
+      }
+    });
   }
 
   Future<String> templateToWorkout(

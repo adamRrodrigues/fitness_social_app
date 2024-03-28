@@ -7,8 +7,8 @@ import 'package:fitness_social_app/models/workout_post_model.dart';
 import 'package:fitness_social_app/services/user_services.dart';
 
 class FeedServices {
-  List<String> following = [];
   User user = FirebaseAuth.instance.currentUser!;
+  List<String> following = [];
 
   Query<GenericPost> fetchPosts(uid) {
     final Query<GenericPost> postQuery;
@@ -24,6 +24,7 @@ class FeedServices {
   }
 
   Query<UserModel> fetchNonFollowedUsers(String uid) {
+    following.add(user.uid);
     final Query<UserModel> postQuery;
 
     postQuery = FirebaseFirestore.instance

@@ -27,6 +27,7 @@ class _DiscoverPageWorkoutsState extends ConsumerState<DiscoverPageWorkouts> {
       height: 420,
       child: FirestoreListView(
         scrollDirection: Axis.horizontal,
+        addAutomaticKeepAlives: true,
         shrinkWrap: true,
         pageSize: 5,
         physics: const BouncingScrollPhysics(),

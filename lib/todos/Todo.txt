@@ -1,14 +1,17 @@
 Doing: 
-
+create workout from template in view workout page(if user id is same as workout id edit the same workout(create new function))
 
 Next: 
+show followers and following page
 landing pages 
+update create meal page
 edit profile page
-add slideables too workout and meal creations
 add saving for meals
-save routine button should do something
+
 
 Done:
+save routine button should do something
+add slideables too workout and meal creations
 add meals to meal plan
 fix disconver page
 run workout time based view

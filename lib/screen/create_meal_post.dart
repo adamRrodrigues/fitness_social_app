@@ -324,6 +324,7 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost> {
                   mealDraft!.ingredients.isNotEmpty
                       ? ReorderableListView.builder(
                           shrinkWrap: true,
+                          
                           onReorder: (oldIndex, newIndex) {
                             String ingredient =
                                 mealDraft!.ingredients.removeAt(oldIndex);
@@ -335,6 +336,26 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost> {
                           itemCount: mealDraft!.ingredients.length,
                           itemBuilder: (context, index) {
                             return Slidable(
+                              startActionPane: ActionPane(
+                                  motion: const ScrollMotion(),
+                                  children: [
+                                    SlidableAction(
+                                      autoClose: true,
+                                      borderRadius: BorderRadius.circular(10),
+                                      flex: 1,
+                                      onPressed: (context) {
+                                        setState(() {
+                                          mealDraft!.ingredients.add(
+                                              mealDraft!.ingredients[index]);
+                                        });
+                                      },
+                                      backgroundColor: Colors.greenAccent,
+                                      foregroundColor: Theme.of(context)
+                                          .scaffoldBackgroundColor,
+                                      icon: Icons.replay_rounded,
+                                      label: 'Duplicate',
+                                    )
+                                  ]),
                               endActionPane: ActionPane(
                                   extentRatio: 0.3,
                                   motion: const ScrollMotion(),
@@ -350,7 +371,8 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost> {
                                         });
                                       },
                                       backgroundColor: Colors.redAccent,
-                                      foregroundColor: Colors.white,
+                                      foregroundColor: Theme.of(context)
+                                          .scaffoldBackgroundColor,
                                       icon: Icons.delete,
                                       label: 'Remove',
                                     ),

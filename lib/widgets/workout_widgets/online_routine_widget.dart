@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/models/routine_model.dart';
 import 'package:fitness_social_app/models/workout_post_model.dart';
@@ -21,6 +22,7 @@ class OnlineRoutineWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final Routine routinesStored = ref.read(routineProvider);
+    User? user = ref.read(userProvider);
     return StreamBuilder(
       stream: FirebaseFirestore.instance
           .collection('routines')
@@ -31,17 +33,19 @@ class OnlineRoutineWidget extends ConsumerWidget {
       builder: (context, snapshot) {
         if (snapshot.hasData &&
             snapshot.connectionState == ConnectionState.active) {
-          List<String> workouts = [];
+          List<dynamic> workouts = [];
           Map<String, dynamic> data =
               snapshot.data!.data() as Map<String, dynamic>;
 
           if (data['workouts'].isNotEmpty) {
-            for (int i = 0; i <= data['workouts'].length; i++) {
-              workouts.add(['workouts'][0]);
+            for (int i = 0; i < data['workouts'].length; i++) {
+              workouts.add(data['workouts'][i]);
+              print(workouts);
             }
           }
           return data['workouts'].isNotEmpty
               ? ListView.builder(
+                  addAutomaticKeepAlives: true,
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: data['workouts'].length,
@@ -49,7 +53,7 @@ class OnlineRoutineWidget extends ConsumerWidget {
                     return FutureBuilder(
                         future: FirebaseFirestore.instance
                             .collection('user_workouts_demo')
-                            .doc(data['workouts'][index]['userWorkoutId'])
+                            .doc(workouts[index]['userWorkoutId'])
                             .get(),
                         builder: (context, snapshot) {
                           if (snapshot.hasData &&

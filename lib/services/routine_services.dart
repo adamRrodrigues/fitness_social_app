@@ -55,6 +55,33 @@ class RoutineServices {
     });
   }
 
+  Future saveRoutine(String uid, String routineId, int day) async {
+    //get routine workouts
+    List<dynamic> workouts = [];
+    await routines
+        .doc(routineId)
+        .collection('day $day')
+        .doc('workouts')
+        .get()
+        .then((value) {
+      Map<String, dynamic> data = value.data() as Map<String, dynamic>;
+
+      if (data['workouts'].isNotEmpty) {
+        for (int i = 0; i < data['workouts'].length; i++) {
+          workouts.add(data['workouts'][i]);
+        }
+      }
+      print(workouts);
+    });
+
+    await routines
+        .doc(uid)
+        .collection('day $day')
+        .doc('workouts')
+        .update({"workouts": FieldValue.arrayUnion(workouts)});
+    
+  }
+
   Future removeFromMealPlan(String mealId, int day) async {
     routines.doc(user!.uid).collection('day $day').doc('meals').update({
       'meals': FieldValue.arrayRemove([mealId])

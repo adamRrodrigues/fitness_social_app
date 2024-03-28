@@ -73,16 +73,44 @@ class _FetchingWorkoutScreenState extends State<FetchingWorkoutScreen> {
                   if (snapshot.hasData &&
                       snapshot.connectionState == ConnectionState.done) {
                     final data = snapshot.data;
+                    try {
+                      final workout = FeedServices().mapSingleWorkout(data!);
 
-                    final workout = FeedServices().mapSingleWorkout(data!);
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        //When finish, call actions inside
+                        context.pushReplacementNamed(
+                          RouteConstants.viewWorkoutScreen,
+                          extra: workout,
+                        );
+                      });
+                    } catch (e) {
+                      return FutureBuilder(
+                        future: FirebaseFirestore.instance
+                            .collection('user_workouts_demo')
+                            .doc(widget.workoutId)
+                            .get(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                                  ConnectionState.done &&
+                              snapshot.hasData) {
+                            final newData = snapshot.data;
+                            // print(widget.workoutId);
+                            final workout =
+                                FeedServices().mapSingleWorkout(newData!);
 
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      //When finish, call actions inside
-                      context.pushReplacementNamed(
-                        RouteConstants.viewWorkoutScreen,
-                        extra: workout,
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              //When finish, call actions inside
+                              context.pushReplacementNamed(
+                                RouteConstants.viewWorkoutScreen,
+                                extra: workout,
+                              );
+                            });
+                            exists = false;
+                          }
+                          return const Text("Fetching Workout");
+                        },
                       );
-                    });
+                    }
 
                     exists = true;
                   }

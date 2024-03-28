@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class Commons{
   SnackBar snackBarMessage(String s, Color color) {
     return SnackBar(
-      duration: const Duration(seconds: 2),
+      duration: const Duration(seconds: 100),
       backgroundColor: color,
       content: Text(
         s,

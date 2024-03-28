@@ -134,7 +134,6 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                         likes: List.empty(),
                         privacy: 'public');
 
-
                     showDialog(
                       barrierDismissible: false,
                       context: context,
@@ -144,14 +143,26 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                     );
 
                     try {
-                      String futureString = await WorkoutPostServices()
-                          .templateToWorkout(workoutModel,
-                              workoutDraft!.fetchedExercises);
-                      await RoutineServices().updateRoutine(user!.uid,
-                          widget.day, futureString, widget.workoutModel.postId);
-                      if (image != null) {
-                        await WorkoutPostServices()
-                            .newImage(image!, futureString);
+                      if (user!.uid == widget.workoutModel.uid) {
+                        await WorkoutPostServices().editWorkout(
+                            workoutModel,
+                            workoutDraft!.fetchedExercises,
+                            widget.workoutModel.postId);
+                      } else {
+                        String futureString = await WorkoutPostServices()
+                            .templateToWorkout(
+                                workoutModel, workoutDraft!.fetchedExercises);
+                        if (widget.day != 69) {
+                          await RoutineServices().updateRoutine(
+                              user!.uid,
+                              widget.day,
+                              futureString,
+                              widget.workoutModel.postId);
+                        }
+                        if (image != null) {
+                          await WorkoutPostServices()
+                              .newImage(image!, futureString);
+                        }
                       }
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -381,8 +392,8 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                                   context.pushNamed(
                                       RouteConstants.localEditWorkout,
                                       extra: {
-                                        "editingExercise":
-                                            workoutDraft!.fetchedExercises[index],
+                                        "editingExercise": workoutDraft!
+                                            .fetchedExercises[index],
                                         "index": index
                                       });
                                 },

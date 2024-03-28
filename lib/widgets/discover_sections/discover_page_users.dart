@@ -34,6 +34,7 @@ class _DiscoverPageUsersState extends ConsumerState<DiscoverPageUsers> {
               return FirestoreListView(
                 scrollDirection: Axis.horizontal,
                 shrinkWrap: true,
+                addAutomaticKeepAlives: true,
                 pageSize: 5,
                 physics: const BouncingScrollPhysics(),
                 keyboardDismissBehavior:

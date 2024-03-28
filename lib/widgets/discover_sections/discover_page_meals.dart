@@ -29,11 +29,13 @@ class _DiscoverPageMealsState extends ConsumerState<DiscoverPageMeals> {
         scrollDirection: Axis.horizontal,
         shrinkWrap: true,
         pageSize: 5,
+        addAutomaticKeepAlives: true,
+        
         physics: const BouncingScrollPhysics(),
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         emptyBuilder: (context) {
           return Center(
-            child: Text("No Users"),
+            child: Text("No Meals Exist"),
           );
         },
         loadingBuilder: (context) {
@@ -45,9 +47,8 @@ class _DiscoverPageMealsState extends ConsumerState<DiscoverPageMeals> {
         query: feedServices.fetchMeals(),
         itemBuilder: (context, doc) {
           final post = doc.data();
-          return Container(
+          return SizedBox(
               width: 400,
-              // padding: const EdgeInsets.all(8.0),
               child: MealWidget(
                 meal: post,
               ));

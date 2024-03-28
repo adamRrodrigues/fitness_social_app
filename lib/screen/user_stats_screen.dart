@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/models/user_stats.dart';
+import 'package:fitness_social_app/widgets/custom_calender.dart';
 import 'package:fitness_social_app/widgets/progress_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -259,12 +260,12 @@ class _UserStatsScreenState extends ConsumerState<UserStatsScreen> {
                                                 height: 30,
                                               ),
                                               ProgressWidget(
-                                                  
                                                   value: thisUserStat
                                                       .workoutStreak
                                                       .toDouble(),
                                                   maxValue: 7,
-                                                  color: const Color(0xffFF8080)),
+                                                  color:
+                                                      const Color(0xffFF8080)),
                                             ],
                                           ),
                                         ),
@@ -285,6 +286,4 @@ class _UserStatsScreenState extends ConsumerState<UserStatsScreen> {
       ),
     );
   }
-
-
 }
