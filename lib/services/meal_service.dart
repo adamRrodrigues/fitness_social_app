@@ -45,6 +45,7 @@ class MealServices {
         calories: data['calories'],
         image: data['image'],
         likes: List.from(data['likes']),
+        servings: data['servings'],
         steps: List.from(data['steps']),
         ingredients: List.from(data['ingredients']),
         tags: List.from(data['tags']));

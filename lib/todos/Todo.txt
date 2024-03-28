@@ -1,8 +1,6 @@
 Doing: 
-fix meal creation page
-
-Next: 
 view for templates and user workouts only for current user
+Next: 
 landing pages 
 update create meal page
 edit profile page
@@ -10,7 +8,10 @@ add saving for meals
 
 
 Done:
+fix up view meal screen
+fix meal creation page
 create workout from template in view workout page(if user id is same as workout id edit the same workout(create new function))
+edit template
 save routine button should do something
 add slideables too workout and meal creations
 show followers and following page

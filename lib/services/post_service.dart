@@ -8,8 +8,6 @@ import 'package:fitness_social_app/models/generic_post_model.dart';
 import 'package:fitness_social_app/models/workout_post_model.dart';
 import 'package:fitness_social_app/services/drafts.dart';
 import 'package:fitness_social_app/services/storage_services.dart';
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class GenericPostServices {
   final thisUser = FirebaseAuth.instance.currentUser;
@@ -256,7 +254,6 @@ class WorkoutPostServices {
           }
         }
       });
-    } catch (e) {
       await workoutTemplates
           .doc(editId)
           .set(workoutModel.toMap())
@@ -288,7 +285,7 @@ class WorkoutPostServices {
           }
         }
       });
-    }
+    } catch (e) {}
   }
 
   Future<String> templateToWorkout(
