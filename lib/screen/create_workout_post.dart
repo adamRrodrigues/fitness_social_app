@@ -106,6 +106,7 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                         categories: workoutDraft!.categories,
                         exercises: List.empty(),
                         uid: user!.uid,
+                        isTemplate: false,
                         imageUrl: '',
                         postId: '',
                         createdAt: Timestamp.now(),
@@ -319,6 +320,7 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                 Padding(
                   padding: const EdgeInsets.all(4.0),
                   child: CustomTextField(
+                    maxLength: 20,
                       textController: titleController,
                       hintText: 'Give Your Workout a Name'),
                 ),

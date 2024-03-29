@@ -54,8 +54,21 @@ class FeedServices {
   Query<WorkoutModel> fetchWorkouts(String uid) {
     final Query<WorkoutModel> postQuery;
     postQuery = FirebaseFirestore.instance
-        .collection('workout_templates_demo')
+        .collection('user_workouts_demo')
         .where("uid", isNotEqualTo: uid)
+        .withConverter(
+          fromFirestore: (snapshot, _) =>
+              WorkoutModel.fromMap(snapshot.data()!),
+          toFirestore: (post, _) => post.toMap(),
+        );
+    return postQuery;
+  }
+
+  Query<WorkoutModel> fetchTemplateWorkouts(String uid) {
+    final Query<WorkoutModel> postQuery;
+    postQuery = FirebaseFirestore.instance
+        .collection('workout_templates_demo')
+        .where("uid", isEqualTo: uid)
         .withConverter(
           fromFirestore: (snapshot, _) =>
               WorkoutModel.fromMap(snapshot.data()!),
@@ -110,6 +123,7 @@ class FeedServices {
         exercises: workoutData["exercises"],
         uid: workoutData['uid'],
         postId: workoutData['postId'],
+        isTemplate: workoutData['isTemplate'],
         templateId: workoutData['templateId'],
         privacy: workoutData['privacy'],
         imageUrl: workoutData['imageUrl'],

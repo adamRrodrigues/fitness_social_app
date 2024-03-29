@@ -46,6 +46,8 @@ class _UserProfileState extends ConsumerState<UserProfile> {
   int currentDay = 0;
   List<DateTime> dates = [];
 
+  ValueNotifier<bool> showTemplates = ValueNotifier(false);
+
   Future getFollowage() async {
     try {
       await FirebaseFirestore.instance
@@ -328,11 +330,61 @@ class _UserProfileState extends ConsumerState<UserProfile> {
                         profileView: true,
                         postQuery:
                             feedServices!.fetchUserPosts(widget.thisUser.uid)),
-                    WorkoutFeed(
-                      profileView: true,
-                      uid: widget.thisUser.uid,
-                      postQuery:
-                          FeedServices().fetchUserWorkouts(widget.thisUser.uid),
+                    Stack(
+                      // alignment: Alignment.bottomCenter,
+                      alignment: Alignment.center,
+                      children: [
+                        ValueListenableBuilder(
+                            valueListenable: showTemplates,
+                            builder: (context, showTemplate, child) {
+                              return WorkoutFeed(
+                                profileView: true,
+                                uid: widget.thisUser.uid,
+                                postQuery: !showTemplates.value
+                                    ? FeedServices()
+                                        .fetchUserWorkouts(widget.thisUser.uid)
+                                    : FeedServices().fetchTemplateWorkouts(
+                                        widget.thisUser.uid),
+                              );
+                            }),
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: SizedBox(
+                              // width: 200,
+                              height: 60,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  TextButton(
+                                      style: ButtonStyle(
+                                          foregroundColor:
+                                              MaterialStateProperty.resolveWith(
+                                                  (states) => Theme.of(context)
+                                                      .scaffoldBackgroundColor),
+                                          backgroundColor:
+                                              MaterialStateProperty.resolveWith(
+                                                  (states) => Theme.of(context)
+                                                      .colorScheme
+                                                      .secondary)),
+                                      onPressed: () {
+                                        showTemplates.value =
+                                            !showTemplates.value;
+                                      },
+                                      child: ValueListenableBuilder(
+                                          valueListenable: showTemplates,
+                                          builder:
+                                              (context, showTemplate, child) {
+                                            if (showTemplate) {
+                                              return Text("Show My Workouts");
+                                            } else {
+                                              return Text("Show My Templates");
+                                            }
+                                          })),
+                                ],
+                              )),
+                        )
+                      ],
                     ),
                     MealFeed(
                         postQuery:

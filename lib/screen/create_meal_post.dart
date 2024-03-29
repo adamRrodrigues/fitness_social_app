@@ -278,6 +278,7 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost>
                                                 focusNode: focusNode,
                                                 textController:
                                                     categoryController,
+                                                maxLength: 10,
                                                 hintText: 'add a category'),
                                           ),
                                           FloatingActionButton(
@@ -340,7 +341,9 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost>
                     height: 10,
                   ),
                   CustomTextField(
-                      textController: titleController, hintText: "Meal Name"),
+                      maxLength: 20,
+                      textController: titleController,
+                      hintText: "Meal Name"),
                   const SizedBox(
                     height: 10,
                   ),

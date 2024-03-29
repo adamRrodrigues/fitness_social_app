@@ -123,6 +123,7 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                       workoutDraft!.fetchedExercises.isNotEmpty) {
                     WorkoutModel workoutModel = WorkoutModel(
                         workoutName: titleController.text,
+                        isTemplate: false,
                         categories: widget.workoutModel.categories,
                         exercises: List.empty(),
                         uid: user!.uid,
@@ -147,7 +148,8 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                         await WorkoutPostServices().editWorkout(
                             workoutModel,
                             workoutDraft!.fetchedExercises,
-                            widget.workoutModel.postId);
+                            widget.workoutModel.postId,
+                            widget.workoutModel.isTemplate);
                       } else {
                         String futureString = await WorkoutPostServices()
                             .templateToWorkout(
@@ -350,6 +352,7 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                 Padding(
                   padding: const EdgeInsets.all(4.0),
                   child: CustomTextField(
+                      maxLength: 20,
                       textController: titleController,
                       hintText: 'Give Your Workout a Name'),
                 ),

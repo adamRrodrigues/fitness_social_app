@@ -88,8 +88,9 @@ class _WorkoutWidgetState extends ConsumerState<WorkoutWidget> {
                                 );
                               },
                             );
-                            await WorkoutPostServices()
-                                .deletePost(widget.workoutModel.postId);
+                            await WorkoutPostServices().deletePost(
+                                widget.workoutModel.postId,
+                                widget.workoutModel.isTemplate);
                             if (context.mounted) {
                               context.pop();
                             }

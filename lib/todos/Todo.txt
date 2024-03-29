@@ -1,8 +1,11 @@
 Doing: 
-view for templates and user workouts only for current user
+onboarding pages 
+
 
 Next: 
-landing pages 
+view for templates and user workouts only for current user
+add isTemplate field to workouts
+seperate template editable from user workout
 update create meal page
 add saving for meals
 eating a meal adds calories to userstats

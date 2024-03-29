@@ -136,6 +136,7 @@ class _EditExerciseState extends ConsumerState<EditExercise> {
                 ),
               ),
               CustomTextField(
+                maxLength: 20,
                   textController: nameController, hintText: 'exercise name'),
               const SizedBox(
                 height: 10,

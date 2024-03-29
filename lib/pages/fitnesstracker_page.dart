@@ -345,6 +345,7 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage>
         ),
       ),
       bottomNavigationBar: BottomAppBar(
+        
         height: 60,
         padding: const EdgeInsets.all(8),
         color: Colors.transparent,
