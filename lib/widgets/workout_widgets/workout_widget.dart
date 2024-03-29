@@ -239,7 +239,7 @@ class _WorkoutWidgetState extends ConsumerState<WorkoutWidget> {
             ),
           ),
         ),
-      ).animate().shimmer(),
+      ),
     );
   }
 }

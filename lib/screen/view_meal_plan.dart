@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_social_app/models/meal_model.dart';
 import 'package:fitness_social_app/routing/route_constants.dart';
-import 'package:fitness_social_app/services/meal_service.dart';
 import 'package:fitness_social_app/services/routine_services.dart';
 import 'package:fitness_social_app/widgets/custom_button.dart';
 import 'package:fitness_social_app/widgets/custom_calender.dart';
@@ -48,7 +47,7 @@ class VviewMealPlanScreenState extends State<ViewMealPlanScreen> {
         ),
         body: SafeArea(
             child: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
+          physics: const BouncingScrollPhysics(),
           child: Column(
             children: [
               CustomCalender(
@@ -118,7 +117,7 @@ class VviewMealPlanScreenState extends State<ViewMealPlanScreen> {
                           },
                         );
                       } else {
-                        return Center(
+                        return const Center(
                           child: CircularProgressIndicator(),
                         );
                       }

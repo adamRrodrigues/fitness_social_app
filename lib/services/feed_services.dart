@@ -64,10 +64,23 @@ class FeedServices {
     return postQuery;
   }
 
-  Query<MealModel> fetchMeals() {
-    final CollectionReference<MealModel> postQuery;
+  Query<MealModel> fetchMeals(String uid) {
+    final Query<MealModel> postQuery;
     postQuery = FirebaseFirestore.instance
         .collection('meals_demo')
+        .where("uid", isEqualTo: uid)
+        .withConverter(
+          fromFirestore: (snapshot, _) => MealModel.fromMap(snapshot.data()!),
+          toFirestore: (post, _) => post.toMap(),
+        );
+    return postQuery;
+  }
+
+  Query<MealModel> fetchAllMeals(String uid) {
+    final Query<MealModel> postQuery;
+    postQuery = FirebaseFirestore.instance
+        .collection('meals_demo')
+        .where("uid", isNotEqualTo: uid)
         .withConverter(
           fromFirestore: (snapshot, _) => MealModel.fromMap(snapshot.data()!),
           toFirestore: (post, _) => post.toMap(),

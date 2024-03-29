@@ -42,7 +42,7 @@ class _CustomeCalenderState extends State<CustomCalender> {
                 child: Center(
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    physics: BouncingScrollPhysics(),
+                    physics: const BouncingScrollPhysics(),
                     shrinkWrap: true,
                     itemCount: days.length,
                     itemBuilder: (context, index) {

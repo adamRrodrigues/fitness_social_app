@@ -56,7 +56,7 @@ class _DiscoverPageState extends ConsumerState<DiscoverPage>
                 setState(() {});
               },
               child: SingleChildScrollView(
-                physics: BouncingScrollPhysics(),
+                physics: const BouncingScrollPhysics(),
                 child: Column(
                   children: [
                     Padding(

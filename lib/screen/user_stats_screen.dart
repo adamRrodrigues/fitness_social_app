@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/models/user_stats.dart';
-import 'package:fitness_social_app/widgets/custom_calender.dart';
 import 'package:fitness_social_app/widgets/progress_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

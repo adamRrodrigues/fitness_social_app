@@ -31,7 +31,7 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage>
   Routine routine = Routine();
   bool routineExists = true;
   late Stream<StepCount> _stepCountStream;
-  ValueNotifier<double> _steps = ValueNotifier(0);
+  final ValueNotifier<double> _steps = ValueNotifier(0);
 
   final user = FirebaseAuth.instance.currentUser;
   CollectionReference routines =
@@ -45,7 +45,6 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage>
     if (currentDay == 7) {
       currentDay = 0;
     }
-    print("day $currentDay");
     DateTime firstDayOfWeek = now.subtract(Duration(days: currentDay));
     today = now;
     routine = ref.read(routineProvider);
@@ -67,9 +66,7 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage>
       _stepCountStream = Pedometer.stepCountStream;
 
       _stepCountStream.listen(onStepCount).onError(onStepCountError);
-    } else {
-      print("testo");
-    }
+    } 
 
     if (!mounted) return;
   }
@@ -153,7 +150,7 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage>
                     children: [
                       ValueListenableBuilder(
                           valueListenable: _steps,
-                          builder: (context, _steps, child) {
+                          builder: (context, steps, child) {
                             return Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Material(
@@ -179,8 +176,8 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage>
                                       ),
                                       ProgressWidget(
                                           // type: 'steps',
-                                          value: _steps,
-                                          color: Color(0xffFF8080)),
+                                          value: steps,
+                                          color: const Color(0xffFF8080)),
                                     ],
                                   ),
                                 ),

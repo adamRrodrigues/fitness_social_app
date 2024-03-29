@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:fitness_social_app/commons/commons.dart';
 import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/services/drafts.dart';
 import 'package:fitness_social_app/widgets/custom_button.dart';
@@ -144,7 +143,7 @@ class _LocalExerciseEditScreenState
                               } else {}
                               return Container();
                             } catch (e) {
-                              return Center(
+                              return const Center(
                                 child: Icon(
                                   Icons.play_circle_outline_rounded,
                                   size: 64,
@@ -357,7 +356,7 @@ class _LocalExerciseEditScreenState
                               Text('Hrs: $hours'),
                             ],
                           ),
-                          Text(
+                          const Text(
                             ":",
                             style: TextStyle(fontSize: 32),
                           ),
@@ -384,7 +383,7 @@ class _LocalExerciseEditScreenState
                               Text('Min: $minutes'),
                             ],
                           ),
-                          Text(
+                          const Text(
                             ":",
                             style: TextStyle(fontSize: 32),
                           ),

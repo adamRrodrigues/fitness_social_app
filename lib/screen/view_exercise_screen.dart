@@ -2,7 +2,6 @@ import 'package:fitness_social_app/models/exercise_model.dart';
 import 'package:fitness_social_app/screen/view_video_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:modals/modals.dart';
 import 'package:video_player/video_player.dart';
 
 class ViewExerciseScreen extends StatefulWidget {
@@ -55,7 +54,7 @@ class _ViewExerciseScreenState extends State<ViewExerciseScreen> {
                             if (!vController!.value.isInitialized) {
                               return Stack(
                                 children: [
-                                  Center(
+                                  const Center(
                                     child: Column(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
@@ -66,10 +65,10 @@ class _ViewExerciseScreenState extends State<ViewExerciseScreen> {
                                     ),
                                   ),
                                   Padding(
-                                    padding: EdgeInsets.all(8),
+                                    padding: const EdgeInsets.all(8),
                                     child: ClipRRect(
                                       borderRadius:
-                                          BorderRadius.all(Radius.circular(10)),
+                                          const BorderRadius.all(Radius.circular(10)),
                                       child: AspectRatio(
                                         aspectRatio:
                                             0.65,
@@ -103,7 +102,7 @@ class _ViewExerciseScreenState extends State<ViewExerciseScreen> {
                               return Container();
                             }
                           } catch (e) {
-                            return Center(
+                            return const Center(
                               child: Icon(
                                 Icons.play_circle_outline_rounded,
                                 size: 64,

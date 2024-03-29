@@ -374,7 +374,7 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                                   motion: const ScrollMotion(),
                                   children: [
                                     SlidableAction(
-                                      padding: EdgeInsets.all(8),
+                                      padding: const EdgeInsets.all(8),
                                       autoClose: true,
                                       borderRadius: BorderRadius.circular(10),
                                       flex: 1,

@@ -8,8 +8,10 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class FollowageScreen extends ConsumerStatefulWidget {
-  const FollowageScreen({Key? key, required this.type}) : super(key: key);
+  const FollowageScreen({Key? key, required this.type, required this.uid})
+      : super(key: key);
   final String type;
+  final String uid;
 
   @override
   _FollowageScreenState createState() => _FollowageScreenState();
@@ -41,13 +43,13 @@ class _FollowageScreenState extends ConsumerState<FollowageScreen> {
             children: [
               StreamBuilder(
                 stream: widget.type == "following"
-                    ? users.doc(user!.uid).collection('following').snapshots()
-                    : users.doc(user!.uid).collection('followers').snapshots(),
+                    ? users.doc(widget.uid).collection('following').snapshots()
+                    : users.doc(widget.uid).collection('followers').snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData &&
                       snapshot.connectionState == ConnectionState.active) {
                     final docs = snapshot.data!.docs.toList();
-                    // List<String> ids = [user!.uid];
+                    // List<String> ids = [widget.uid];
                     for (var i = 0; i < docs.length; i++) {
                       ids.add(docs[i].id);
 
@@ -62,9 +64,9 @@ class _FollowageScreenState extends ConsumerState<FollowageScreen> {
                           final data = snapshot.data!.docs.toList();
                           if (data.isNotEmpty) {
                             return ListView.builder(
-                              padding: EdgeInsets.all(8),
+                              padding: const EdgeInsets.all(8),
                               shrinkWrap: true,
-                              physics: BouncingScrollPhysics(),
+                              physics: const BouncingScrollPhysics(),
                               itemCount: data.length,
                               itemBuilder: (context, index) {
                                 final user =
@@ -83,14 +85,14 @@ class _FollowageScreenState extends ConsumerState<FollowageScreen> {
                             );
                           }
                         } else {
-                          return Center(
+                          return const Center(
                             child: CircularProgressIndicator(),
                           );
                         }
                       },
                     );
                   } else {
-                    return Center(
+                    return const Center(
                       child: CircularProgressIndicator(),
                     );
                   }

@@ -26,7 +26,7 @@ class WorkoutSearch extends ConsumerWidget {
         child: Column(
           children: [
             Padding(
-              padding: EdgeInsets.all(8),
+              padding: const EdgeInsets.all(8),
               child: CustomTextField(
                   onChange: changeTerm,
                   textController: searchController,
@@ -47,7 +47,7 @@ class WorkoutSearch extends ConsumerWidget {
                         final data = snapshot.data!.docs.toList();
                         return ListView.builder(
                           shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
+                          physics: const NeverScrollableScrollPhysics(),
                           itemCount: data.length,
                           itemBuilder: (context, index) {
                             final workout =
@@ -61,7 +61,7 @@ class WorkoutSearch extends ConsumerWidget {
                           },
                         );
                       } else {
-                        return Center(
+                        return const Center(
                           child: CircularProgressIndicator(),
                         );
                       }

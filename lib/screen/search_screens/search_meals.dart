@@ -25,7 +25,7 @@ class SearchMeals extends ConsumerWidget {
       child: Column(
         children: [
           Padding(
-            padding: EdgeInsets.all(8),
+            padding: const EdgeInsets.all(8),
             child: CustomTextField(
                 onChange: changeTerm,
                 textController: searchController,
@@ -47,7 +47,7 @@ class SearchMeals extends ConsumerWidget {
                       if (data.isNotEmpty) {
                         return ListView.builder(
                           shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
+                          physics: const NeverScrollableScrollPhysics(),
                           itemCount: data.length,
                           itemBuilder: (context, index) {
                             final meal =
@@ -60,13 +60,13 @@ class SearchMeals extends ConsumerWidget {
                           },
                         );
                       } else {
-                        return Center(
+                        return const Center(
                           child: Text(
                               "Sorry Couldn't Find What You Were Looking For"),
                         );
                       }
                     } else {
-                      return Center(
+                      return const Center(
                         child: CircularProgressIndicator(),
                       );
                     }

@@ -10,6 +10,7 @@ import 'package:fitness_social_app/screen/create_meal_post.dart';
 import 'package:fitness_social_app/screen/create_post.dart';
 import 'package:fitness_social_app/screen/create_workout_post.dart';
 import 'package:fitness_social_app/screen/edit_exercise.dart';
+import 'package:fitness_social_app/screen/edit_profile_screen.dart';
 import 'package:fitness_social_app/screen/edit_workout.dart';
 import 'package:fitness_social_app/screen/fetching_workout_screen.dart';
 import 'package:fitness_social_app/screen/local_exercise_edit_screen.dart';
@@ -262,13 +263,26 @@ final GoRouter appRouter = GoRouter(
               },
             ),
             GoRoute(
-              path: 'followageScreen/:type',
+              path: 'followageScreen/:uid/:type',
               name: RouteConstants.followageScreen,
               pageBuilder: (context, state) {
                 final searchType = state.pathParameters['type'];
+                final uid = state.pathParameters['uid'];
                 return CupertinoPage(
                     child: FollowageScreen(
                   type: searchType!,
+                  uid: uid!,
+                ));
+              },
+            ),
+            GoRoute(
+              path: 'editProfileScreen',
+              name: RouteConstants.editProfileScreen,
+              pageBuilder: (context, state) {
+                UserModel user = state.extra as UserModel;
+                return CupertinoPage(
+                    child: EditProfileScreen(
+                  user: user,
                 ));
               },
             ),

@@ -40,7 +40,6 @@ class OnlineRoutineWidget extends ConsumerWidget {
           if (data['workouts'].isNotEmpty) {
             for (int i = 0; i < data['workouts'].length; i++) {
               workouts.add(data['workouts'][i]);
-              print(workouts);
             }
           }
           return data['workouts'].isNotEmpty

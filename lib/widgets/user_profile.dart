@@ -47,24 +47,26 @@ class _UserProfileState extends ConsumerState<UserProfile> {
   List<DateTime> dates = [];
 
   Future getFollowage() async {
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc(widget.thisUser.uid)
-        .collection('followers')
-        .count()
-        .get()
-        .then(
-          (value) => followers = value.count,
-        );
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc(widget.thisUser.uid)
-        .collection('following')
-        .count()
-        .get()
-        .then(
-          (value) => following = value.count,
-        );
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.thisUser.uid)
+          .collection('followers')
+          .count()
+          .get()
+          .then(
+            (value) => followers = value.count - 1,
+          );
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.thisUser.uid)
+          .collection('following')
+          .count()
+          .get()
+          .then(
+            (value) => following = value.count - 1,
+          );
+    } catch (e) {}
   }
 
   CollectionReference posts =
@@ -140,8 +142,7 @@ class _UserProfileState extends ConsumerState<UserProfile> {
               ),
               const SizedBox(height: 10),
               Builder(builder: (context) {
-                if (widget.thisUser.firstName.isNotEmpty &&
-                    widget.thisUser.lastName.isNotEmpty) {
+                if (widget.thisUser.firstName != "") {
                   return Text(
                     "${widget.thisUser.firstName} ${widget.thisUser.lastName}",
                     style: Theme.of(context).textTheme.titleLarge,
@@ -164,9 +165,17 @@ class _UserProfileState extends ConsumerState<UserProfile> {
                     Expanded(
                       child: Builder(builder: (context) {
                         if (widget.thisUser.uid == currentUser!.uid) {
-                          return const SizedBox(
-                              width: 150,
-                              child: CustomButton(buttonText: "Edit Profile"));
+                          return GestureDetector(
+                            onTap: () {
+                              context.pushNamed(
+                                  RouteConstants.editProfileScreen,
+                                  extra: widget.thisUser);
+                            },
+                            child: const SizedBox(
+                                width: 150,
+                                child:
+                                    CustomButton(buttonText: "Edit Profile")),
+                          );
                         } else {
                           return StreamBuilder(
                               stream: FirebaseFirestore.instance
@@ -249,20 +258,26 @@ class _UserProfileState extends ConsumerState<UserProfile> {
                               onTap: () {
                                 context.pushNamed(
                                     RouteConstants.followageScreen,
-                                    pathParameters: {"type": "followers"});
+                                    pathParameters: {
+                                      "uid": widget.thisUser.uid,
+                                      "type": "followers"
+                                    });
                               },
                               child: CountWidget(
-                                  amount: (followers - 1).toString(),
+                                  amount: (followers).toString(),
                                   type: 'followers'),
                             ),
                             GestureDetector(
                               onTap: () {
                                 context.pushNamed(
                                     RouteConstants.followageScreen,
-                                    pathParameters: {"type": "following"});
+                                    pathParameters: {
+                                      "uid": widget.thisUser.uid,
+                                      "type": "following"
+                                    });
                               },
                               child: CountWidget(
-                                  amount: (following - 1).toString(),
+                                  amount: (following).toString(),
                                   type: 'following'),
                             ),
                           ],
@@ -275,10 +290,10 @@ class _UserProfileState extends ConsumerState<UserProfile> {
                                 amount: widget.thisUser.posts.length.toString(),
                                 type: 'posts'),
                             CountWidget(
-                                amount: followers.toString(),
+                                amount: (followers).toString(),
                                 type: 'followers'),
                             CountWidget(
-                                amount: following.toString(),
+                                amount: (following).toString(),
                                 type: 'following'),
                           ],
                         );
@@ -307,7 +322,7 @@ class _UserProfileState extends ConsumerState<UserProfile> {
               ),
               Expanded(
                 child: TabBarView(
-                  physics: BouncingScrollPhysics(),
+                  physics: const BouncingScrollPhysics(),
                   children: [
                     PostFeedWidget(
                         profileView: true,
@@ -319,7 +334,9 @@ class _UserProfileState extends ConsumerState<UserProfile> {
                       postQuery:
                           FeedServices().fetchUserWorkouts(widget.thisUser.uid),
                     ),
-                    MealFeed(postQuery: FeedServices().fetchMeals())
+                    MealFeed(
+                        postQuery:
+                            FeedServices().fetchMeals(widget.thisUser.uid))
                   ],
                 ),
               )

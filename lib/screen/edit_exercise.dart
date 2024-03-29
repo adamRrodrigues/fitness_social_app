@@ -123,7 +123,7 @@ class _EditExerciseState extends ConsumerState<EditExercise> {
                       return Stack(
                         alignment: Alignment.center,
                         children: [
-                          Center(
+                          const Center(
                             child: CircularProgressIndicator(),
                           ),
                           AspectRatio(

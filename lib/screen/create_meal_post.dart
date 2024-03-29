@@ -298,7 +298,7 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost>
                                         child: ListView.builder(
                                           shrinkWrap: true,
                                           itemCount: popularTags.length,
-                                          physics: BouncingScrollPhysics(),
+                                          physics: const BouncingScrollPhysics(),
                                           itemBuilder: (context, index) {
                                             return GestureDetector(
                                               onTap: () {
@@ -381,7 +381,7 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost>
                     height: 400,
                     child: TabBarView(
                       controller: tabController,
-                      physics: NeverScrollableScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),
                       children: [
                         mealDraft!.ingredients.isNotEmpty
                             ? ingredientsMethod()
@@ -462,7 +462,7 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost>
                               if (tabController.index == 0) {
                                 return ListView.builder(
                                   shrinkWrap: true,
-                                  physics: BouncingScrollPhysics(),
+                                  physics: const BouncingScrollPhysics(),
                                   itemCount: commonIngredients.length,
                                   itemBuilder: (context, index) {
                                     return GestureDetector(
@@ -488,7 +488,7 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost>
                               } else {
                                 return ListView.builder(
                                   shrinkWrap: true,
-                                  physics: BouncingScrollPhysics(),
+                                  physics: const BouncingScrollPhysics(),
                                   itemCount: commonSteps.length,
                                   itemBuilder: (context, index) {
                                     return GestureDetector(
@@ -578,7 +578,7 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost>
           key: ValueKey(index),
           child: ListTile(
             title: Text(mealDraft!.steps[index]),
-            leading: Icon(Icons.menu),
+            leading: const Icon(Icons.menu),
           ),
         );
       },
@@ -635,7 +635,7 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost>
           key: ValueKey(index),
           child: ListTile(
             title: Text(mealDraft!.ingredients[index]),
-            leading: Icon(Icons.menu),
+            leading: const Icon(Icons.menu),
           ),
         );
       },

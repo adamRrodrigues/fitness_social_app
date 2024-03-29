@@ -3,7 +3,6 @@ import 'package:extended_image/extended_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_social_app/models/workout_post_model.dart';
 import 'package:fitness_social_app/routing/route_constants.dart';
-import 'package:fitness_social_app/screen/run_workou.dart';
 import 'package:fitness_social_app/screen/view_exercise_screen.dart';
 import 'package:fitness_social_app/services/post_service.dart';
 import 'package:fitness_social_app/widgets/custom_button.dart';

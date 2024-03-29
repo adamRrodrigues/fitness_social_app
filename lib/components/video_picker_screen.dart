@@ -37,7 +37,6 @@ class _VideoPickerScreenState extends ConsumerState<VideoPickerScreen> {
           vController!.play();
         });
     } catch (e) {
-      print(e);
     }
   }
 
