@@ -7,10 +7,10 @@ class UserStats {
   final String uid;
   final double userWeight;
   final double userHeight;
-  final int steps;
+  final List<int> steps;
   final int workoutStreak;
   final List<Achievement> achievements;
-  UserStats( {
+  UserStats({
     required this.uid,
     required this.userWeight,
     required this.userHeight,
@@ -23,7 +23,7 @@ class UserStats {
     String? uid,
     double? userWeight,
     double? userHeight,
-    int? steps,
+    List<int>? steps,
     int? workoutStreak,
     List<Achievement>? achievements,
   }) {
@@ -53,7 +53,7 @@ class UserStats {
       uid: map['uid'] as String,
       userWeight: map['userWeight'] as double,
       userHeight: map['userHeight'] as double,
-      steps: map['steps'] as int,
+      steps: map['steps'] as List<int>,
       workoutStreak: map['workoutStreak'] as int,
       achievements: List<Achievement>.from(
         (map['achievements'] as List<int>).map<Achievement>(

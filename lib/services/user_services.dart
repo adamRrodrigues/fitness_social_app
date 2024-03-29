@@ -100,7 +100,7 @@ class UserServices {
                 uid: userId,
                 userWeight: 0,
                 userHeight: 0,
-                steps: 0,
+                steps: List.generate(7, (index) => 0),
                 workoutStreak: 0,
                 achievements: List.empty())
             .toMap());

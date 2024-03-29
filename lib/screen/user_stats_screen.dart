@@ -1,7 +1,10 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/models/user_stats.dart';
+import 'package:fitness_social_app/widgets/custom_calender.dart';
 import 'package:fitness_social_app/widgets/progress_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -34,10 +37,44 @@ double claclBMI(double w, double h) {
 }
 
 class _UserStatsScreenState extends ConsumerState<UserStatsScreen> {
+  DateTime now = DateTime.now();
+  int currentDay = 0;
+  DateTime today = DateTime.now();
+  List<DateTime> dates = [];
+  var tracker = 3;
+  List<int> stepList = [];
+  int steps = 0;
+
   @override
+  void initState() {
+    print("oki me is ran current day: ${currentDay}");
+    super.initState();
+
+    // checkRoutineExists();
+    currentDay = now.weekday;
+    if (currentDay == 7) {
+      currentDay = 0;
+    }
+
+    stepList = genFakeSteps(currentDay);
+    steps = stepList[currentDay];
+
+    print("day $currentDay");
+    DateTime firstDayOfWeek = now.subtract(Duration(days: currentDay));
+    today = now;
+
+    for (int i = 0; i < 7; i++) {
+      final day = firstDayOfWeek.add(Duration(days: i));
+      dates.add(day);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     User? user = ref.read(userProvider);
+
+    print(user);
+
     return Scaffold(
       body: SafeArea(
         child: NestedScrollView(
@@ -57,11 +94,12 @@ class _UserStatsScreenState extends ConsumerState<UserStatsScreen> {
                     if (snapshot.hasData &&
                         snapshot.connectionState == ConnectionState.active) {
                       final data = snapshot.data!;
+
                       final thisUserStat = UserStats(
                           uid: widget.uid,
                           userWeight: data['userWeight'],
                           userHeight: data['userHeight'],
-                          steps: data['steps'],
+                          steps: List<int>.from(data['steps']),
                           workoutStreak: data['workoutStreak'],
                           achievements: List.from(data['achievements']));
 
@@ -161,6 +199,7 @@ class _UserStatsScreenState extends ConsumerState<UserStatsScreen> {
                                       ),
                                     ),
                                   ),
+                                  // box for workout streak and steps
                                   SizedBox(
                                     width: 60,
                                     child: DropdownButton<String>(
@@ -224,8 +263,10 @@ class _UserStatsScreenState extends ConsumerState<UserStatsScreen> {
                                               height: 30,
                                             ),
                                             ProgressWidget(
-                                                value: thisUserStat.steps
-                                                    .toDouble(),
+                                                // value: thisUserStat
+                                                //     .steps[currentDay]
+                                                //     .toDouble(),
+                                                value: steps.toDouble(),
                                                 color: const Color(0xffFF8080)),
                                           ],
                                         ),
@@ -259,12 +300,12 @@ class _UserStatsScreenState extends ConsumerState<UserStatsScreen> {
                                                 height: 30,
                                               ),
                                               ProgressWidget(
-                                                  
                                                   value: thisUserStat
                                                       .workoutStreak
                                                       .toDouble(),
                                                   maxValue: 7,
-                                                  color: const Color(0xffFF8080)),
+                                                  color:
+                                                      const Color(0xffFF8080)),
                                             ],
                                           ),
                                         ),
@@ -272,6 +313,21 @@ class _UserStatsScreenState extends ConsumerState<UserStatsScreen> {
                                 ],
                               ),
                             ),
+                          ),
+                          CustomCalender(
+                            currentDay: currentDay,
+                            dates: dates,
+                            today: today,
+                            func: (data) {
+                              print(data);
+                              print("[ data: $data, Current day: $currentDay");
+                              setState(() {
+                                currentDay = data;
+                                steps = stepList[data];
+                              });
+                              print("] data: $data, Current day: $currentDay");
+                              print(dates[currentDay]);
+                            },
                           ),
                         ],
                       );
@@ -285,6 +341,21 @@ class _UserStatsScreenState extends ConsumerState<UserStatsScreen> {
       ),
     );
   }
+}
 
+int random(int min, int max) {
+  return min + Random().nextInt(max - min);
+}
 
+List<int> genFakeSteps(int today) {
+  List<int> stepList = List.filled(7, 0);
+
+  for (int i = 0; i < 7; i++) {
+    if (i == today) {
+      return stepList;
+    }
+    stepList[i] = random(1500, 3000);
+  }
+
+  return stepList;
 }

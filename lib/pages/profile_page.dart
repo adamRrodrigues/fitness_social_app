@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_social_app/main.dart';
+import 'package:fitness_social_app/models/user_stats.dart';
 import 'package:fitness_social_app/pages/chat_page.dart';
 import 'package:fitness_social_app/routing/route_constants.dart';
 import 'package:fitness_social_app/services/auth_service.dart';
+import 'package:fitness_social_app/services/fallback_services.dart';
 import 'package:fitness_social_app/services/user_services.dart';
 import 'package:fitness_social_app/widgets/bottom_modal_item_widget.dart';
 import 'package:fitness_social_app/widgets/user_profile.dart';
@@ -86,13 +88,14 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                           bottom: 8.0,
                         ),
                         child: GestureDetector(
-                          onTap: () {
+                          onTap: () async {
                             // print("object");
                             // Navigator.of(context).push(
                             //   MaterialPageRoute(
                             //     builder: (context) => const Chat(),
                             //   ),
                             // );
+
                             Navigator.push(
                               context,
                               MaterialPageRoute(

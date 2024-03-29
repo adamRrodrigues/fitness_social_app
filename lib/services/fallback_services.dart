@@ -17,6 +17,9 @@ class FallbackService {
   CollectionReference routines =
       FirebaseFirestore.instance.collection('routines');
 
+  CollectionReference user_stats =
+      FirebaseFirestore.instance.collection('user_stats');
+
   Future updatePost() async {
     var querySnapshots = await posts.get();
     for (var doc in querySnapshots.docs) {
@@ -57,6 +60,14 @@ class FallbackService {
     var querySnapshots = await users.get();
     for (var doc in querySnapshots.docs) {
       await doc.reference.update({'firstName': '', 'lastName': ''});
+    }
+  }
+
+  Future printUserStats() async {
+    var querySnapshots = await user_stats.get();
+
+    for (var stats in querySnapshots.docs) {
+      print(stats.data());
     }
   }
 

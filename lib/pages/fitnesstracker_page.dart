@@ -4,6 +4,7 @@ import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/models/routine_model.dart';
 import 'package:fitness_social_app/models/workout_post_model.dart';
 import 'package:fitness_social_app/routing/route_constants.dart';
+import 'package:fitness_social_app/services/fallback_services.dart';
 import 'package:fitness_social_app/widgets/custom_button.dart';
 import 'package:fitness_social_app/widgets/custom_calender.dart';
 import 'package:fitness_social_app/widgets/progress_widget.dart';
@@ -91,6 +92,7 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage>
   Widget build(BuildContext context) {
     super.build(context);
     User user = FirebaseAuth.instance.currentUser!;
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: NestedScrollView(
@@ -187,6 +189,7 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage>
                             .snapshots(),
                         builder: (context, snapshot) {
                           int workoutStreak = 0;
+
                           if (snapshot.hasData &&
                               snapshot.connectionState ==
                                   ConnectionState.active) {
