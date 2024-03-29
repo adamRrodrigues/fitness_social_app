@@ -10,7 +10,6 @@ import 'package:fitness_social_app/widgets/bottom_modal_item_widget.dart';
 import 'package:fitness_social_app/widgets/custom_button.dart';
 import 'package:fitness_social_app/widgets/pill_widget.dart';
 import 'package:fitness_social_app/widgets/text_widget.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -24,11 +23,15 @@ class CreateMealPost extends ConsumerStatefulWidget {
   _CreateMealPostState createState() => _CreateMealPostState();
 }
 
-class _CreateMealPostState extends ConsumerState<CreateMealPost> {
+class _CreateMealPostState extends ConsumerState<CreateMealPost>
+    with SingleTickerProviderStateMixin {
   MealDraft? mealDraft;
   TextEditingController titleController = TextEditingController();
   TextEditingController categoryController = TextEditingController();
   TextEditingController ingredientController = TextEditingController();
+  TextEditingController caloriesController = TextEditingController();
+  TextEditingController servingsController = TextEditingController();
+  late TabController tabController;
 
   void selectImage(String mode) async {
     try {
@@ -65,11 +68,20 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost> {
     "1 cup Rice",
   ];
 
+  List<String> commonSteps = [
+    "Wash rice",
+    "Chop onions into thin slices ",
+    "Tenderize chicken thoroughly",
+    "Tenderize beef thoroughly",
+    "fry for 6 minutes each side",
+  ];
+
   @override
   void initState() {
     super.initState();
     mealDraft = ref.read(mealDraftProvider);
     titleController.text = mealDraft!.mealName;
+    tabController = TabController(length: 2, vsync: this, initialIndex: 0);
   }
 
   @override
@@ -97,7 +109,9 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost> {
                   GestureDetector(
                     onTap: () async {
                       if (titleController.text != "" &&
-                          mealDraft!.image != null) {
+                          mealDraft!.image != null &&
+                          caloriesController.text != "" &&
+                          servingsController.text != "") {
                         showDialog(
                           barrierDismissible: false,
                           context: context,
@@ -109,28 +123,39 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost> {
                         MealModel thisMeal = MealModel(
                             mealName: titleController.text,
                             description: mealDraft!.description,
+                            calories: double.parse(caloriesController.text),
                             uid: "",
                             postId: "",
+                            servings: int.parse(servingsController.text),
                             image: "",
+                            likes: List.empty(),
+                            steps: mealDraft!.steps,
                             ingredients: mealDraft!.ingredients,
                             tags: mealDraft!.categories);
 
                         try {
                           await MealServices()
                               .postMeal(thisMeal, mealDraft!.image!);
+                          ScaffoldMessenger.of(context).showSnackBar(Commons()
+                              .snackBarMessage(
+                                  "Meal Created Successfully", Colors.green));
                         } catch (e) {
                           ScaffoldMessenger.of(context).showSnackBar(Commons()
                               .snackBarMessage(e.toString(), Colors.red));
                         }
                         ref.invalidate(mealDraftProvider);
                         if (context.mounted) {
-                          Navigator.pop(context);
-                          Navigator.pop(context);
+                          context.pop();
+                          // Navigator.pop(context);
                         }
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(Commons()
                             .snackBarMessage(
-                                "Post Name or Image is missing", Colors.red));
+                                "Meal Name, image, calories and servings should all be filled",
+                                Colors.red));
+                      }
+                      if (context.mounted) {
+                        context.pop();
                       }
                     },
                     child: const Padding(
@@ -253,6 +278,7 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost> {
                                                 focusNode: focusNode,
                                                 textController:
                                                     categoryController,
+                                                maxLength: 10,
                                                 hintText: 'add a category'),
                                           ),
                                           FloatingActionButton(
@@ -276,7 +302,8 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost> {
                                         child: ListView.builder(
                                           shrinkWrap: true,
                                           itemCount: popularTags.length,
-                                          physics: BouncingScrollPhysics(),
+                                          physics:
+                                              const BouncingScrollPhysics(),
                                           itemBuilder: (context, index) {
                                             return GestureDetector(
                                               onTap: () {
@@ -314,56 +341,71 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost> {
                     height: 10,
                   ),
                   CustomTextField(
-                      textController: titleController, hintText: "Meal Name"),
+                      maxLength: 20,
+                      textController: titleController,
+                      hintText: "Meal Name"),
                   const SizedBox(
                     height: 10,
                   ),
-                  mealDraft!.ingredients.isNotEmpty
-                      ? ReorderableListView.builder(
-                          shrinkWrap: true,
-                          onReorder: (oldIndex, newIndex) {
-                            String ingredient =
-                                mealDraft!.ingredients.removeAt(oldIndex);
-                            mealDraft!.ingredients.insert(
-                                newIndex > oldIndex ? newIndex -= 1 : newIndex,
-                                ingredient);
-                          },
-                          physics: const BouncingScrollPhysics(),
-                          itemCount: mealDraft!.ingredients.length,
-                          itemBuilder: (context, index) {
-                            return Slidable(
-                              endActionPane: ActionPane(
-                                  extentRatio: 0.3,
-                                  motion: const ScrollMotion(),
-                                  children: [
-                                    SlidableAction(
-                                      // An action can be bigger than the others.
-                                      autoClose: true,
-                                      flex: 1,
-                                      onPressed: (context) {
-                                        setState(() {
-                                          mealDraft!.ingredients
-                                              .removeAt(index);
-                                        });
-                                      },
-                                      backgroundColor: Colors.redAccent,
-                                      foregroundColor: Colors.white,
-                                      icon: Icons.delete,
-                                      label: 'Remove',
-                                    ),
-                                  ]),
-                              key: ValueKey(index),
-                              child: ListTile(
-                                title: Text(mealDraft!.ingredients[index]),
-                                leading: Icon(Icons.menu),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: CustomTextField(
+                            textController: caloriesController,
+                            textInputType: TextInputType.number,
+                            maxLength: 5,
+                            hintText: "Calories"),
+                      ),
+                      Expanded(
+                        child: CustomTextField(
+                            textController: servingsController,
+                            textInputType: TextInputType.number,
+                            maxLength: 2,
+                            hintText: "Servings"),
+                      ),
+                    ],
+                  ),
+                  TabBar(
+                    onTap: (value) {
+                      setState(() {});
+                    },
+                    controller: tabController,
+                    indicatorColor: Theme.of(context).colorScheme.primary,
+                    tabs: [
+                      Tab(
+                          icon: Icon(
+                        Icons.food_bank_outlined,
+                        color: Theme.of(context).colorScheme.secondary,
+                      )),
+                      Tab(
+                          icon: Icon(
+                        Icons.list_rounded,
+                        color: Theme.of(context).colorScheme.secondary,
+                      )),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 400,
+                    child: TabBarView(
+                      controller: tabController,
+                      physics: const NeverScrollableScrollPhysics(),
+                      children: [
+                        mealDraft!.ingredients.isNotEmpty
+                            ? ingredientsMethod()
+                            : const Center(
+                                child: Text(
+                                    "Any ingredients you add will appear here"),
                               ),
-                            );
-                          },
-                        )
-                      : const Center(
-                          child:
-                              Text("Any ingredients you add will appear here"),
-                        )
+                        mealDraft!.steps.isNotEmpty
+                            ? stepsMethod()
+                            : const Center(
+                                child: Text(
+                                  "Any steps you add will appear here",
+                                ),
+                              ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -396,16 +438,22 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost> {
                                 child: CustomTextField(
                                     focusNode: focusNode,
                                     textController: ingredientController,
-                                    hintText: '1/2 chicken, 3/4 cup water'),
+                                    hintText: tabController.index == 0
+                                        ? '1/2 chicken, 3/4 cup water'
+                                        : "Wash rice"),
                               ),
                               FloatingActionButton(
                                 mini: true,
                                 onPressed: () {
-                                  setState(() {
+                                  if (tabController.index == 0) {
                                     mealDraft!.ingredients
                                         .add(ingredientController.text);
                                     ingredientController.text = '';
-                                  });
+                                  } else {
+                                    mealDraft!.steps
+                                        .add(ingredientController.text);
+                                    ingredientController.text = '';
+                                  }
                                   context.pop();
                                 },
                                 child: const Icon(Icons.add),
@@ -417,30 +465,60 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost> {
                             child: Text("Popular Ingredients: "),
                           ),
                           Expanded(
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              physics: BouncingScrollPhysics(),
-                              itemCount: commonIngredients.length,
-                              itemBuilder: (context, index) {
-                                return GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      mealDraft!.ingredients
-                                          .add(commonIngredients[index]);
-                                      context.pop();
-                                    });
-                                  },
-                                  child: Column(
-                                    children: [
-                                      ListTile(
-                                        title: Text(commonIngredients[index]),
+                            child: Builder(builder: (context) {
+                              if (tabController.index == 0) {
+                                return ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const BouncingScrollPhysics(),
+                                  itemCount: commonIngredients.length,
+                                  itemBuilder: (context, index) {
+                                    return GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          mealDraft!.ingredients
+                                              .add(commonIngredients[index]);
+                                          context.pop();
+                                        });
+                                      },
+                                      child: Column(
+                                        children: [
+                                          ListTile(
+                                            title:
+                                                Text(commonIngredients[index]),
+                                          ),
+                                          const Divider()
+                                        ],
                                       ),
-                                      const Divider()
-                                    ],
-                                  ),
+                                    );
+                                  },
                                 );
-                              },
-                            ),
+                              } else {
+                                return ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const BouncingScrollPhysics(),
+                                  itemCount: commonSteps.length,
+                                  itemBuilder: (context, index) {
+                                    return GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          mealDraft!.steps
+                                              .add(commonSteps[index]);
+                                          context.pop();
+                                        });
+                                      },
+                                      child: Column(
+                                        children: [
+                                          ListTile(
+                                            title: Text(commonSteps[index]),
+                                          ),
+                                          const Divider()
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                );
+                              }
+                            }),
                           )
                         ],
                       ),
@@ -448,9 +526,126 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost> {
                   },
                 );
               },
-              child: const CustomButton(buttonText: 'Add Ingredient')),
+              child: CustomButton(
+                  buttonText: tabController.index == 0
+                      ? 'Add Ingredient'
+                      : "Add Step")),
         ),
       ),
+    );
+  }
+
+  ReorderableListView stepsMethod() {
+    return ReorderableListView.builder(
+      shrinkWrap: true,
+      onReorder: (oldIndex, newIndex) {
+        String ingredient = mealDraft!.steps.removeAt(oldIndex);
+        mealDraft!.steps
+            .insert(newIndex > oldIndex ? newIndex -= 1 : newIndex, ingredient);
+      },
+      physics: const BouncingScrollPhysics(),
+      itemCount: mealDraft!.steps.length,
+      itemBuilder: (context, index) {
+        return Slidable(
+          startActionPane: ActionPane(motion: const ScrollMotion(), children: [
+            SlidableAction(
+              autoClose: true,
+              borderRadius: BorderRadius.circular(10),
+              flex: 1,
+              onPressed: (context) {
+                setState(() {
+                  mealDraft!.steps.add(mealDraft!.steps[index]);
+                });
+              },
+              backgroundColor: Colors.greenAccent,
+              foregroundColor: Theme.of(context).scaffoldBackgroundColor,
+              icon: Icons.replay_rounded,
+              label: 'Duplicate',
+            )
+          ]),
+          endActionPane: ActionPane(
+              extentRatio: 0.3,
+              motion: const ScrollMotion(),
+              children: [
+                SlidableAction(
+                  // An action can be bigger than the others.
+                  autoClose: true,
+                  flex: 1,
+                  onPressed: (context) {
+                    setState(() {
+                      mealDraft!.steps.removeAt(index);
+                    });
+                  },
+                  backgroundColor: Colors.redAccent,
+                  foregroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  icon: Icons.delete,
+                  label: 'Remove',
+                ),
+              ]),
+          key: ValueKey(index),
+          child: ListTile(
+            title: Text(mealDraft!.steps[index]),
+            leading: const Icon(Icons.menu),
+          ),
+        );
+      },
+    );
+  }
+
+  ReorderableListView ingredientsMethod() {
+    return ReorderableListView.builder(
+      shrinkWrap: true,
+      onReorder: (oldIndex, newIndex) {
+        String ingredient = mealDraft!.ingredients.removeAt(oldIndex);
+        mealDraft!.ingredients
+            .insert(newIndex > oldIndex ? newIndex -= 1 : newIndex, ingredient);
+      },
+      physics: const BouncingScrollPhysics(),
+      itemCount: mealDraft!.ingredients.length,
+      itemBuilder: (context, index) {
+        return Slidable(
+          startActionPane: ActionPane(motion: const ScrollMotion(), children: [
+            SlidableAction(
+              autoClose: true,
+              borderRadius: BorderRadius.circular(10),
+              flex: 1,
+              onPressed: (context) {
+                setState(() {
+                  mealDraft!.ingredients.add(mealDraft!.ingredients[index]);
+                });
+              },
+              backgroundColor: Colors.greenAccent,
+              foregroundColor: Theme.of(context).scaffoldBackgroundColor,
+              icon: Icons.replay_rounded,
+              label: 'Duplicate',
+            )
+          ]),
+          endActionPane: ActionPane(
+              extentRatio: 0.3,
+              motion: const ScrollMotion(),
+              children: [
+                SlidableAction(
+                  // An action can be bigger than the others.
+                  autoClose: true,
+                  flex: 1,
+                  onPressed: (context) {
+                    setState(() {
+                      mealDraft!.ingredients.removeAt(index);
+                    });
+                  },
+                  backgroundColor: Colors.redAccent,
+                  foregroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  icon: Icons.delete,
+                  label: 'Remove',
+                ),
+              ]),
+          key: ValueKey(index),
+          child: ListTile(
+            title: Text(mealDraft!.ingredients[index]),
+            leading: const Icon(Icons.menu),
+          ),
+        );
+      },
     );
   }
 }

@@ -32,7 +32,7 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage>
   Routine routine = Routine();
   bool routineExists = true;
   late Stream<StepCount> _stepCountStream;
-  double _steps = 0;
+  final ValueNotifier<double> _steps = ValueNotifier(0);
 
   final user = FirebaseAuth.instance.currentUser;
   CollectionReference routines =
@@ -76,16 +76,16 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage>
   }
 
   void onStepCount(StepCount event) {
-    setState(() {
-      _steps = event.steps.toDouble();
-    });
+    // setState(() {
+    _steps.value = event.steps.toDouble();
+    // });
   }
 
   void onStepCountError(error) {
     print('onStepCountErro : $error');
-    setState(() {
-      _steps = -66;
-    });
+    // setState(() {
+    _steps.value = -69;
+    // });
   }
 
   @override
@@ -127,201 +127,222 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage>
             ],
           )
         ],
-        body: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              CustomCalender(
-                currentDay: currentDay,
-                dates: dates,
-                today: today,
-                func: (data) {
-                  setState(() {
-                    currentDay = data;
-                  });
-                },
-              ),
-              SizedBox(
-                // color: Colors.white,
-                height: 275,
-                width: double.infinity,
-                child: Center(
-                  child: GridView.count(
-                    physics: const NeverScrollableScrollPhysics(),
-                    crossAxisCount: 2,
-                    scrollDirection: Axis.vertical,
-                    childAspectRatio: (1 / 1.3),
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Material(
-                          elevation: 2,
-                          borderRadius: BorderRadius.circular(20),
-                          child: Container(
-                            height: 300,
-                            decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.surface,
-                                borderRadius: BorderRadius.circular(20)),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  "Steps",
-                                  style: Theme.of(context).textTheme.titleLarge,
+        body: RefreshIndicator(
+          onRefresh: () async {
+            setState(() {});
+          },
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                CustomCalender(
+                  currentDay: currentDay,
+                  dates: dates,
+                  today: today,
+                  func: (data) {
+                    setState(() {
+                      currentDay = data;
+                    });
+                  },
+                ),
+                SizedBox(
+                  // color: Colors.white,
+                  height: 275,
+                  width: double.infinity,
+                  child: Center(
+                    child: GridView.count(
+                      physics: const NeverScrollableScrollPhysics(),
+                      crossAxisCount: 2,
+                      scrollDirection: Axis.vertical,
+                      childAspectRatio: (1 / 1.3),
+                      children: [
+                        ValueListenableBuilder(
+                            valueListenable: _steps,
+                            builder: (context, steps, child) {
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Material(
+                                  elevation: 2,
+                                  borderRadius: BorderRadius.circular(20),
+                                  child: Container(
+                                    height: 300,
+                                    decoration: BoxDecoration(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .surface,
+                                        borderRadius:
+                                            BorderRadius.circular(20)),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          "Steps",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .titleLarge,
+                                        ),
+                                        const SizedBox(
+                                          height: 30,
+                                        ),
+                                        ProgressWidget(
+                                            // type: 'steps',
+                                            value: steps,
+                                            color: const Color(0xffFF8080)),
+                                      ],
+                                    ),
+                                  ),
                                 ),
-                                const SizedBox(
-                                  height: 30,
+                              );
+                            }),
+                        StreamBuilder(
+                          stream: FirebaseFirestore.instance
+                              .collection('user_stats')
+                              .doc(user.uid)
+                              .snapshots(),
+                          builder: (context, snapshot) {
+                            int workoutStreak = 0;
+                            if (snapshot.hasData &&
+                                snapshot.connectionState ==
+                                    ConnectionState.active) {
+                              workoutStreak =
+                                  snapshot.data!.get('workoutStreak');
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Material(
+                                  elevation: 2,
+                                  borderRadius: BorderRadius.circular(20),
+                                  child: Container(
+                                    height: 300,
+                                    decoration: BoxDecoration(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .surface,
+                                        borderRadius:
+                                            BorderRadius.circular(20)),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          "Workout Streak",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .titleLarge,
+                                        ),
+                                        const SizedBox(
+                                          height: 30,
+                                        ),
+                                        ProgressWidget(
+                                            value: workoutStreak.toDouble(),
+                                            maxValue: 7,
+                                            color: Colors.greenAccent),
+                                      ],
+                                    ),
+                                  ),
                                 ),
-                                ProgressWidget(
-                                    // type: 'steps',
-                                    value: _steps,
-                                    color: Color(0xffFF8080)),
-                              ],
-                            ),
+                              );
+                            } else {
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Material(
+                                  elevation: 2,
+                                  borderRadius: BorderRadius.circular(20),
+                                  child: Container(
+                                    height: 300,
+                                    decoration: BoxDecoration(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .surface,
+                                        borderRadius:
+                                            BorderRadius.circular(20)),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          "Workout Streak",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .titleLarge,
+                                        ),
+                                        const SizedBox(
+                                          height: 30,
+                                        ),
+                                        ProgressWidget(
+                                            value: workoutStreak.toDouble(),
+                                            maxValue: 7,
+                                            color: Colors.greenAccent),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          context.pushNamed(RouteConstants.viewRoutinePage,
+                              pathParameters: {
+                                'id': user.uid
+                              },
+                              extra: {
+                                'currentDay': currentDay,
+                                'startRoutine': false
+                              });
+                        },
+                        child: const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: CustomButton(
+                            buttonText: 'Routine',
+                            primary: false,
                           ),
                         ),
                       ),
-                      StreamBuilder(
-                        stream: FirebaseFirestore.instance
-                            .collection('user_stats')
-                            .doc(user.uid)
-                            .snapshots(),
-                        builder: (context, snapshot) {
-                          int workoutStreak = 0;
-
-                          if (snapshot.hasData &&
-                              snapshot.connectionState ==
-                                  ConnectionState.active) {
-                            workoutStreak = snapshot.data!.get('workoutStreak');
-                            return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Material(
-                                elevation: 2,
-                                borderRadius: BorderRadius.circular(20),
-                                child: Container(
-                                  height: 300,
-                                  decoration: BoxDecoration(
-                                      color:
-                                          Theme.of(context).colorScheme.surface,
-                                      borderRadius: BorderRadius.circular(20)),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        "Workout Streak",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleLarge,
-                                      ),
-                                      const SizedBox(
-                                        height: 30,
-                                      ),
-                                      ProgressWidget(
-                                          value: workoutStreak.toDouble(),
-                                          maxValue: 7,
-                                          color: Colors.greenAccent),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            );
-                          } else {
-                            return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Material(
-                                elevation: 2,
-                                borderRadius: BorderRadius.circular(20),
-                                child: Container(
-                                  height: 300,
-                                  decoration: BoxDecoration(
-                                      color:
-                                          Theme.of(context).colorScheme.surface,
-                                      borderRadius: BorderRadius.circular(20)),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        "Workout Streak",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleLarge,
-                                      ),
-                                      const SizedBox(
-                                        height: 30,
-                                      ),
-                                      ProgressWidget(
-                                          value: workoutStreak.toDouble(),
-                                          maxValue: 7,
-                                          color: Colors.greenAccent),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            );
-                          }
+                    ),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          context.pushNamed(RouteConstants.viewMealPlanScreen,
+                              pathParameters: {'id': user.uid},
+                              extra: currentDay);
                         },
+                        child: const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: CustomButton(
+                            buttonText: 'Meals',
+                            primary: false,
+                          ),
+                        ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        context.pushNamed(RouteConstants.viewRoutinePage,
-                            pathParameters: {
-                              'id': user.uid
-                            },
-                            extra: {
-                              'currentDay': currentDay,
-                              'startRoutine': false
-                            });
-                      },
-                      child: const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: CustomButton(
-                          buttonText: 'Routine',
-                          primary: false,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        context.pushNamed(RouteConstants.viewMealPlanScreen,
-                            pathParameters: {'id': user.uid},
-                            extra: currentDay);
-                      },
-                      child: const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: CustomButton(
-                          buttonText: 'Meals',
-                          primary: false,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const Center(
-                child: Text("Workouts: "),
-              ),
-              const Divider(),
-              Builder(builder: (context) {
-                if (routineExists) {
-                  return OnlineRoutineWidget(
-                    uid: user.uid,
-                    currentDay: currentDay,
-                  );
-                } else {
-                  return const Text('Fetching routine');
-                }
-              })
-            ],
+                const Center(
+                  child: Text("Workouts: "),
+                ),
+                const Divider(),
+                Builder(builder: (context) {
+                  if (routineExists) {
+                    return OnlineRoutineWidget(
+                      uid: user.uid,
+                      currentDay: currentDay,
+                    );
+                  } else {
+                    return const Text('Fetching routine');
+                  }
+                })
+              ],
+            ),
           ),
         ),
       ),

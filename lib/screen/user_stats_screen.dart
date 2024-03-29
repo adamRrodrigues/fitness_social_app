@@ -306,6 +306,8 @@ class _UserStatsScreenState extends ConsumerState<UserStatsScreen> {
                                                   maxValue: 7,
                                                   color:
                                                       const Color(0xffFF8080)),
+                                                  color:
+                                                      const Color(0xffFF8080)),
                                             ],
                                           ),
                                         ),

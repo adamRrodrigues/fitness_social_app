@@ -72,8 +72,8 @@ class _SignupPageState extends ConsumerState<SignupPage> {
 
                         auth!.signUp(
                           context,
-                          emailController.text,
-                          usernameController.text.toLowerCase(),
+                          emailController.text.trim(),
+                          usernameController.text.toLowerCase().trim(),
                           passwordContoller.text,
                         );
                       },

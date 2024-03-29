@@ -1,8 +1,8 @@
 import 'package:fitness_social_app/models/exercise_model.dart';
 import 'package:fitness_social_app/screen/view_video_screen.dart';
+import 'package:fitness_social_app/widgets/image_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:modals/modals.dart';
 import 'package:video_player/video_player.dart';
 
 class ViewExerciseScreen extends StatefulWidget {
@@ -42,72 +42,77 @@ class _ViewExerciseScreenState extends State<ViewExerciseScreen> {
                     child: AspectRatio(
                         aspectRatio: 0.65,
                         child: Builder(builder: (context) {
-                          try {
-                            vController = VideoPlayerController.contentUri(
-                                Uri.parse(widget.exerciseModel.imageUrl),
-                                videoPlayerOptions:
-                                    VideoPlayerOptions(mixWithOthers: true))
-                              ..initialize().then((value) {
-                                vController!.setVolume(0);
-                                vController!.setLooping(true);
-                                vController!.pause();
-                              });
-                            if (!vController!.value.isInitialized) {
-                              return Stack(
-                                children: [
-                                  Center(
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        CircularProgressIndicator(),
-                                        Text("Fetching Video Please Wait")
-                                      ],
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.all(8),
-                                    child: ClipRRect(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(10)),
-                                      child: AspectRatio(
-                                        aspectRatio:
-                                            0.65,
-                                        child: GestureDetector(
-                                            onDoubleTap: () {
-                                              // vController!.dispose();
-                                              Navigator.push(context,
-                                                  CupertinoPageRoute(
-                                                builder: (context) {
-                                                  return ViewVideoScreen(
-                                                      videoPlayerController:
-                                                          vController!);
-                                                },
-                                              ));
-                                            },
-                                            onTap: () {
-                                              if (vController!
-                                                  .value.isPlaying) {
-                                                vController!.pause();
-                                              } else {
-                                                vController!.play();
-                                              }
-                                            },
-                                            child: VideoPlayer(vController!)),
+                          if (widget.exerciseModel.imageUrl != "") {
+                            try {
+                              vController = VideoPlayerController.contentUri(
+                                  Uri.parse(widget.exerciseModel.imageUrl),
+                                  videoPlayerOptions:
+                                      VideoPlayerOptions(mixWithOthers: true))
+                                ..initialize().then((value) {
+                                  vController!.setVolume(0);
+                                  vController!.setLooping(true);
+                                  vController!.pause();
+                                });
+                              if (!vController!.value.isInitialized) {
+                                return Stack(
+                                  children: [
+                                    const Center(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          CircularProgressIndicator(),
+                                          Text("Fetching Video Please Wait")
+                                        ],
                                       ),
                                     ),
-                                  ),
-                                ],
+                                    Padding(
+                                      padding: const EdgeInsets.all(8),
+                                      child: ClipRRect(
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(10)),
+                                        child: AspectRatio(
+                                          aspectRatio: 0.65,
+                                          child: GestureDetector(
+                                              onDoubleTap: () {
+                                                // vController!.dispose();
+                                                Navigator.push(context,
+                                                    CupertinoPageRoute(
+                                                  builder: (context) {
+                                                    return ViewVideoScreen(
+                                                        videoPlayerController:
+                                                            vController!);
+                                                  },
+                                                ));
+                                              },
+                                              onTap: () {
+                                                if (vController!
+                                                    .value.isPlaying) {
+                                                  vController!.pause();
+                                                } else {
+                                                  vController!.play();
+                                                }
+                                              },
+                                              child: VideoPlayer(vController!)),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              } else {
+                                return Container();
+                              }
+                            } catch (e) {
+                              return const Center(
+                                child: Icon(
+                                  Icons.play_circle_outline_rounded,
+                                  size: 64,
+                                ),
                               );
-                            } else {
-                              return Container();
                             }
-                          } catch (e) {
+                          } else {
                             return Center(
-                              child: Icon(
-                                Icons.play_circle_outline_rounded,
-                                size: 64,
-                              ),
+                              child: Text("This Exercise has no video"),
                             );
                           }
                         })),

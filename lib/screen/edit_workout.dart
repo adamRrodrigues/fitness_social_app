@@ -123,6 +123,7 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                       workoutDraft!.fetchedExercises.isNotEmpty) {
                     WorkoutModel workoutModel = WorkoutModel(
                         workoutName: titleController.text,
+                        isTemplate: false,
                         categories: widget.workoutModel.categories,
                         exercises: List.empty(),
                         uid: user!.uid,
@@ -134,7 +135,6 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                         likes: List.empty(),
                         privacy: 'public');
 
-
                     showDialog(
                       barrierDismissible: false,
                       context: context,
@@ -144,14 +144,27 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                     );
 
                     try {
-                      String futureString = await WorkoutPostServices()
-                          .templateToWorkout(workoutModel,
-                              workoutDraft!.fetchedExercises);
-                      await RoutineServices().updateRoutine(user!.uid,
-                          widget.day, futureString, widget.workoutModel.postId);
-                      if (image != null) {
-                        await WorkoutPostServices()
-                            .newImage(image!, futureString);
+                      if (user!.uid == widget.workoutModel.uid) {
+                        await WorkoutPostServices().editWorkout(
+                            workoutModel,
+                            workoutDraft!.fetchedExercises,
+                            widget.workoutModel.postId,
+                            widget.workoutModel.isTemplate);
+                      } else {
+                        String futureString = await WorkoutPostServices()
+                            .templateToWorkout(
+                                workoutModel, workoutDraft!.fetchedExercises);
+                        if (widget.day != 69) {
+                          await RoutineServices().updateRoutine(
+                              user!.uid,
+                              widget.day,
+                              futureString,
+                              widget.workoutModel.postId);
+                        }
+                        if (image != null) {
+                          await WorkoutPostServices()
+                              .newImage(image!, futureString);
+                        }
                       }
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -339,6 +352,7 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                 Padding(
                   padding: const EdgeInsets.all(4.0),
                   child: CustomTextField(
+                      maxLength: 20,
                       textController: titleController,
                       hintText: 'Give Your Workout a Name'),
                 ),
@@ -381,8 +395,8 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                                   context.pushNamed(
                                       RouteConstants.localEditWorkout,
                                       extra: {
-                                        "editingExercise":
-                                            workoutDraft!.fetchedExercises[index],
+                                        "editingExercise": workoutDraft!
+                                            .fetchedExercises[index],
                                         "index": index
                                       });
                                 },

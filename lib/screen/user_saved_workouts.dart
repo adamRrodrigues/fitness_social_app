@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:fitness_social_app/models/workout_post_model.dart';
 import 'package:fitness_social_app/services/post_service.dart';
 import 'package:fitness_social_app/widgets/workout_widgets/workout_widget.dart';
@@ -13,9 +12,9 @@ class UserSavedWorkouts extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: NestedScrollView(
-          physics: BouncingScrollPhysics(),
+          physics: const BouncingScrollPhysics(),
           headerSliverBuilder: (context, innerBoxIsScrolled) =>
-              [SliverAppBar(title: const Text("Saved Workouts"))],
+              [const SliverAppBar(title: Text("Saved Workouts"))],
           body: StreamBuilder(
               stream: FirebaseFirestore.instance
                   .collection("saved")
@@ -62,7 +61,7 @@ class UserSavedWorkouts extends StatelessWidget {
                     },
                   );
                 } else {
-                  return Center(
+                  return const Center(
                     child: CircularProgressIndicator(),
                   );
                 }

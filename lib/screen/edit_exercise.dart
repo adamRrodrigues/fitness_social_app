@@ -123,7 +123,7 @@ class _EditExerciseState extends ConsumerState<EditExercise> {
                       return Stack(
                         alignment: Alignment.center,
                         children: [
-                          Center(
+                          const Center(
                             child: CircularProgressIndicator(),
                           ),
                           AspectRatio(
@@ -136,6 +136,7 @@ class _EditExerciseState extends ConsumerState<EditExercise> {
                 ),
               ),
               CustomTextField(
+                maxLength: 20,
                   textController: nameController, hintText: 'exercise name'),
               const SizedBox(
                 height: 10,

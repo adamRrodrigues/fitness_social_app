@@ -8,8 +8,6 @@ import 'package:fitness_social_app/models/generic_post_model.dart';
 import 'package:fitness_social_app/models/workout_post_model.dart';
 import 'package:fitness_social_app/services/drafts.dart';
 import 'package:fitness_social_app/services/storage_services.dart';
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class GenericPostServices {
   final thisUser = FirebaseAuth.instance.currentUser;
@@ -166,6 +164,7 @@ class WorkoutPostServices {
           await workoutTemplates.doc(value.id).update({
             'postId': value.id,
             'templateId': value.id,
+            'isTemplate': true,
             'exercises': FieldValue.arrayUnion([exercise])
           });
         }
@@ -179,6 +178,7 @@ class WorkoutPostServices {
     final thisPost = WorkoutModel(
         workoutName: data['workoutName'],
         categories: List.from(data['categories']),
+        isTemplate: data['isTemplate'],
         exercises: List.from(data['exercises']),
         uid: data['uid'],
         postId: data['postId'],
@@ -188,7 +188,6 @@ class WorkoutPostServices {
         likeCount: data['likeCount'],
         likes: List.from(data['likes']),
         createdAt: data['createdAt']);
-    print(thisPost);
     return thisPost;
   }
 
@@ -196,6 +195,7 @@ class WorkoutPostServices {
     final thisPost = WorkoutModel(
         workoutName: data['workoutName'],
         categories: List.from(data['categories']),
+        isTemplate: data['isTemplate'],
         exercises: List.from(data['exercises']),
         uid: data['uid'],
         postId: data['postId'],
@@ -205,7 +205,6 @@ class WorkoutPostServices {
         likeCount: data['likeCount'],
         likes: List.from(data['likes']),
         createdAt: data['createdAt']);
-    print(thisPost);
     return thisPost;
   }
 
@@ -222,6 +221,78 @@ class WorkoutPostServices {
         sets: exerciseModel['sets']);
 
     return exercise;
+  }
+
+  Future editWorkout(WorkoutModel workoutModel, List<dynamic> exercises,
+      String editId, bool isTemplate) async {
+    try {
+      if (isTemplate) {
+        await workoutTemplates
+            .doc(editId)
+            .set(workoutModel.toMap())
+            .then((value) async {
+          for (int i = 0; i < exercises.length; i++) {
+            if (exercises.runtimeType == ExerciseModel) {
+              Map<String, dynamic> exercise = exercises[i].toMap();
+              await workoutTemplates.doc(editId).update({
+                'postId': editId,
+                'exercises': FieldValue.arrayUnion([exercise]),
+              });
+            } else {
+              Map<String, dynamic> exercise = exercises[i].toMap();
+              try {
+                String exerciseVideo = await StorageServices().storeVideo(
+                    'workoutPostImages',
+                    exercises[i].video!,
+                    editId,
+                    "exercise${i.toString()}");
+                exercise['imageUrl'] = exerciseVideo;
+              } catch (e) {
+                // exercise['imageUrl'] = "";
+              }
+              await workoutTemplates.doc(editId).update({
+                'postId': workoutModel.templateId,
+                "isTemplate": true,
+                'exercises': FieldValue.arrayUnion([exercise])
+              });
+              print(exercise);
+            }
+          }
+        });
+      } else {
+        await workoutPosts
+            .doc(editId)
+            .set(workoutModel.toMap())
+            .then((value) async {
+          for (int i = 0; i < exercises.length; i++) {
+            if (exercises.runtimeType == ExerciseModel) {
+              Map<String, dynamic> exercise = exercises[i].toMap();
+              await workoutPosts.doc(editId).update({
+                'postId': editId,
+                'exercises': FieldValue.arrayUnion([exercise]),
+              });
+            } else {
+              Map<String, dynamic> exercise = exercises[i].toMap();
+              try {
+                String exerciseVideo = await StorageServices().storeVideo(
+                    'workoutPostImages',
+                    exercises[i].video!,
+                    editId,
+                    "exercise${i.toString()}");
+                exercise['imageUrl'] = exerciseVideo;
+              } catch (e) {
+                // exercise['imageUrl'] = "";
+              }
+              await workoutPosts.doc(editId).update({
+                'postId': editId,
+                'exercises': FieldValue.arrayUnion([exercise])
+              });
+              print(exercise);
+            }
+          }
+        });
+      }
+    } catch (e) {}
   }
 
   Future<String> templateToWorkout(
@@ -267,13 +338,17 @@ class WorkoutPostServices {
     await workoutPosts.doc(id).update({'imageUrl': thumbnail});
   }
 
-  Future deletePost(id) async {
+  Future deletePost(id, bool isTemplate) async {
     await StorageServices().deleteImages('workoutPostImages', id);
-    await FirebaseFirestore.instance
-        .collection('user_workouts_demo')
-        .doc(id)
-        .delete();
-    await workoutTemplates.doc(id).delete();
+    if (isTemplate) {
+      await workoutTemplates.doc(id).delete();
+    } else {
+      await FirebaseFirestore.instance
+          .collection('user_workouts_demo')
+          .doc(id)
+          .delete();
+    }
+
     await FirebaseFirestore.instance
         .collection('users')
         .doc(thisUser!.uid)
@@ -283,7 +358,7 @@ class WorkoutPostServices {
   }
 
   Future addToSavedWorkouts(String uid, String templateId, bool liked) async {
-    if (liked) {
+    if (!liked) {
       await workoutTemplates.doc(templateId).update({
         "likes": FieldValue.arrayUnion([uid]),
         "likeCount": FieldValue.increment(1)

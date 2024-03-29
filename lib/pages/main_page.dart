@@ -5,7 +5,6 @@ import 'package:fitness_social_app/pages/profile_page.dart';
 import 'package:fitness_social_app/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);

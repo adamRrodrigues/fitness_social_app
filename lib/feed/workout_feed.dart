@@ -47,8 +47,13 @@ class _WorkoutFeedState extends ConsumerState<WorkoutFeed>
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           physics: const BouncingScrollPhysics(),
           emptyBuilder: (context) {
-            return const Center(
-              child: Text('Nothing To See Here'),
+            return ListView(
+              physics: NeverScrollableScrollPhysics(),
+              children: [
+                const Center(
+                  child: Text('Nothing To See Here'),
+                ),
+              ],
             );
           },
           loadingBuilder: (context) {

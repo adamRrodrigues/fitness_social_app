@@ -143,6 +143,7 @@ class _CreateExerciseState extends ConsumerState<CreateExercise> {
                 ),
               ),
               CustomTextField(
+                maxLength: 20,
                   textController: nameController, hintText: 'exercise name'),
               const SizedBox(
                 height: 10,
@@ -202,7 +203,7 @@ class _CreateExerciseState extends ConsumerState<CreateExercise> {
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Builder(builder: (context) {
@@ -340,7 +341,7 @@ class _CreateExerciseState extends ConsumerState<CreateExercise> {
                             Text('Hrs: $hours'),
                           ],
                         ),
-                        Text(
+                        const Text(
                           ":",
                           style: TextStyle(fontSize: 32),
                         ),
@@ -366,7 +367,7 @@ class _CreateExerciseState extends ConsumerState<CreateExercise> {
                             Text('Min: $minutes'),
                           ],
                         ),
-                        Text(
+                        const Text(
                           ":",
                           style: TextStyle(fontSize: 32),
                         ),

@@ -10,12 +10,13 @@ import 'package:fitness_social_app/screen/create_meal_post.dart';
 import 'package:fitness_social_app/screen/create_post.dart';
 import 'package:fitness_social_app/screen/create_workout_post.dart';
 import 'package:fitness_social_app/screen/edit_exercise.dart';
+import 'package:fitness_social_app/screen/edit_profile_screen.dart';
 import 'package:fitness_social_app/screen/edit_workout.dart';
 import 'package:fitness_social_app/screen/fetching_workout_screen.dart';
 import 'package:fitness_social_app/screen/local_exercise_edit_screen.dart';
 import 'package:fitness_social_app/screen/run_routine.dart';
 import 'package:fitness_social_app/screen/run_workou.dart';
-import 'package:fitness_social_app/screen/search_meals.dart';
+import 'package:fitness_social_app/screen/search_screens/followage_screen.dart';
 import 'package:fitness_social_app/screen/search_screens/search_screen.dart';
 import 'package:fitness_social_app/screen/search_workouts.dart';
 import 'package:fitness_social_app/screen/user_page.dart';
@@ -26,7 +27,6 @@ import 'package:fitness_social_app/screen/view_meal_screen.dart';
 import 'package:fitness_social_app/screen/view_post.dart';
 import 'package:fitness_social_app/screen/view_routine.dart';
 import 'package:fitness_social_app/screen/view_workout.dart';
-import 'package:fitness_social_app/services/drafts.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
 
@@ -104,8 +104,7 @@ final GoRouter appRouter = GoRouter(
               path: 'createExercisePage',
               name: RouteConstants.createExercise,
               pageBuilder: (context, state) {
-                List<dynamic> exercises =
-                    state.extra as List<dynamic>;
+                List<dynamic> exercises = state.extra as List<dynamic>;
                 return CupertinoPage(
                     child: CreateExercise(
                   exercises: exercises,
@@ -155,13 +154,6 @@ final GoRouter appRouter = GoRouter(
               pageBuilder: (context, state) {
                 int number = state.extra as int;
                 return CupertinoPage(child: SearchWorkouts(number));
-              },
-            ),
-            GoRoute(
-              path: 'searchMealsScreen',
-              name: RouteConstants.searchMealsScreen,
-              pageBuilder: (context, state) {
-                return const CupertinoPage(child: SearchMeals());
               },
             ),
             GoRoute(
@@ -262,9 +254,35 @@ final GoRouter appRouter = GoRouter(
               name: RouteConstants.searchScreen,
               pageBuilder: (context, state) {
                 final searchType = state.pathParameters['searchType'];
+                int currentDay = state.extra as int;
                 return CupertinoPage(
                     child: SearchScreen(
+                  currentDay: currentDay,
                   searchType: searchType!,
+                ));
+              },
+            ),
+            GoRoute(
+              path: 'followageScreen/:uid/:type',
+              name: RouteConstants.followageScreen,
+              pageBuilder: (context, state) {
+                final searchType = state.pathParameters['type'];
+                final uid = state.pathParameters['uid'];
+                return CupertinoPage(
+                    child: FollowageScreen(
+                  type: searchType!,
+                  uid: uid!,
+                ));
+              },
+            ),
+            GoRoute(
+              path: 'editProfileScreen',
+              name: RouteConstants.editProfileScreen,
+              pageBuilder: (context, state) {
+                UserModel user = state.extra as UserModel;
+                return CupertinoPage(
+                    child: EditProfileScreen(
+                  user: user,
                 ));
               },
             ),

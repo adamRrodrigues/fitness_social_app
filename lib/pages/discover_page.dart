@@ -56,7 +56,7 @@ class _DiscoverPageState extends ConsumerState<DiscoverPage>
                 setState(() {});
               },
               child: SingleChildScrollView(
-                physics: BouncingScrollPhysics(),
+                physics: const BouncingScrollPhysics(),
                 child: Column(
                   children: [
                     Padding(
@@ -94,7 +94,7 @@ class _DiscoverPageState extends ConsumerState<DiscoverPage>
         GestureDetector(
           onTap: () {
             context.pushNamed(RouteConstants.searchScreen,
-                pathParameters: {'searchType': sectionName});
+                pathParameters: {'searchType': sectionName}, extra: 0);
           },
           child: Padding(
             padding: const EdgeInsets.all(8.0),

@@ -14,6 +14,7 @@ class WorkoutModel {
   final String privacy;
   final String imageUrl;
   final List<String> likes;
+  final bool isTemplate;
   final int likeCount;
   final Timestamp createdAt;
   WorkoutModel({
@@ -25,8 +26,9 @@ class WorkoutModel {
     required this.templateId,
     required this.privacy,
     required this.imageUrl,
-    required this.likeCount,
     required this.likes,
+    required this.isTemplate,
+    required this.likeCount,
     required this.createdAt,
   });
 
@@ -39,22 +41,25 @@ class WorkoutModel {
     String? templateId,
     String? privacy,
     String? imageUrl,
-    int? likeCount,
     List<String>? likes,
+    bool? isTemplate,
+    int? likeCount,
     Timestamp? createdAt,
   }) {
     return WorkoutModel(
-        workoutName: workoutName ?? this.workoutName,
-        categories: categories ?? this.categories,
-        exercises: exercises ?? this.exercises,
-        uid: uid ?? this.uid,
-        postId: postId ?? this.postId,
-        templateId: templateId ?? this.templateId,
-        privacy: privacy ?? this.privacy,
-        imageUrl: imageUrl ?? this.imageUrl,
-        createdAt: createdAt ?? this.createdAt,
-        likeCount: likeCount ?? this.likeCount,
-        likes: likes ?? this.likes);
+      workoutName: workoutName ?? this.workoutName,
+      categories: categories ?? this.categories,
+      exercises: exercises ?? this.exercises,
+      uid: uid ?? this.uid,
+      postId: postId ?? this.postId,
+      templateId: templateId ?? this.templateId,
+      privacy: privacy ?? this.privacy,
+      imageUrl: imageUrl ?? this.imageUrl,
+      likes: likes ?? this.likes,
+      isTemplate: isTemplate ?? this.isTemplate,
+      likeCount: likeCount ?? this.likeCount,
+      createdAt: createdAt ?? this.createdAt,
+    );
   }
 
   Map<String, dynamic> toMap() {
@@ -67,8 +72,9 @@ class WorkoutModel {
       'templateId': templateId,
       'privacy': privacy,
       'imageUrl': imageUrl,
-      'likeCount': likeCount,
       'likes': likes,
+      'isTemplate': isTemplate,
+      'likeCount': likeCount,
       'createdAt': createdAt,
     };
   }
@@ -83,8 +89,9 @@ class WorkoutModel {
       templateId: map['templateId'] as String,
       privacy: map['privacy'] as String,
       imageUrl: map['imageUrl'] as String,
+      likes: List<String>.from((map['likes'] as List<dynamic>)),
+      isTemplate: map['isTemplate'] as bool,
       likeCount: map['likeCount'] as int,
-      likes: List<String>.from((map['categories'] as List<dynamic>)),
       createdAt: map['createdAt'],
     );
   }
@@ -96,7 +103,7 @@ class WorkoutModel {
 
   @override
   String toString() {
-    return 'WorkoutModel(workoutName: $workoutName, categories: $categories, exercises: $exercises, uid: $uid , postId: $postId, postId: $postId, privacy: $privacy, imageUrl: $imageUrl, likeCount: $likeCount, likes: $likes , createdAt: $createdAt)';
+    return 'WorkoutModel(workoutName: $workoutName, categories: $categories, exercises: $exercises, uid: $uid, postId: $postId, templateId: $templateId, privacy: $privacy, imageUrl: $imageUrl, likes: $likes, isTemplate: $isTemplate, likeCount: $likeCount, createdAt: $createdAt)';
   }
 
   @override
@@ -107,8 +114,12 @@ class WorkoutModel {
         listEquals(other.categories, categories) &&
         listEquals(other.exercises, exercises) &&
         other.uid == uid &&
+        other.postId == postId &&
+        other.templateId == templateId &&
         other.privacy == privacy &&
         other.imageUrl == imageUrl &&
+        listEquals(other.likes, likes) &&
+        other.isTemplate == isTemplate &&
         other.likeCount == likeCount &&
         other.createdAt == createdAt;
   }
@@ -119,8 +130,12 @@ class WorkoutModel {
         categories.hashCode ^
         exercises.hashCode ^
         uid.hashCode ^
+        postId.hashCode ^
+        templateId.hashCode ^
         privacy.hashCode ^
         imageUrl.hashCode ^
+        likes.hashCode ^
+        isTemplate.hashCode ^
         likeCount.hashCode ^
         createdAt.hashCode;
   }

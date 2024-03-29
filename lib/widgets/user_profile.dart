@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fitness_social_app/feed/meal_feed.dart';
 import 'package:fitness_social_app/feed/workout_feed.dart';
 import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/models/user_model.dart';
@@ -40,25 +41,34 @@ class _UserProfileState extends ConsumerState<UserProfile> {
   GenericPostServices? genericPostServices;
   FeedServices? feedServices;
 
+  DateTime now = DateTime.now();
+  DateTime today = DateTime.now();
+  int currentDay = 0;
+  List<DateTime> dates = [];
+
+  ValueNotifier<bool> showTemplates = ValueNotifier(false);
+
   Future getFollowage() async {
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc(widget.thisUser.uid)
-        .collection('followers')
-        .count()
-        .get()
-        .then(
-          (value) => followers = value.count,
-        );
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc(widget.thisUser.uid)
-        .collection('following')
-        .count()
-        .get()
-        .then(
-          (value) => following = value.count,
-        );
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.thisUser.uid)
+          .collection('followers')
+          .count()
+          .get()
+          .then(
+            (value) => followers = value.count - 1,
+          );
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.thisUser.uid)
+          .collection('following')
+          .count()
+          .get()
+          .then(
+            (value) => following = value.count - 1,
+          );
+    } catch (e) {}
   }
 
   CollectionReference posts =
@@ -71,6 +81,18 @@ class _UserProfileState extends ConsumerState<UserProfile> {
     userServices = ref.read(userServicesProvider);
     genericPostServices = ref.read(genericPostServicesProvider);
     feedServices = ref.read(feedServicesProvider);
+    currentDay = now.weekday;
+    if (currentDay == 7) {
+      currentDay = 0;
+    }
+    print("day $currentDay");
+    DateTime firstDayOfWeek = now.subtract(Duration(days: currentDay));
+    today = now;
+
+    for (int i = 0; i < 7; i++) {
+      final day = firstDayOfWeek.add(Duration(days: i));
+      dates.add(day);
+    }
   }
 
   @override
@@ -99,7 +121,7 @@ class _UserProfileState extends ConsumerState<UserProfile> {
     }
 
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -122,8 +144,7 @@ class _UserProfileState extends ConsumerState<UserProfile> {
               ),
               const SizedBox(height: 10),
               Builder(builder: (context) {
-                if (widget.thisUser.firstName.isNotEmpty &&
-                    widget.thisUser.lastName.isNotEmpty) {
+                if (widget.thisUser.firstName != "") {
                   return Text(
                     "${widget.thisUser.firstName} ${widget.thisUser.lastName}",
                     style: Theme.of(context).textTheme.titleLarge,
@@ -146,9 +167,17 @@ class _UserProfileState extends ConsumerState<UserProfile> {
                     Expanded(
                       child: Builder(builder: (context) {
                         if (widget.thisUser.uid == currentUser!.uid) {
-                          return const SizedBox(
-                              width: 150,
-                              child: CustomButton(buttonText: "Edit Profile"));
+                          return GestureDetector(
+                            onTap: () {
+                              context.pushNamed(
+                                  RouteConstants.editProfileScreen,
+                                  extra: widget.thisUser);
+                            },
+                            child: const SizedBox(
+                                width: 150,
+                                child:
+                                    CustomButton(buttonText: "Edit Profile")),
+                          );
                         } else {
                           return StreamBuilder(
                               stream: FirebaseFirestore.instance
@@ -203,7 +232,7 @@ class _UserProfileState extends ConsumerState<UserProfile> {
                                   'id': widget.thisUser.uid
                                 },
                                 extra: {
-                                  'currentDay': 0,
+                                  'currentDay': currentDay,
                                   'startRoutine': false
                                 });
                           },
@@ -227,12 +256,32 @@ class _UserProfileState extends ConsumerState<UserProfile> {
                             CountWidget(
                                 amount: widget.thisUser.posts.length.toString(),
                                 type: 'posts'),
-                            CountWidget(
-                                amount: followers.toString(),
-                                type: 'followers'),
-                            CountWidget(
-                                amount: following.toString(),
-                                type: 'following'),
+                            GestureDetector(
+                              onTap: () {
+                                context.pushNamed(
+                                    RouteConstants.followageScreen,
+                                    pathParameters: {
+                                      "uid": widget.thisUser.uid,
+                                      "type": "followers"
+                                    });
+                              },
+                              child: CountWidget(
+                                  amount: (followers).toString(),
+                                  type: 'followers'),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                context.pushNamed(
+                                    RouteConstants.followageScreen,
+                                    pathParameters: {
+                                      "uid": widget.thisUser.uid,
+                                      "type": "following"
+                                    });
+                              },
+                              child: CountWidget(
+                                  amount: (following).toString(),
+                                  type: 'following'),
+                            ),
                           ],
                         );
                       } else {
@@ -243,10 +292,10 @@ class _UserProfileState extends ConsumerState<UserProfile> {
                                 amount: widget.thisUser.posts.length.toString(),
                                 type: 'posts'),
                             CountWidget(
-                                amount: followers.toString(),
+                                amount: (followers).toString(),
                                 type: 'followers'),
                             CountWidget(
-                                amount: following.toString(),
+                                amount: (following).toString(),
                                 type: 'following'),
                           ],
                         );
@@ -263,24 +312,83 @@ class _UserProfileState extends ConsumerState<UserProfile> {
                   )),
                   Tab(
                       icon: Icon(
-                    Icons.run_circle_outlined,
+                    Icons.fitness_center_rounded,
+                    color: Theme.of(context).colorScheme.secondary,
+                  )),
+                  Tab(
+                      icon: Icon(
+                    Icons.food_bank_rounded,
                     color: Theme.of(context).colorScheme.secondary,
                   )),
                 ],
               ),
               Expanded(
                 child: TabBarView(
+                  physics: const BouncingScrollPhysics(),
                   children: [
                     PostFeedWidget(
                         profileView: true,
                         postQuery:
                             feedServices!.fetchUserPosts(widget.thisUser.uid)),
-                    WorkoutFeed(
-                      profileView: true,
-                      uid: widget.thisUser.uid,
-                      postQuery:
-                          FeedServices().fetchUserWorkouts(widget.thisUser.uid),
-                    )
+                    Stack(
+                      // alignment: Alignment.bottomCenter,
+                      alignment: Alignment.center,
+                      children: [
+                        ValueListenableBuilder(
+                            valueListenable: showTemplates,
+                            builder: (context, showTemplate, child) {
+                              return WorkoutFeed(
+                                profileView: true,
+                                uid: widget.thisUser.uid,
+                                postQuery: !showTemplates.value
+                                    ? FeedServices()
+                                        .fetchUserWorkouts(widget.thisUser.uid)
+                                    : FeedServices().fetchTemplateWorkouts(
+                                        widget.thisUser.uid),
+                              );
+                            }),
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: SizedBox(
+                              // width: 200,
+                              height: 60,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  TextButton(
+                                      style: ButtonStyle(
+                                          foregroundColor:
+                                              MaterialStateProperty.resolveWith(
+                                                  (states) => Theme.of(context)
+                                                      .scaffoldBackgroundColor),
+                                          backgroundColor:
+                                              MaterialStateProperty.resolveWith(
+                                                  (states) => Theme.of(context)
+                                                      .colorScheme
+                                                      .secondary)),
+                                      onPressed: () {
+                                        showTemplates.value =
+                                            !showTemplates.value;
+                                      },
+                                      child: ValueListenableBuilder(
+                                          valueListenable: showTemplates,
+                                          builder:
+                                              (context, showTemplate, child) {
+                                            if (showTemplate) {
+                                              return Text("Show My Workouts");
+                                            } else {
+                                              return Text("Show My Templates");
+                                            }
+                                          })),
+                                ],
+                              )),
+                        )
+                      ],
+                    ),
+                    MealFeed(
+                        postQuery:
+                            FeedServices().fetchMeals(widget.thisUser.uid))
                   ],
                 ),
               )

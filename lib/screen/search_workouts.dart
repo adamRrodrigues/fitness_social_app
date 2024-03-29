@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_social_app/feed/workout_feed.dart';
 import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/models/routine_model.dart';
+import 'package:fitness_social_app/screen/search_screens/workout_search.dart';
 import 'package:fitness_social_app/services/feed_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -29,24 +30,51 @@ class _SearchWorkoutsState extends ConsumerState<SearchWorkouts> {
   Widget build(BuildContext context) {
     User? user = FirebaseAuth.instance.currentUser;
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
           elevation: 0,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           title: Text(
             'Search Workout',
             style: Theme.of(context).textTheme.titleLarge,
           )),
-      body: Column(
-        children: [
-          Expanded(
-              child: WorkoutFeed(
-            selection: true,
-            day: widget.index,
-            uid: user!.uid,
-            postQuery: FeedServices().fetchWorkouts(user.uid),
-            profileView: false,
-          ))
-        ],
+      body: DefaultTabController(
+        length: 2,
+        child: Column(
+          children: [
+            TabBar(
+              indicatorColor: Theme.of(context).colorScheme.primary,
+              tabs: [
+                Tab(
+                    icon: Icon(
+                  Icons.fitness_center_rounded,
+                  color: Theme.of(context).colorScheme.secondary,
+                )),
+                Tab(
+                    icon: Icon(
+                  Icons.bookmark_rounded,
+                  color: Theme.of(context).colorScheme.secondary,
+                )),
+              ],
+            ),
+            Expanded(
+              child: TabBarView(
+                children: [
+                  WorkoutSearch(
+                    selection: true,
+                    day: widget.index,
+                  ),
+                  WorkoutFeed(
+                    profileView: true,
+                    selection: true,
+                    day: widget.index,
+                    uid: user!.uid,
+                    postQuery: FeedServices().fetchUserWorkouts(user.uid),
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

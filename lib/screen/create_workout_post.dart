@@ -15,6 +15,7 @@ import 'package:fitness_social_app/widgets/text_widget.dart';
 import 'package:fitness_social_app/widgets/workout_widgets/local_exercise_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -105,6 +106,7 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                         categories: workoutDraft!.categories,
                         exercises: List.empty(),
                         uid: user!.uid,
+                        isTemplate: false,
                         imageUrl: '',
                         postId: '',
                         createdAt: Timestamp.now(),
@@ -318,6 +320,7 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                 Padding(
                   padding: const EdgeInsets.all(4.0),
                   child: CustomTextField(
+                    maxLength: 20,
                       textController: titleController,
                       hintText: 'Give Your Workout a Name'),
                 ),
@@ -325,22 +328,21 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                   height: 10,
                 ),
                 workoutDraft!.exercises.isNotEmpty
-                    ? ListView.builder(
+                    ? ReorderableListView.builder(
+                        onReorder: (oldIndex, newIndex) {
+                          LocalExerciseModel exercise =
+                              workoutDraft!.exercises.removeAt(oldIndex);
+                          workoutDraft!.exercises.insert(
+                              newIndex > oldIndex ? newIndex -= 1 : newIndex,
+                              exercise);
+                        },
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
                         itemCount: workoutDraft!.exercises.length,
                         itemBuilder: (context, index) {
                           return InkWell(
+                            key: ValueKey(index),
                             onTap: () {
-                              // context.pushNamed(
-                              //   RouteConstants.editExercise,
-                              //   extra: {
-                              //     "editingExercise":
-                              //         workoutDraft!.exercises[index],
-                              //     "exercises": workoutDraft!.exercises,
-                              //     "index": index
-                              //   },
-                              // );
                               context.pushNamed(RouteConstants.localEditWorkout,
                                   extra: {
                                     "editingExercise":
@@ -348,11 +350,55 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                                     "index": index
                                   });
                             },
-                            child: Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: LocalExerciseWidget(
-                                  exerciseModel:
-                                      workoutDraft!.exercises[index]),
+                            child: Slidable(
+                              
+                              startActionPane: ActionPane(
+                                  motion: const ScrollMotion(),
+                                  children: [
+                                    SlidableAction(
+                                      autoClose: true,
+                                      borderRadius: BorderRadius.circular(10),
+                                      flex: 1,
+                                      onPressed: (context) {
+                                        setState(() {
+                                          workoutDraft!.exercises.add(
+                                              workoutDraft!.exercises[index]);
+                                        });
+                                      },
+                                      backgroundColor: Colors.greenAccent,
+                                      foregroundColor: Theme.of(context)
+                                          .scaffoldBackgroundColor,
+                                      icon: Icons.replay_rounded,
+                                      label: 'Duplicate',
+                                    )
+                                  ]),
+                              endActionPane: ActionPane(
+                                  motion: const ScrollMotion(),
+                                  children: [
+                                    SlidableAction(
+                                      padding: const EdgeInsets.all(8),
+                                      autoClose: true,
+                                      borderRadius: BorderRadius.circular(10),
+                                      flex: 1,
+                                      onPressed: (context) {
+                                        setState(() {
+                                          workoutDraft!.exercises
+                                              .removeAt(index);
+                                        });
+                                      },
+                                      backgroundColor: Colors.redAccent,
+                                      foregroundColor: Theme.of(context)
+                                          .scaffoldBackgroundColor,
+                                      icon: Icons.delete,
+                                      label: 'Remove',
+                                    )
+                                  ]),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: LocalExerciseWidget(
+                                    exerciseModel:
+                                        workoutDraft!.exercises[index]),
+                              ),
                             ),
                           );
                         },

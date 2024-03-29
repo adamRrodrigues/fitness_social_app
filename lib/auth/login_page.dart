@@ -66,8 +66,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                         //   },
                         // ));
                         auth.isRegistering = false;
-                        auth.signIn(context, emailController.text,
-                            passwordContoller.text);
+                        auth.signIn(context, emailController.text.trim(),
+                            passwordContoller.text.trim());
                       },
                       child: const CustomButton(buttonText: 'Sign In')),
                 ),

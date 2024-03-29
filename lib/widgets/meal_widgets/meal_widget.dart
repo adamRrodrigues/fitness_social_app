@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/models/meal_model.dart';
@@ -12,14 +13,30 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 class MealWidget extends ConsumerWidget {
-  const MealWidget({Key? key, required this.meal}) : super(key: key);
+  const MealWidget(
+      {Key? key, required this.meal, this.selection = false, this.day = 0})
+      : super(key: key);
   final MealModel meal;
+  final bool selection;
+  final int day;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     User? user = ref.read(userProvider);
     return GestureDetector(
-      onTap: () {
-        context.pushNamed(RouteConstants.viewMealScreen, extra: meal);
+      onTap: () async {
+        if (selection == true) {
+          await FirebaseFirestore.instance
+              .collection("routines")
+              .doc(user!.uid)
+              .collection("day $day")
+              .doc("meals")
+              .update({
+            "meals": FieldValue.arrayUnion([meal.postId])
+          });
+          context.pop();
+        } else {
+          context.pushNamed(RouteConstants.viewMealScreen, extra: meal);
+        }
       },
       onLongPress: () {
         showModalBottomSheet(
@@ -67,7 +84,7 @@ class MealWidget extends ConsumerWidget {
       child: Padding(
         padding: const EdgeInsets.all(8),
         child: Material(
-          elevation: 4,
+          elevation: 2,
           borderRadius: BorderRadius.circular(10),
           child: Container(
             decoration: BoxDecoration(

@@ -1,14 +1,30 @@
 Doing: 
-fix disconver page
+onboarding pages 
+
 
 Next: 
-landing pages 
-edit profile page
-add slideables too workout and meal creations
+view for templates and user workouts only for current user
+add isTemplate field to workouts
+seperate template editable from user workout
+update create meal page
+add saving for meals
+eating a meal adds calories to userstats
 
 
 Done:
+remove from routine
+fix up view meal screen
+edit profile page
+fix meal creation page
+create workout from template in view workout page(if user id is same as workout id edit the same workout(create new function))
+edit template
+save routine button should do something
+add slideables too workout and meal creations
+show followers and following page
+add meals to meal plan
+fix disconver page
 run workout time based view
+show user workouts while adding to routine
 workout streaks
 fix view exercise screen
 search stuff

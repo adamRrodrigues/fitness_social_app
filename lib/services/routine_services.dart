@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fitness_social_app/models/meal_model.dart';
 import 'package:fitness_social_app/models/routine_model.dart';
 import 'package:fitness_social_app/models/workout_post_model.dart';
 
@@ -39,12 +40,51 @@ class RoutineServices {
     return thisUser;
   }
 
+  MealModel mapSingleRoutineMeal(Map<String, dynamic> data) {
+    final thisMeal = MealModel.fromMap(data);
+
+    return thisMeal;
+  }
+
   Future removeFromWorkoutRoutine(
       String templateId, String userWorkoutId, int day) async {
     routines.doc(user!.uid).collection('day $day').doc('workouts').update({
       'workouts': FieldValue.arrayRemove([
         {'userWorkoutId': userWorkoutId, 'templateId': templateId}
       ])
+    });
+  }
+
+  Future saveRoutine(String uid, String routineId, int day) async {
+    //get routine workouts
+    List<dynamic> workouts = [];
+    await routines
+        .doc(routineId)
+        .collection('day $day')
+        .doc('workouts')
+        .get()
+        .then((value) {
+      Map<String, dynamic> data = value.data() as Map<String, dynamic>;
+
+      if (data['workouts'].isNotEmpty) {
+        for (int i = 0; i < data['workouts'].length; i++) {
+          workouts.add(data['workouts'][i]);
+        }
+      }
+      print(workouts);
+    });
+
+    await routines
+        .doc(uid)
+        .collection('day $day')
+        .doc('workouts')
+        .update({"workouts": FieldValue.arrayUnion(workouts)});
+    
+  }
+
+  Future removeFromMealPlan(String mealId, int day) async {
+    routines.doc(user!.uid).collection('day $day').doc('meals').update({
+      'meals': FieldValue.arrayRemove([mealId])
     });
   }
 }

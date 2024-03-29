@@ -27,12 +27,13 @@ class _DiscoverPageWorkoutsState extends ConsumerState<DiscoverPageWorkouts> {
       height: 420,
       child: FirestoreListView(
         scrollDirection: Axis.horizontal,
+        addAutomaticKeepAlives: true,
         shrinkWrap: true,
         pageSize: 5,
         physics: const BouncingScrollPhysics(),
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         emptyBuilder: (context) {
-          return Center(
+          return const Center(
             child: Text("No Users"),
           );
         },
@@ -40,16 +41,17 @@ class _DiscoverPageWorkoutsState extends ConsumerState<DiscoverPageWorkouts> {
           return const Center(child: CircularProgressIndicator());
         },
         errorBuilder: (context, error, stackTrace) {
-          return Text("Error");
+          return const Text("Error");
         },
         query: feedServices.fetchWorkouts(widget.user!.uid),
         itemBuilder: (context, doc) {
           final post = doc.data();
-          return Container(
+          return SizedBox(
               width: 400,
               // padding: const EdgeInsets.all(8.0),
               child: WorkoutWidget(
                 workoutModel: post,
+                template: true,
                 mini: false,
               ));
         },

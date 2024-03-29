@@ -37,7 +37,7 @@ class _UserSearchState extends ConsumerState<UserSearch> {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
+          physics: const BouncingScrollPhysics(),
           child: StreamBuilder(
               stream: users.doc(user!.uid).collection('following').snapshots(),
               builder: (context, snapshot) {
@@ -64,6 +64,7 @@ class _UserSearchState extends ConsumerState<UserSearch> {
                                 stream: searchController.text == ""
                                     ? users
                                         .where("uid", whereNotIn: ids)
+                                        .limit(5)
                                         .snapshots()
                                     : users
                                         .where("username",
@@ -72,6 +73,7 @@ class _UserSearchState extends ConsumerState<UserSearch> {
                                         .where("username",
                                             isLessThanOrEqualTo:
                                                 "${searchTerm.trim()}\uf7ff")
+                                        .limit(5)
                                         .snapshots(),
                                 builder: (context, snapshot) {
                                   if (snapshot.hasData &&
@@ -79,9 +81,9 @@ class _UserSearchState extends ConsumerState<UserSearch> {
                                           ConnectionState.active) {
                                     final data = snapshot.data!.docs.toList();
                                     return ListView.builder(
-                                      padding: EdgeInsets.all(8),
+                                      padding: const EdgeInsets.all(8),
                                       shrinkWrap: true,
-                                      physics: BouncingScrollPhysics(),
+                                      physics: const BouncingScrollPhysics(),
                                       itemCount: data.length,
                                       itemBuilder: (context, index) {
                                         return Expanded(
@@ -93,7 +95,7 @@ class _UserSearchState extends ConsumerState<UserSearch> {
                                       },
                                     );
                                   } else {
-                                    return Center(
+                                    return const Center(
                                       child: CircularProgressIndicator(),
                                     );
                                   }
@@ -102,7 +104,7 @@ class _UserSearchState extends ConsumerState<UserSearch> {
                     ],
                   );
                 } else {
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 }
               }),
         ),

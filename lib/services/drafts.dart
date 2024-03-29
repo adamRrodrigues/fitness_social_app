@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:fitness_social_app/models/exercise_model.dart';
 
 class WorkoutDraft {
   Uint8List? image;
@@ -16,6 +15,7 @@ class MealDraft {
   String mealName = "";
   List<String> categories = [];
   List<String> ingredients = [];
+  List<String> steps = [];
   String description = "";
 }
 

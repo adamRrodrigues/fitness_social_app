@@ -34,12 +34,13 @@ class _DiscoverPageUsersState extends ConsumerState<DiscoverPageUsers> {
               return FirestoreListView(
                 scrollDirection: Axis.horizontal,
                 shrinkWrap: true,
+                addAutomaticKeepAlives: true,
                 pageSize: 5,
                 physics: const BouncingScrollPhysics(),
                 keyboardDismissBehavior:
                     ScrollViewKeyboardDismissBehavior.onDrag,
                 emptyBuilder: (context) {
-                  return Center(
+                  return const Center(
                     child: Text("No Users"),
                   );
                 },
@@ -47,7 +48,7 @@ class _DiscoverPageUsersState extends ConsumerState<DiscoverPageUsers> {
                   return const Center(child: CircularProgressIndicator());
                 },
                 errorBuilder: (context, error, stackTrace) {
-                  return Text("Error");
+                  return const Text("Error");
                 },
                 query: feedServices.fetchNonFollowedUsers(widget.user!.uid),
                 itemBuilder: (context, doc) {
@@ -59,10 +60,10 @@ class _DiscoverPageUsersState extends ConsumerState<DiscoverPageUsers> {
                 },
               );
             } else {
-              return Text("data");
+              return const Text("data");
             }
           } else {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           }

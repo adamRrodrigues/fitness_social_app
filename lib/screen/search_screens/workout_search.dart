@@ -1,7 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:extended_image/extended_image.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/services/post_service.dart';
 import 'package:fitness_social_app/widgets/text_widget.dart';
 import 'package:fitness_social_app/widgets/workout_widgets/workout_widget.dart';
@@ -9,7 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class WorkoutSearch extends ConsumerWidget {
-  const WorkoutSearch({Key? key}) : super(key: key);
+  const WorkoutSearch({Key? key, this.selection = false, this.day = 0})
+      : super(key: key);
+  final bool selection;
+  final int day;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -17,18 +17,16 @@ class WorkoutSearch extends ConsumerWidget {
         FirebaseFirestore.instance.collection("workout_templates_demo");
     TextEditingController searchController = TextEditingController();
     ValueNotifier<String> searchTerm = ValueNotifier("");
-    User? user = ref.read(userProvider);
     changeTerm(String hello) {
       searchTerm.value = searchController.text;
     }
 
     return Scaffold(
       body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
         child: Column(
           children: [
             Padding(
-              padding: EdgeInsets.all(8),
+              padding: const EdgeInsets.all(8),
               child: CustomTextField(
                   onChange: changeTerm,
                   textController: searchController,
@@ -38,10 +36,10 @@ class WorkoutSearch extends ConsumerWidget {
                 valueListenable: searchTerm,
                 builder: (context, st, child) {
                   return StreamBuilder(
-                    stream:workouts
-                        .where("workoutName", isGreaterThanOrEqualTo: st.trim())
+                    stream: workouts
+                        .where("workoutName", isGreaterThan: st.trim())
                         .where("workoutName",
-                            isLessThanOrEqualTo: "${st.trim()}\uf7ff")
+                            isLessThanOrEqualTo: "${st.trim()}\uf7ff").limit(5)
                         .snapshots(),
                     builder: (context, snapshot) {
                       if (snapshot.hasData &&
@@ -49,16 +47,22 @@ class WorkoutSearch extends ConsumerWidget {
                         final data = snapshot.data!.docs.toList();
                         return ListView.builder(
                           shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
+                          physics: const NeverScrollableScrollPhysics(),
                           itemCount: data.length,
                           itemBuilder: (context, index) {
                             final workout =
                                 WorkoutPostServices().mapDocPost(data[index]);
-                            return WorkoutWidget(workoutModel: workout, mini: false,);
+                            return WorkoutWidget(
+                              workoutModel: workout,
+                              mini: false,
+                              day: day,
+                              selection: selection,
+                              template: true,
+                            );
                           },
                         );
                       } else {
-                        return Center(
+                        return const Center(
                           child: CircularProgressIndicator(),
                         );
                       }

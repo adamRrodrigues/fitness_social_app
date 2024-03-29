@@ -1,6 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/services/meal_service.dart';
 import 'package:fitness_social_app/widgets/meal_widgets/meal_widget.dart';
 import 'package:fitness_social_app/widgets/text_widget.dart';
@@ -8,7 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class SearchMeals extends ConsumerWidget {
-  const SearchMeals({Key? key}) : super(key: key);
+  const SearchMeals({Key? key, this.selection = false, this.day = 0})
+      : super(key: key);
+  final bool selection;
+  final int day;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -16,7 +17,6 @@ class SearchMeals extends ConsumerWidget {
         FirebaseFirestore.instance.collection("meals_demo");
     TextEditingController searchController = TextEditingController();
     ValueNotifier<String> searchTerm = ValueNotifier("");
-    User? user = ref.read(userProvider);
     changeTerm(String hello) {
       searchTerm.value = searchController.text;
     }
@@ -25,7 +25,7 @@ class SearchMeals extends ConsumerWidget {
       child: Column(
         children: [
           Padding(
-            padding: EdgeInsets.all(8),
+            padding: const EdgeInsets.all(8),
             child: CustomTextField(
                 onChange: changeTerm,
                 textController: searchController,
@@ -47,22 +47,26 @@ class SearchMeals extends ConsumerWidget {
                       if (data.isNotEmpty) {
                         return ListView.builder(
                           shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
+                          physics: const NeverScrollableScrollPhysics(),
                           itemCount: data.length,
                           itemBuilder: (context, index) {
                             final meal =
                                 MealServices().getMealFromDoc(data[index]);
-                            return MealWidget(meal: meal);
+                            return MealWidget(
+                              meal: meal,
+                              selection: selection,
+                              day: day,
+                            );
                           },
                         );
                       } else {
-                        return Center(
+                        return const Center(
                           child: Text(
                               "Sorry Couldn't Find What You Were Looking For"),
                         );
                       }
                     } else {
-                      return Center(
+                      return const Center(
                         child: CircularProgressIndicator(),
                       );
                     }
