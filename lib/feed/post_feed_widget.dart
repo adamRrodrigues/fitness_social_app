@@ -28,8 +28,13 @@ class _PostFeedWidgetState extends State<PostFeedWidget> {
       physics: const BouncingScrollPhysics(),
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       emptyBuilder: (context) {
-        return Center(
-          child: Text(widget.noPostsMessage),
+        return ListView(
+          physics: NeverScrollableScrollPhysics(),
+          children: [
+            Center(
+              child: Text(widget.noPostsMessage),
+            ),
+          ],
         );
       },
       loadingBuilder: (context) {

@@ -145,14 +145,17 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost>
                         }
                         ref.invalidate(mealDraftProvider);
                         if (context.mounted) {
-                          Navigator.pop(context);
-                          Navigator.pop(context);
+                          context.pop();
+                          // Navigator.pop(context);
                         }
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(Commons()
                             .snackBarMessage(
                                 "Meal Name, image, calories and servings should all be filled",
                                 Colors.red));
+                      }
+                      if (context.mounted) {
+                        context.pop();
                       }
                     },
                     child: const Padding(
@@ -298,7 +301,8 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost>
                                         child: ListView.builder(
                                           shrinkWrap: true,
                                           itemCount: popularTags.length,
-                                          physics: const BouncingScrollPhysics(),
+                                          physics:
+                                              const BouncingScrollPhysics(),
                                           itemBuilder: (context, index) {
                                             return GestureDetector(
                                               onTap: () {

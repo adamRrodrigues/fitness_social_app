@@ -33,9 +33,15 @@ class _MealFeedState extends State<MealFeed> {
           pageSize: 5,
           shrinkWrap: true,
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          physics: BouncingScrollPhysics(),
           emptyBuilder: (context) {
-            return Center(
-              child: Text(widget.noPostsMessage),
+            return ListView(
+              physics: NeverScrollableScrollPhysics(),
+              children: [
+                Center(
+                  child: Text(widget.noPostsMessage),
+                ),
+              ],
             );
           },
           loadingBuilder: (context) {
@@ -57,11 +63,8 @@ class _MealFeedState extends State<MealFeed> {
           query: widget.postQuery,
           itemBuilder: (context, doc) {
             final post = doc.data();
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: MealWidget(
-                meal: post,
-              ),
+            return MealWidget(
+              meal: post,
             );
           },
         );

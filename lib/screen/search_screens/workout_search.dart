@@ -57,6 +57,7 @@ class WorkoutSearch extends ConsumerWidget {
                               mini: false,
                               day: day,
                               selection: selection,
+                              template: true,
                             );
                           },
                         );

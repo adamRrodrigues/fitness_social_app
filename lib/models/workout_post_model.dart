@@ -84,7 +84,7 @@ class WorkoutModel {
       privacy: map['privacy'] as String,
       imageUrl: map['imageUrl'] as String,
       likeCount: map['likeCount'] as int,
-      likes: List<String>.from((map['categories'] as List<dynamic>)),
+      likes: List<String>.from((map['likes'] as List<dynamic>)),
       createdAt: map['createdAt'],
     );
   }

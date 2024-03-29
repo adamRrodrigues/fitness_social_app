@@ -3,7 +3,6 @@ import 'package:fitness_social_app/models/meal_model.dart';
 import 'package:fitness_social_app/widgets/image_widget.dart';
 import 'package:fitness_social_app/widgets/pill_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 
 class ViewMealScreen extends StatefulWidget {
   const ViewMealScreen({Key? key, required this.mealModel}) : super(key: key);
@@ -25,98 +24,95 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           elevation: 0,
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: GestureDetector(
-                  onTap: () => showImageViewer(context, image),
-                  child: SizedBox(
-                    height: 300,
-                    width: double.infinity,
-                    child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: ImageWidget(url: widget.mealModel.image)),
-                  ),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: GestureDetector(
+                onTap: () => showImageViewer(context, image),
+                child: SizedBox(
+                  height: 300,
+                  width: double.infinity,
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: ImageWidget(url: widget.mealModel.image)),
                 ),
               ),
-              SizedBox(
-                height: 40,
-                child: ListView.builder(
+            ),
+            SizedBox(
+              height: 40,
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: widget.mealModel.tags.length,
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: PillWidget(
+                      name: widget.mealModel.tags[index],
+                      active: false,
+                      editable: false,
+                      delete: () {},
+                    ),
+                  );
+                },
+              ),
+            ),
+            TabBar(
+              indicatorColor: Theme.of(context).colorScheme.primary,
+              tabs: [
+                Tab(
+                    icon: Icon(
+                  Icons.food_bank_outlined,
+                  color: Theme.of(context).colorScheme.secondary,
+                )),
+                Tab(
+                    icon: Icon(
+                  Icons.list_rounded,
+                  color: Theme.of(context).colorScheme.secondary,
+                )),
+              ],
+            ),
+            Expanded(
+              child:
+                  TabBarView(physics: const BouncingScrollPhysics(), children: [
+                ListView.builder(
+                  itemCount: widget.mealModel.ingredients.length,
                   shrinkWrap: true,
-                  itemCount: widget.mealModel.tags.length,
-                  scrollDirection: Axis.horizontal,
+                  physics: const BouncingScrollPhysics(),
                   itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: PillWidget(
-                        name: widget.mealModel.tags[index],
-                        active: false,
-                        editable: false,
-                        delete: () {},
+                    return ListTile(
+                      leading: Text("${index + 1})"),
+                      leadingAndTrailingTextStyle:
+                          Theme.of(context).textTheme.titleSmall,
+                      horizontalTitleGap: 2,
+                      titleTextStyle: Theme.of(context).textTheme.titleSmall,
+                      title: Text(
+                        widget.mealModel.ingredients[index],
                       ),
                     );
                   },
                 ),
-              ),
-              TabBar(
-                indicatorColor: Theme.of(context).colorScheme.primary,
-                tabs: [
-                  Tab(
-                      icon: Icon(
-                    Icons.food_bank_outlined,
-                    color: Theme.of(context).colorScheme.secondary,
-                  )),
-                  Tab(
-                      icon: Icon(
-                    Icons.list_rounded,
-                    color: Theme.of(context).colorScheme.secondary,
-                  )),
-                ],
-              ),
-              SizedBox(
-                height: 300,
-                child: TabBarView(children: [
-                  ListView.builder(
-                    itemCount: widget.mealModel.ingredients.length,
-                    shrinkWrap: true,
-                    // physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      return Animate(
-                        effects: const [SlideEffect()],
-                        child: ListTile(
-                          dense: true,
-                          title: Text(
-                            widget.mealModel.ingredients[index],
-                            style: Theme.of(context).textTheme.titleSmall,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                  ListView.builder(
-                    itemCount: widget.mealModel.steps.length,
-                    shrinkWrap: true,
-                    // physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      return Animate(
-                        effects: const [SlideEffect()],
-                        child: ListTile(
-                          dense: true,
-                          title: Text(
-                            widget.mealModel.steps[index],
-                            style: Theme.of(context).textTheme.titleSmall,
-                          ),
-                        ),
-                      );
-                    },
-                  )
-                ]),
-              ),
-            ],
-          ),
+                ListView.builder(
+                  itemCount: widget.mealModel.steps.length,
+                  shrinkWrap: true,
+                  // physics: const NeverScrollableScrollPhysics(),
+                  physics: const BouncingScrollPhysics(),
+
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      dense: true,
+                      title: Text(
+                        widget.mealModel.steps[index],
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
+                    );
+                  },
+                )
+              ]),
+            ),
+          ],
         ),
       ),
     );

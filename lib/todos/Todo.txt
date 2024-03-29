@@ -9,6 +9,7 @@ eating a meal adds calories to userstats
 
 
 Done:
+remove from routine
 fix up view meal screen
 edit profile page
 fix meal creation page

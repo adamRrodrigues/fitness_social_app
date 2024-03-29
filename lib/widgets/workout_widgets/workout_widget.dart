@@ -9,7 +9,6 @@ import 'package:fitness_social_app/widgets/image_widget.dart';
 import 'package:fitness_social_app/widgets/mini_profie.dart';
 import 'package:fitness_social_app/widgets/pill_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -19,12 +18,14 @@ class WorkoutWidget extends ConsumerStatefulWidget {
       required this.workoutModel,
       this.mini,
       this.day = 0,
+      this.template = false,
       this.selection = false})
       : super(key: key);
   final WorkoutModel workoutModel;
   final bool? mini;
   final int day;
   final bool selection;
+  final bool template;
 
   @override
   _WorkoutWidgetState createState() => _WorkoutWidgetState();
@@ -141,30 +142,46 @@ class _WorkoutWidgetState extends ConsumerState<WorkoutWidget> {
                         child: ImageWidget(url: widget.workoutModel.imageUrl),
                       ),
                     ),
-                    widget.workoutModel.uid != user!.uid
+                    widget.workoutModel.uid != user!.uid &&
+                            widget.template == true
                         ? Positioned(
                             right: 0,
                             child: GestureDetector(
                               onTap: () {
                                 setState(() {
-                                  liked = !liked;
-
                                   WorkoutPostServices().addToSavedWorkouts(
                                       user!.uid,
                                       widget.workoutModel.templateId,
                                       liked);
                                 });
+                                liked = !liked;
                               },
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Row(
                                   children: [
                                     liked
-                                        ? const Icon(Icons.bookmark_rounded)
-                                        : const Icon(
-                                            Icons.bookmark_outline_rounded),
-                                    Text(widget.workoutModel.likeCount
-                                        .toString())
+                                        ? Icon(
+                                            Icons.bookmark_rounded,
+                                            size: 32,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary,
+                                          )
+                                        : Icon(
+                                            Icons.bookmark_outline_rounded,
+                                            size: 32,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary,
+                                          ),
+                                    Text(
+                                      widget.workoutModel.likeCount.toString(),
+                                      style: TextStyle(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary),
+                                    )
                                   ],
                                 ),
                               ),

@@ -8,8 +8,9 @@ import 'package:fitness_social_app/services/routine_services.dart';
 import 'package:fitness_social_app/widgets/workout_widgets/workout_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
-class OnlineRoutineWidget extends ConsumerWidget {
+class OnlineRoutineWidget extends ConsumerStatefulWidget {
   const OnlineRoutineWidget({
     super.key,
     required this.uid,
@@ -20,14 +21,19 @@ class OnlineRoutineWidget extends ConsumerWidget {
   final int currentDay;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  _OnlineRoutineWidgetState createState() => _OnlineRoutineWidgetState();
+}
+
+class _OnlineRoutineWidgetState extends ConsumerState<OnlineRoutineWidget> {
+  @override
+  Widget build(BuildContext context) {
     final Routine routinesStored = ref.read(routineProvider);
     User? user = ref.read(userProvider);
     return StreamBuilder(
       stream: FirebaseFirestore.instance
           .collection('routines')
-          .doc(uid)
-          .collection('day $currentDay')
+          .doc(widget.uid)
+          .collection('day ${widget.currentDay}')
           .doc('workouts')
           .snapshots(),
       builder: (context, snapshot) {
@@ -49,42 +55,73 @@ class OnlineRoutineWidget extends ConsumerWidget {
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: data['workouts'].length,
                   itemBuilder: (context, index) {
-                    return FutureBuilder(
-                        future: FirebaseFirestore.instance
-                            .collection('user_workouts_demo')
-                            .doc(workouts[index]['userWorkoutId'])
-                            .get(),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData &&
-                              snapshot.connectionState ==
-                                  ConnectionState.done) {
-                            try {
-                              Map<String, dynamic> thisWorkout =
-                                  snapshot.data!.data() as Map<String, dynamic>;
+                    return Slidable(
+                      endActionPane: ActionPane(
+                          extentRatio: 0.3,
+                          motion: const ScrollMotion(),
+                          children: [
+                            SlidableAction(
+                              // An action can be bigger than the others.
+                              borderRadius: BorderRadius.circular(10),
+                              autoClose: true,
+                              flex: 1,
+                              onPressed: (context) {
+                                // setState(() {
 
-                              final WorkoutModel mappedWorkout =
-                                  WorkoutPostServices()
-                                      .mapDocPostFuture(thisWorkout);
+                                // });
+                                RoutineServices().removeFromWorkoutRoutine(
+                                    data['workouts'][index]['templateId'],
+                                    data['workouts'][index]['userWorkoutId'],
+                                    widget.currentDay);
+                              },
+                              backgroundColor: Colors.redAccent,
+                              foregroundColor:
+                                  Theme.of(context).scaffoldBackgroundColor,
+                              icon: Icons.delete,
+                              label: 'Remove',
+                            ),
+                          ]),
+                      child: FutureBuilder(
+                          future: FirebaseFirestore.instance
+                              .collection('user_workouts_demo')
+                              .doc(workouts[index]['userWorkoutId'])
+                              .get(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData &&
+                                snapshot.connectionState ==
+                                    ConnectionState.done) {
+                              try {
+                                Map<String, dynamic> thisWorkout =
+                                    snapshot.data!.data()
+                                        as Map<String, dynamic>;
 
-                              if (routinesStored
-                                      .routines[currentDay].workouts.length !=
-                                  data['workouts'].length) {
-                                routinesStored.addToRoutine(
-                                    currentDay, mappedWorkout);
+                                final WorkoutModel mappedWorkout =
+                                    WorkoutPostServices()
+                                        .mapDocPostFuture(thisWorkout);
+
+                                if (routinesStored.routines[widget.currentDay]
+                                        .workouts.length !=
+                                    data['workouts'].length) {
+                                  routinesStored.addToRoutine(
+                                      widget.currentDay, mappedWorkout);
+                                }
+                                return WorkoutWidget(
+                                  workoutModel: mappedWorkout,
+                                  template: false,
+                                );
+                              } catch (e) {
+                                RoutineServices().removeFromWorkoutRoutine(
+                                    data['workouts'][index]['templateId'],
+                                    data['workouts'][index]['userWorkoutId'],
+                                    widget.currentDay);
+                                return Container();
                               }
-                              return WorkoutWidget(workoutModel: mappedWorkout);
-                            } catch (e) {
-                              RoutineServices().removeFromWorkoutRoutine(
-                                  data['workouts'][index]['templateId'],
-                                  data['workouts'][index]['userWorkoutId'],
-                                  currentDay);
-                              return Container();
+                            } else {
+                              return const Center(
+                                  child: CircularProgressIndicator());
                             }
-                          } else {
-                            return const Center(
-                                child: CircularProgressIndicator());
-                          }
-                        });
+                          }),
+                    );
                   },
                 )
               : const Center(child: Text('No Wokouts for this day'));

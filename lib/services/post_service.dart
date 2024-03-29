@@ -254,6 +254,7 @@ class WorkoutPostServices {
           }
         }
       });
+    } catch (e) {
       await workoutTemplates
           .doc(editId)
           .set(workoutModel.toMap())
@@ -285,7 +286,7 @@ class WorkoutPostServices {
           }
         }
       });
-    } catch (e) {}
+    }
   }
 
   Future<String> templateToWorkout(
@@ -347,7 +348,7 @@ class WorkoutPostServices {
   }
 
   Future addToSavedWorkouts(String uid, String templateId, bool liked) async {
-    if (liked) {
+    if (!liked) {
       await workoutTemplates.doc(templateId).update({
         "likes": FieldValue.arrayUnion([uid]),
         "likeCount": FieldValue.increment(1)
