@@ -2,7 +2,6 @@ import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_social_app/models/meal_model.dart';
 import 'package:fitness_social_app/routing/route_constants.dart';
-import 'package:fitness_social_app/screen/run_workou.dart';
 import 'package:fitness_social_app/widgets/custom_button.dart';
 import 'package:fitness_social_app/widgets/image_widget.dart';
 import 'package:fitness_social_app/widgets/pill_widget.dart';
@@ -127,10 +126,9 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
           elevation: 0,
           child: GestureDetector(
               onTap: () {
-                if (widget.mealModel.uid == user!.uid) {
-                  context.pushNamed(RouteConstants.editMeal,
-                      extra: widget.mealModel);
-                }
+                MealModel meal = widget.mealModel;
+                context.pushReplacementNamed(RouteConstants.editMeal,
+                    extra: meal);
               },
               child: CustomButton(
                   buttonText: widget.mealModel.uid == user!.uid

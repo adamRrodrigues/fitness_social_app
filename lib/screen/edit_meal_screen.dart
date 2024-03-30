@@ -148,7 +148,7 @@ class _EditMealPostState extends ConsumerState<EditMealPost>
                           try {
                             await MealServices().editMeal(mealModel);
                             if (mealDraft!.image != null) {
-                              MealServices().newImage(
+                              await MealServices().newImage(
                                   mealDraft!.image!, widget.meal.postId);
                             }
                             ScaffoldMessenger.of(context).showSnackBar(Commons()
@@ -173,11 +173,24 @@ class _EditMealPostState extends ConsumerState<EditMealPost>
                               steps: mealDraft!.steps,
                               ingredients: mealDraft!.ingredients,
                               tags: mealDraft!.categories);
+                          try {
+                            String fs =
+                                await MealServices().templateToMeal(mealModel, );
+                            if (mealDraft!.image != null) {
+                              await MealServices()
+                                  .newImage(mealDraft!.image!, fs);
+                            }
+                            ScaffoldMessenger.of(context).showSnackBar(Commons()
+                                .snackBarMessage(
+                                    "Meal Created Successfully", Colors.green));
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(Commons()
+                                .snackBarMessage(e.toString(), Colors.red));
+                          }
                         }
 
                         ref.invalidate(mealDraftProvider);
                         if (context.mounted) {
-                          context.pop();
                           context.pop();
                           // Navigator.pop(context);
                         }

@@ -22,8 +22,17 @@ class MealServices {
     });
   }
 
+  Future<String> templateToMeal(MealModel meal) async {
+    String id = "";
+    await meals.add(meal.toMap()).then((value) async {
+      id = value.id;
+      await meals.doc(value.id).update({'postId': value.id});
+    });
+    return id;
+  }
+
   Future editMeal(MealModel meal) async {
-    await meals.doc(meal.postId).set(meal.toMap()).then((value) async {});
+    await meals.doc(meal.postId).set(meal.toMap());
   }
 
   Future deleteMeal(String mealId) async {
