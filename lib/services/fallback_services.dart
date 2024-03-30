@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fitness_social_app/models/routine_model.dart';
+import 'package:fitness_social_app/services/chat_services.dart';
 import 'package:fitness_social_app/services/user_services.dart';
 
 class FallbackService {
@@ -17,7 +20,7 @@ class FallbackService {
   CollectionReference routines =
       FirebaseFirestore.instance.collection('routines');
 
-  CollectionReference user_stats =
+  CollectionReference userstats =
       FirebaseFirestore.instance.collection('user_stats');
 
   Future updatePost() async {
@@ -64,7 +67,7 @@ class FallbackService {
   }
 
   Future printUserStats() async {
-    var querySnapshots = await user_stats.get();
+    var querySnapshots = await userstats.get();
 
     for (var stats in querySnapshots.docs) {
       print(stats.data());
@@ -92,6 +95,34 @@ class FallbackService {
     }
   }
 
+  Future populateStepsUserStats(int today, {String? uid}) async {
+    // if the user passes userID then consider it or else consider the current user
+    var userId = uid ?? ChatService().getCurrentUser()?.uid;
+
+    List<int> stepList = genFakeSteps(today);
+
+    await UserServices().createUserStats("SxPrsR3Ic2hIWfkKJX9SPIzQckm1",
+        userId: userId, stepList: stepList);
+  }
+
+  Future populateMultipleStepsUserStats(int today) async {
+    var querySnapshots = await users.get();
+    for (var doc in querySnapshots.docs) {
+      await populateStepsUserStats(
+        today,
+        uid: doc.id,
+      );
+    }
+  }
+
+  int getDay() {
+    int dayOfTheWeek = DateTime.now().weekday;
+    if (dayOfTheWeek == 7) {
+      return 0;
+    }
+    return dayOfTheWeek;
+  }
+
   Future createSaved() async {
     var querySnapshots = await users.get();
     for (var doc in querySnapshots.docs) {
@@ -101,4 +132,18 @@ class FallbackService {
           .set({"posts": List.empty()});
     }
   }
+}
+
+int random(int min, int max) {
+  return min + Random().nextInt(max - min);
+}
+
+List<int> genFakeSteps(int today) {
+  List<int> stepList = List.filled(7, 0);
+
+  for (int i = 0; i < today; i++) {
+    stepList[i] = random(1500, 3001);
+  }
+
+  return stepList;
 }

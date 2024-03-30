@@ -46,6 +46,9 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage>
     if (currentDay == 7) {
       currentDay = 0;
     }
+
+    FallbackService().populateMultipleStepsUserStats(currentDay);
+
     print("day $currentDay");
     DateTime firstDayOfWeek = now.subtract(Duration(days: currentDay));
     today = now;

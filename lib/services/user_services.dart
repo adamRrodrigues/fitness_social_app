@@ -94,13 +94,14 @@ class UserServices {
     return following;
   }
 
-  Future createUserStats(String userId) async {
+  Future createUserStats(String uid,
+      {List<int>? stepList, String? userId}) async {
     await FirebaseFirestore.instance.collection('user_stats').doc(userId).set(
         UserStats(
-                uid: userId,
+                uid: userId ?? uid,
                 userWeight: 0,
                 userHeight: 0,
-                steps: List.generate(7, (index) => 0),
+                steps: stepList ?? List.generate(7, (index) => 0),
                 workoutStreak: 0,
                 achievements: List.empty())
             .toMap());

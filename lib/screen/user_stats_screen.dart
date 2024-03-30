@@ -1,9 +1,8 @@
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/models/user_stats.dart';
+import 'package:fitness_social_app/services/fallback_services.dart';
 import 'package:fitness_social_app/widgets/custom_calender.dart';
 import 'package:fitness_social_app/widgets/progress_widget.dart';
 import 'package:flutter/material.dart';
@@ -32,22 +31,29 @@ String currentWeightMeasure = 'kg';
 double bmi = 0.0;
 
 double claclBMI(double w, double h) {
+  // fixes the NAN in the BMI
+  if (w <= 0 && h <= 0) {
+    return 0.0;
+  }
   final result = w / ((h / 100) * (h / 100));
   return result;
 }
 
 class _UserStatsScreenState extends ConsumerState<UserStatsScreen> {
   DateTime now = DateTime.now();
-  int currentDay = 0;
+  int currentDay = FallbackService().getDay();
   DateTime today = DateTime.now();
   List<DateTime> dates = [];
   var tracker = 3;
   List<int> stepList = [];
-  int steps = 0;
+  ValueNotifier<int> steps = ValueNotifier(0);
+
+  void setStepsFromStepList(int index) {
+    steps.value = stepList[index];
+  }
 
   @override
   void initState() {
-    print("oki me is ran current day: ${currentDay}");
     super.initState();
 
     // checkRoutineExists();
@@ -55,9 +61,6 @@ class _UserStatsScreenState extends ConsumerState<UserStatsScreen> {
     if (currentDay == 7) {
       currentDay = 0;
     }
-
-    stepList = genFakeSteps(currentDay);
-    steps = stepList[currentDay];
 
     print("day $currentDay");
     DateTime firstDayOfWeek = now.subtract(Duration(days: currentDay));
@@ -73,7 +76,7 @@ class _UserStatsScreenState extends ConsumerState<UserStatsScreen> {
   Widget build(BuildContext context) {
     User? user = ref.read(userProvider);
 
-    print(user);
+    // print(user);
 
     return Scaffold(
       body: SafeArea(
@@ -107,6 +110,8 @@ class _UserStatsScreenState extends ConsumerState<UserStatsScreen> {
                           thisUserStat.userWeight.toString();
                       heightController.text =
                           thisUserStat.userHeight.toString();
+
+                      stepList = thisUserStat.steps;
 
                       bmi = claclBMI(
                           thisUserStat.userWeight, thisUserStat.userHeight);
@@ -249,12 +254,56 @@ class _UserStatsScreenState extends ConsumerState<UserStatsScreen> {
                                                 .surface,
                                             borderRadius:
                                                 BorderRadius.circular(20)),
+                                        child: ValueListenableBuilder(
+                                          valueListenable: steps,
+                                          builder: (context, int value, child) {
+                                            return Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  "Steps",
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .titleLarge,
+                                                ),
+                                                const SizedBox(
+                                                  height: 30,
+                                                ),
+                                                ProgressWidget(
+                                                    // value: thisUserStat
+                                                    //     .steps[currentDay]
+                                                    //     .toDouble(),
+                                                    value:
+                                                        steps.value.toDouble(),
+                                                    color: const Color(
+                                                        0xffFF8080)),
+                                              ],
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Material(
+                                      elevation: 2,
+                                      borderRadius: BorderRadius.circular(20),
+                                      child: Container(
+                                        height: 300,
+                                        decoration: BoxDecoration(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .surface,
+                                            borderRadius:
+                                                BorderRadius.circular(20)),
                                         child: Column(
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
                                           children: [
                                             Text(
-                                              "Steps",
+                                              "Workout Streak",
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .titleLarge,
@@ -263,74 +312,94 @@ class _UserStatsScreenState extends ConsumerState<UserStatsScreen> {
                                               height: 30,
                                             ),
                                             ProgressWidget(
-                                                // value: thisUserStat
-                                                //     .steps[currentDay]
-                                                //     .toDouble(),
-                                                value: steps.toDouble(),
+                                                value: thisUserStat
+                                                    .workoutStreak
+                                                    .toDouble(),
+                                                maxValue: 7,
                                                 color: const Color(0xffFF8080)),
                                           ],
                                         ),
                                       ),
                                     ),
                                   ),
-                                  Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Material(
-                                        elevation: 2,
-                                        borderRadius: BorderRadius.circular(20),
-                                        child: Container(
-                                          height: 300,
-                                          decoration: BoxDecoration(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .surface,
-                                              borderRadius:
-                                                  BorderRadius.circular(20)),
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                "Workout Streak",
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .titleLarge,
-                                              ),
-                                              const SizedBox(
-                                                height: 30,
-                                              ),
-                                              ProgressWidget(
-                                                  value: thisUserStat
-                                                      .workoutStreak
-                                                      .toDouble(),
-                                                  maxValue: 7,
-                                                  color:
-                                                      const Color(0xffFF8080)),
-                                                  color:
-                                                      const Color(0xffFF8080)),
-                                            ],
-                                          ),
-                                        ),
-                                      )),
                                 ],
                               ),
                             ),
                           ),
+
                           CustomCalender(
                             currentDay: currentDay,
                             dates: dates,
                             today: today,
                             func: (data) {
-                              print(data);
-                              print("[ data: $data, Current day: $currentDay");
-                              setState(() {
-                                currentDay = data;
-                                steps = stepList[data];
-                              });
-                              print("] data: $data, Current day: $currentDay");
-                              print(dates[currentDay]);
+                              currentDay = data;
+
+                              steps.value = stepList[data];
                             },
                           ),
+
+                          ValueListenableBuilder(
+                            valueListenable: steps,
+                            builder: (context, int value, child) {
+                              var caloriesBurned =
+                                  calculateCaloriesBurned(value);
+
+                              return Container(
+                                margin: const EdgeInsets.all(15),
+                                padding: const EdgeInsets.all(16.0),
+                                decoration: BoxDecoration(
+                                  color: Color.fromARGB(255, 32, 33, 33),
+                                  borderRadius: BorderRadius.circular(16.0),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'Calories Burned',
+                                      style: TextStyle(
+                                        fontSize: 18.0,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    RichText(
+                                      text: TextSpan(
+                                        children: [
+                                          WidgetSpan(
+                                              alignment:
+                                                  PlaceholderAlignment.middle,
+                                              child: Container(
+                                                // color: Colors.red,
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Text(
+                                                  "$caloriesBurned",
+                                                  style: const TextStyle(
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              )),
+                                          WidgetSpan(
+                                            alignment:
+                                                PlaceholderAlignment.middle,
+                                            child: Icon(
+                                              Icons.local_fire_department,
+                                              color: Colors.orange,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+
+                          // oki
                         ],
                       );
                     } else {
@@ -345,19 +414,34 @@ class _UserStatsScreenState extends ConsumerState<UserStatsScreen> {
   }
 }
 
-int random(int min, int max) {
-  return min + Random().nextInt(max - min);
+double calculateCaloriesBurned(int steps) {
+  // Average person burns 0.04 kcal per step (source: https://www.verywellfit.com/how-many-calories-do-you-burn-walking-3120363)
+  final double caloriesPerStep = 0.04;
+  return steps * caloriesPerStep;
 }
 
-List<int> genFakeSteps(int today) {
-  List<int> stepList = List.filled(7, 0);
 
-  for (int i = 0; i < 7; i++) {
-    if (i == today) {
-      return stepList;
-    }
-    stepList[i] = random(1500, 3000);
-  }
-
-  return stepList;
-}
+// this is the column for the steps ( without the value listener builder)
+//     //hah
+//     Column(
+//   mainAxisAlignment:
+//       MainAxisAlignment.center,
+//   children: [
+//     Text(
+//       "Steps",
+//       style: Theme.of(context)
+//           .textTheme
+//           .titleLarge,
+//     ),
+//     const SizedBox(
+//       height: 30,
+//     ),
+//     ProgressWidget(
+//         // value: thisUserStat
+//         //     .steps[currentDay]
+//         //     .toDouble(),
+//         value: steps.value.toDouble(),
+//         color: const Color(0xffFF8080)),
+//   ],
+// ),
+// // hah
