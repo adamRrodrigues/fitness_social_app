@@ -312,22 +312,6 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage>
                         ),
                       ),
                     ),
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          context.pushNamed(RouteConstants.viewMealPlanScreen,
-                              pathParameters: {'id': user.uid},
-                              extra: currentDay);
-                        },
-                        child: const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: CustomButton(
-                            buttonText: 'Meals',
-                            primary: false,
-                          ),
-                        ),
-                      ),
-                    ),
                   ],
                 ),
                 const Center(

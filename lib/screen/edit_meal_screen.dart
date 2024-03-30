@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_social_app/commons/commons.dart';
 import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/models/meal_model.dart';
@@ -8,6 +9,7 @@ import 'package:fitness_social_app/services/meal_service.dart';
 import 'package:fitness_social_app/utlis/utils.dart';
 import 'package:fitness_social_app/widgets/bottom_modal_item_widget.dart';
 import 'package:fitness_social_app/widgets/custom_button.dart';
+import 'package:fitness_social_app/widgets/image_widget.dart';
 import 'package:fitness_social_app/widgets/pill_widget.dart';
 import 'package:fitness_social_app/widgets/text_widget.dart';
 import 'package:flutter/material.dart';
@@ -16,14 +18,14 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-class CreateMealPost extends ConsumerStatefulWidget {
-  const CreateMealPost({Key? key}) : super(key: key);
-
+class EditMealPost extends ConsumerStatefulWidget {
+  const EditMealPost({Key? key, required this.meal}) : super(key: key);
+  final MealModel meal;
   @override
-  _CreateMealPostState createState() => _CreateMealPostState();
+  _EditMealPostState createState() => _EditMealPostState();
 }
 
-class _CreateMealPostState extends ConsumerState<CreateMealPost>
+class _EditMealPostState extends ConsumerState<EditMealPost>
     with SingleTickerProviderStateMixin {
   MealDraft? mealDraft;
   TextEditingController titleController = TextEditingController();
@@ -32,6 +34,7 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost>
   TextEditingController caloriesController = TextEditingController();
   TextEditingController servingsController = TextEditingController();
   late TabController tabController;
+  User? user = FirebaseAuth.instance.currentUser;
 
   void selectImage(String mode) async {
     try {
@@ -80,7 +83,13 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost>
   void initState() {
     super.initState();
     mealDraft = ref.read(mealDraftProvider);
-    titleController.text = mealDraft!.mealName;
+    titleController.text = widget.meal.mealName;
+    mealDraft!.categories = widget.meal.tags;
+    caloriesController.text = widget.meal.calories.toString();
+    servingsController.text = widget.meal.servings.toString();
+    mealDraft!.ingredients = widget.meal.ingredients;
+    mealDraft!.steps = widget.meal.steps;
+
     tabController = TabController(length: 2, vsync: this, initialIndex: 0);
   }
 
@@ -94,7 +103,7 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost>
 
     return WillPopScope(
       onWillPop: () async {
-        mealDraft!.mealName = titleController.text;
+        ref.invalidate(mealDraftProvider);
         return true;
       },
       child: Scaffold(
@@ -103,13 +112,12 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost>
             physics: const BouncingScrollPhysics(),
             headerSliverBuilder: (context, innerBoxIsScrolled) => [
               SliverAppBar(
-                title: const Text('Create a Meal'),
+                title: const Text('Edit a Meal'),
                 elevation: 0,
                 actions: [
                   GestureDetector(
                     onTap: () async {
                       if (titleController.text != "" &&
-                          mealDraft!.image != null &&
                           caloriesController.text != "" &&
                           servingsController.text != "") {
                         showDialog(
@@ -120,29 +128,68 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost>
                                 child: CircularProgressIndicator());
                           },
                         );
-                        MealModel thisMeal = MealModel(
-                            mealName: titleController.text,
-                            description: mealDraft!.description,
-                            calories: double.parse(caloriesController.text),
-                            uid: "",
-                            postId: "",
-                            servings: int.parse(servingsController.text),
-                            image: "",
-                            likes: List.empty(),
-                            steps: mealDraft!.steps,
-                            ingredients: mealDraft!.ingredients,
-                            tags: mealDraft!.categories);
+                        MealModel? mealModel;
+                        if (widget.meal.uid == user!.uid) {
+                          mealModel = MealModel(
+                              mealName: titleController.text,
+                              description: mealDraft!.description,
+                              calories: double.parse(caloriesController.text),
+                              uid: widget.meal.uid,
+                              postId: widget.meal.postId,
+                              servings: int.parse(servingsController.text),
+                              image: mealDraft!.image != null
+                                  ? ""
+                                  : widget.meal.image,
+                              likes: widget.meal.likes,
+                              steps: mealDraft!.steps,
+                              ingredients: mealDraft!.ingredients,
+                              tags: mealDraft!.categories);
 
-                        try {
-                          await MealServices()
-                              .postMeal(thisMeal, mealDraft!.image!);
-                          ScaffoldMessenger.of(context).showSnackBar(Commons()
-                              .snackBarMessage(
-                                  "Meal Created Successfully", Colors.green));
-                        } catch (e) {
-                          ScaffoldMessenger.of(context).showSnackBar(Commons()
-                              .snackBarMessage(e.toString(), Colors.red));
+                          try {
+                            await MealServices().editMeal(mealModel);
+                            if (mealDraft!.image != null) {
+                              await MealServices().newImage(
+                                  mealDraft!.image!, widget.meal.postId);
+                            }
+                            ScaffoldMessenger.of(context).showSnackBar(Commons()
+                                .snackBarMessage(
+                                    "Meal Created Successfully", Colors.green));
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(Commons()
+                                .snackBarMessage(e.toString(), Colors.red));
+                          }
+                        } else {
+                          mealModel = MealModel(
+                              mealName: titleController.text,
+                              description: mealDraft!.description,
+                              calories: double.parse(caloriesController.text),
+                              uid: user!.uid,
+                              postId: "",
+                              servings: int.parse(servingsController.text),
+                              image: mealDraft!.image != null
+                                  ? ""
+                                  : widget.meal.image,
+                              likes: List.empty(),
+                              steps: mealDraft!.steps,
+                              ingredients: mealDraft!.ingredients,
+                              tags: mealDraft!.categories);
+                          try {
+                            String fs = await MealServices().templateToMeal(
+                              mealModel,
+                            );
+                            if (mealDraft!.image != null) {
+                              await MealServices()
+                                  .newImage(mealDraft!.image!, fs);
+                            }
+                            ScaffoldMessenger.of(context).showSnackBar(Commons()
+                                .snackBarMessage(
+                                    "Meal Created Successfully", Colors.green));
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(Commons()
+                                .snackBarMessage(e.toString(), Colors.red));
+                          }
                         }
+
                         ref.invalidate(mealDraftProvider);
                         if (context.mounted) {
                           context.pop();
@@ -212,10 +259,7 @@ class _CreateMealPostState extends ConsumerState<CreateMealPost>
                                 color: Theme.of(context).colorScheme.secondary),
                             borderRadius: BorderRadius.circular(10)),
                         child: mealDraft!.image == null
-                            ? const Center(
-                                child:
-                                    Icon(size: 48, Icons.add_a_photo_outlined),
-                              )
+                            ? Center(child: ImageWidget(url: widget.meal.image))
                             : ClipRRect(
                                 borderRadius: BorderRadius.circular(10),
                                 child: Image.memory(

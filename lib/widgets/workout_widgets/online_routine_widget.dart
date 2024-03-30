@@ -25,10 +25,18 @@ class OnlineRoutineWidget extends ConsumerStatefulWidget {
 }
 
 class _OnlineRoutineWidgetState extends ConsumerState<OnlineRoutineWidget> {
+  Routine? routine;
+  User? user;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    routine = ref.read(routineProvider);
+    user = ref.read(userProvider);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final Routine routinesStored = ref.read(routineProvider);
-    User? user = ref.read(userProvider);
     return StreamBuilder(
       stream: FirebaseFirestore.instance
           .collection('routines')
@@ -73,6 +81,7 @@ class _OnlineRoutineWidgetState extends ConsumerState<OnlineRoutineWidget> {
                                     data['workouts'][index]['templateId'],
                                     data['workouts'][index]['userWorkoutId'],
                                     widget.currentDay);
+                                routine!.clearRoutine(widget.currentDay);
                               },
                               backgroundColor: Colors.redAccent,
                               foregroundColor:
@@ -99,15 +108,14 @@ class _OnlineRoutineWidgetState extends ConsumerState<OnlineRoutineWidget> {
                                     WorkoutPostServices()
                                         .mapDocPostFuture(thisWorkout);
 
-                                if (routinesStored.routines[widget.currentDay]
+                                if (routine!.routines[widget.currentDay]
                                         .workouts.length !=
                                     data['workouts'].length) {
-                                  routinesStored.addToRoutine(
+                                  routine!.addToRoutine(
                                       widget.currentDay, mappedWorkout);
                                 }
                                 return WorkoutWidget(
                                   workoutModel: mappedWorkout,
-                                  template: false,
                                 );
                               } catch (e) {
                                 RoutineServices().removeFromWorkoutRoutine(

@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_social_app/main.dart';
+import 'package:fitness_social_app/models/routine_model.dart';
 import 'package:fitness_social_app/models/workout_post_model.dart';
 import 'package:fitness_social_app/routing/route_constants.dart';
 import 'package:fitness_social_app/services/post_service.dart';
@@ -18,14 +19,12 @@ class WorkoutWidget extends ConsumerStatefulWidget {
       required this.workoutModel,
       this.mini,
       this.day = 0,
-      this.template = false,
       this.selection = false})
       : super(key: key);
   final WorkoutModel workoutModel;
   final bool? mini;
   final int day;
   final bool selection;
-  final bool template;
 
   @override
   _WorkoutWidgetState createState() => _WorkoutWidgetState();
@@ -33,6 +32,7 @@ class WorkoutWidget extends ConsumerStatefulWidget {
 
 class _WorkoutWidgetState extends ConsumerState<WorkoutWidget> {
   User? user;
+  Routine? routine;
   bool liked = false;
 
   @override
@@ -40,6 +40,7 @@ class _WorkoutWidgetState extends ConsumerState<WorkoutWidget> {
     super.initState();
     user = ref.read(userProvider);
     liked = widget.workoutModel.likes.contains(user!.uid);
+    routine = ref.read(routineProvider);
   }
 
   @override
@@ -50,6 +51,7 @@ class _WorkoutWidgetState extends ConsumerState<WorkoutWidget> {
           if (user!.uid == widget.workoutModel.uid) {
             await RoutineServices().updateRoutine(user!.uid, widget.day,
                 widget.workoutModel.postId, widget.workoutModel.templateId);
+            routine!.clearRoutine(widget.day);
             context.pop();
           } else {
             context.pushNamed(RouteConstants.editWorkout, extra: {
@@ -143,8 +145,7 @@ class _WorkoutWidgetState extends ConsumerState<WorkoutWidget> {
                         child: ImageWidget(url: widget.workoutModel.imageUrl),
                       ),
                     ),
-                    widget.workoutModel.uid != user!.uid &&
-                            widget.template == true
+                    widget.workoutModel.isTemplate == true
                         ? Positioned(
                             right: 0,
                             child: GestureDetector(

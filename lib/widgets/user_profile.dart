@@ -46,7 +46,7 @@ class _UserProfileState extends ConsumerState<UserProfile> {
   int currentDay = 0;
   List<DateTime> dates = [];
 
-  ValueNotifier<bool> showTemplates = ValueNotifier(false);
+  ValueNotifier<bool> showTemplates = ValueNotifier(true);
 
   Future getFollowage() async {
     try {
@@ -347,6 +347,7 @@ class _UserProfileState extends ConsumerState<UserProfile> {
                                         widget.thisUser.uid),
                               );
                             }),
+                        // user!.uid == widget.thisUser.uid
                         Align(
                           alignment: Alignment.bottomCenter,
                           child: SizedBox(
@@ -376,14 +377,15 @@ class _UserProfileState extends ConsumerState<UserProfile> {
                                           builder:
                                               (context, showTemplate, child) {
                                             if (showTemplate) {
-                                              return Text("Show My Workouts");
+                                              return Text("Show User Workouts");
                                             } else {
-                                              return Text("Show My Templates");
+                                              return Text("Show User Templates");
                                             }
                                           })),
                                 ],
                               )),
                         )
+                        // : Container()
                       ],
                     ),
                     MealFeed(

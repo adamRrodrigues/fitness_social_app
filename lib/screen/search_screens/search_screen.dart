@@ -1,6 +1,7 @@
 import 'package:fitness_social_app/screen/search_screens/search_meals.dart';
 import 'package:fitness_social_app/screen/search_screens/user_search.dart';
 import 'package:fitness_social_app/screen/search_screens/workout_search.dart';
+import 'package:fitness_social_app/services/feed_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -12,6 +13,8 @@ class SearchScreen extends ConsumerWidget {
   final int currentDay;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    FeedServices().followers = [];
+    FeedServices().following = [];
     return Scaffold(
       appBar: AppBar(
         title: Text(searchType),

@@ -21,59 +21,61 @@ class SearchMeals extends ConsumerWidget {
       searchTerm.value = searchController.text;
     }
 
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8),
-            child: CustomTextField(
-                onChange: changeTerm,
-                textController: searchController,
-                hintText: "search meals"),
-          ),
-          ValueListenableBuilder(
-              valueListenable: searchTerm,
-              builder: (context, st, child) {
-                return StreamBuilder(
-                  stream: meals
-                      .where("mealName", isGreaterThanOrEqualTo: st.trim())
-                      .where("mealName",
-                          isLessThanOrEqualTo: "${st.trim()}\uf7ff")
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData &&
-                        snapshot.connectionState == ConnectionState.active) {
-                      final data = snapshot.data!.docs.toList();
-                      if (data.isNotEmpty) {
-                        return ListView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: data.length,
-                          itemBuilder: (context, index) {
-                            final meal =
-                                MealServices().getMealFromDoc(data[index]);
-                            return MealWidget(
-                              meal: meal,
-                              selection: selection,
-                              day: day,
-                            );
-                          },
-                        );
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: CustomTextField(
+                  onChange: changeTerm,
+                  textController: searchController,
+                  hintText: "search meals"),
+            ),
+            ValueListenableBuilder(
+                valueListenable: searchTerm,
+                builder: (context, st, child) {
+                  return StreamBuilder(
+                    stream: meals
+                        .where("mealName", isGreaterThanOrEqualTo: st.trim())
+                        .where("mealName",
+                            isLessThanOrEqualTo: "${st.trim()}\uf7ff")
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData &&
+                          snapshot.connectionState == ConnectionState.active) {
+                        final data = snapshot.data!.docs.toList();
+                        if (data.isNotEmpty) {
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: data.length,
+                            itemBuilder: (context, index) {
+                              final meal =
+                                  MealServices().getMealFromDoc(data[index]);
+                              return MealWidget(
+                                meal: meal,
+                                selection: selection,
+                                day: day,
+                              );
+                            },
+                          );
+                        } else {
+                          return const Center(
+                            child: Text(
+                                "Sorry Couldn't Find What You Were Looking For"),
+                          );
+                        }
                       } else {
                         return const Center(
-                          child: Text(
-                              "Sorry Couldn't Find What You Were Looking For"),
+                          child: CircularProgressIndicator(),
                         );
                       }
-                    } else {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                  },
-                );
-              }),
-        ],
+                    },
+                  );
+                }),
+          ],
+        ),
       ),
     );
   }

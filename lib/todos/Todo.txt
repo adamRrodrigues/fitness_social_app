@@ -1,17 +1,17 @@
 Doing: 
+update create meal page
 onboarding pages 
+add saving for meals
 
 
 Next: 
-view for templates and user workouts only for current user
-add isTemplate field to workouts
-seperate template editable from user workout
-update create meal page
-add saving for meals
 eating a meal adds calories to userstats
 
 
 Done:
+seperate template editable from user workout
+add isTemplate field to workouts
+view for templates and user workouts only for current user
 remove from routine
 fix up view meal screen
 edit profile page

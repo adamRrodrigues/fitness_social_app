@@ -26,7 +26,7 @@ class _DiscoverPageMealsState extends ConsumerState<DiscoverPageMeals> {
     User? user = FirebaseAuth.instance.currentUser;
 
     return SizedBox(
-      height: 420,
+      height: 450,
       child: FirestoreListView(
         scrollDirection: Axis.horizontal,
         shrinkWrap: true,

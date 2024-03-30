@@ -55,27 +55,25 @@ class _DiscoverPageState extends ConsumerState<DiscoverPage>
               onRefresh: () async {
                 setState(() {});
               },
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: section(context, "Users"),
-                    ),
-                    DiscoverPageUsers(user: user),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: section(context, "Workouts"),
-                    ),
-                    DiscoverPageWorkouts(user: user),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: section(context, "Meals"),
-                    ),
-                    DiscoverPageMeals(user: user),
-                  ],
-                ),
+              child: ListView(
+                shrinkWrap: true,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: section(context, "Users"),
+                  ),
+                  DiscoverPageUsers(user: user),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: section(context, "Workouts"),
+                  ),
+                  DiscoverPageWorkouts(user: user),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: section(context, "Meals"),
+                  ),
+                  DiscoverPageMeals(user: user),
+                ],
               ))),
     );
   }

@@ -129,7 +129,7 @@ class FallbackService {
       await FirebaseFirestore.instance
           .collection("saved")
           .doc(doc.id)
-          .set({"posts": List.empty()});
+          .update({"meals": List.empty()});
     }
   }
 }

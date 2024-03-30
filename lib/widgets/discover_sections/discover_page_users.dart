@@ -25,48 +25,33 @@ class _DiscoverPageUsersState extends ConsumerState<DiscoverPageUsers> {
 
     return SizedBox(
       height: 130,
-      child: StreamBuilder(
-        stream: feedServices.fetchFollowing(widget.user!.uid),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            if (feedServices.following.isNotEmpty) {
-              feedServices.following.add(widget.user!.uid);
-              return FirestoreListView(
-                scrollDirection: Axis.horizontal,
-                shrinkWrap: true,
-                addAutomaticKeepAlives: true,
-                pageSize: 5,
-                physics: const BouncingScrollPhysics(),
-                keyboardDismissBehavior:
-                    ScrollViewKeyboardDismissBehavior.onDrag,
-                emptyBuilder: (context) {
-                  return const Center(
-                    child: Text("No Users"),
-                  );
-                },
-                loadingBuilder: (context) {
-                  return const Center(child: CircularProgressIndicator());
-                },
-                errorBuilder: (context, error, stackTrace) {
-                  return const Text("Error");
-                },
-                query: feedServices.fetchNonFollowedUsers(widget.user!.uid),
-                itemBuilder: (context, doc) {
-                  final post = doc.data();
-                  print(post);
-                  return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: MiniProfileWidget(thisUser: post));
-                },
-              );
-            } else {
-              return const Text("data");
-            }
-          } else {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
+      child: FirestoreListView(
+        scrollDirection: Axis.horizontal,
+        addAutomaticKeepAlives: true,
+        shrinkWrap: true,
+        pageSize: 5,
+        physics: const BouncingScrollPhysics(),
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        emptyBuilder: (context) {
+          return const Center(
+            child: Text("No Users"),
+          );
+        },
+        loadingBuilder: (context) {
+          return const Center(child: CircularProgressIndicator());
+        },
+        errorBuilder: (context, error, stackTrace) {
+          return const Text("Error");
+        },
+        query: feedServices.fetchUsers(widget.user!.uid),
+        itemBuilder: (context, doc) {
+          final post = doc.data();
+          return SizedBox(
+              width: 100,
+              // padding: const EdgeInsets.all(8.0),
+              child: MiniProfileWidget(
+                thisUser: post,
+              ));
         },
       ),
     );

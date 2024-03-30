@@ -22,6 +22,19 @@ class MealServices {
     });
   }
 
+  Future<String> templateToMeal(MealModel meal) async {
+    String id = "";
+    await meals.add(meal.toMap()).then((value) async {
+      id = value.id;
+      await meals.doc(value.id).update({'postId': value.id});
+    });
+    return id;
+  }
+
+  Future editMeal(MealModel meal) async {
+    await meals.doc(meal.postId).set(meal.toMap());
+  }
+
   Future deleteMeal(String mealId) async {
     await StorageServices().deleteImages('mealPostImages', mealId);
     await FirebaseFirestore.instance
@@ -34,6 +47,33 @@ class MealServices {
         .update({
       'posts': FieldValue.arrayRemove([mealId])
     });
+  }
+
+  Future saveMeal(String uid, String mealId, bool isLiked) async {
+    if (!isLiked) {
+      await meals.doc(mealId).update({
+        "likes": FieldValue.arrayUnion([uid])
+      });
+
+      await FirebaseFirestore.instance.collection("saved").doc(uid).update({
+        "meals": FieldValue.arrayUnion([mealId])
+      });
+    } else {
+      await meals.doc(mealId).update({
+        "likes": FieldValue.arrayRemove([uid])
+      });
+
+      await FirebaseFirestore.instance.collection("saved").doc(uid).update({
+        "meals": FieldValue.arrayRemove([mealId])
+      });
+    }
+  }
+
+  Future newImage(Uint8List image, String id) async {
+    String thumbnail =
+        await StorageServices().postThumbnail('mealPostImages', id, image);
+
+    await meals.doc(id).update({'image': thumbnail});
   }
 
   MealModel getMealFromDoc(QueryDocumentSnapshot<Object?> data) {

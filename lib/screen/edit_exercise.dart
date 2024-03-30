@@ -28,6 +28,8 @@ class _EditExerciseState extends ConsumerState<EditExercise> {
   TextEditingController nameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   double weightValue = 0;
+  int decimalValue = 0;
+  int nominalValue = 0;
   int repValue = 0;
   int setValue = 0;
   WorkoutDraft? workoutDraft;
@@ -48,7 +50,6 @@ class _EditExerciseState extends ConsumerState<EditExercise> {
   File? finalVideo;
   void selectImage() async {
     try {
-      vController!.dispose();
       video = await ImagePicker().pickVideo(
           source: ImageSource.gallery,
           maxDuration: const Duration(seconds: 10));
@@ -56,10 +57,21 @@ class _EditExerciseState extends ConsumerState<EditExercise> {
       vController = VideoPlayerController.file(finalVideo!,
           videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true))
         ..initialize().then((value) {
-          setState(() {});
-          vController!.setVolume(0);
-          vController!.setLooping(true);
-          vController!.play();
+          if (vController!.value.duration.inSeconds > 20) {
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                backgroundColor: Colors.red,
+                content: Text(
+                  "Video Duration cannot be more than 20 seconds",
+                  style: TextStyle(color: Colors.white),
+                )));
+            finalVideo = null;
+            vController!.dispose();
+          } else {
+            setState(() {});
+            vController!.setVolume(0);
+            vController!.setLooping(true);
+            vController!.play();
+          }
         });
     } catch (e) {
       print(e);
@@ -70,11 +82,15 @@ class _EditExerciseState extends ConsumerState<EditExercise> {
   void initState() {
     super.initState();
     workoutDraft = ref.read(draftProvider);
-    weightValue = widget.editingExercise.weight;
-    repValue = widget.editingExercise.reps;
-    setValue = widget.editingExercise.sets;
     nameController.text = widget.editingExercise.name;
     descriptionController.text = widget.editingExercise.description;
+    weightValue = widget.editingExercise.weight;
+    int intpart = weightValue.toInt();
+    double decpart = weightValue - intpart;
+    nominalValue = intpart;
+    decimalValue = (decpart * 10).toInt();
+    repValue = widget.editingExercise.reps;
+    setValue = widget.editingExercise.sets;
     totalTime = widget.editingExercise.time;
     selected = widget.editingExercise.type;
     hours = widget.editingExercise.time ~/ 60;
@@ -82,10 +98,18 @@ class _EditExerciseState extends ConsumerState<EditExercise> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    try {
+      vController!.dispose();
+    } catch (e) {}
+  }
+
+  @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        vController!.dispose();
         return true;
       },
       child: Scaffold(
@@ -100,26 +124,35 @@ class _EditExerciseState extends ConsumerState<EditExercise> {
             children: [
               Center(
                 child: GestureDetector(
-                  onLongPress: () => selectImage(),
+                  onTap: () => selectImage(),
                   child: SizedBox(
                     height: 400,
                     width: double.infinity,
                     child: Builder(builder: (context) {
                       if (finalVideo == null) {
-                        try {
-                          vController = VideoPlayerController.contentUri(
-                              Uri.parse(widget.editingExercise.imageUrl),
-                              videoPlayerOptions:
-                                  VideoPlayerOptions(mixWithOthers: true))
-                            ..initialize().then((value) {
-                              vController!.setVolume(0);
-                              vController!.setLooping(true);
-                              vController!.play();
-                            });
-                        } catch (e) {
-                          print(e);
+                        if (widget.editingExercise.imageUrl != "") {
+                          try {
+                            vController = VideoPlayerController.contentUri(
+                                Uri.parse(widget.editingExercise.imageUrl),
+                                videoPlayerOptions:
+                                    VideoPlayerOptions(mixWithOthers: true))
+                              ..initialize().then((value) {
+                                vController!.setVolume(0);
+                                vController!.setLooping(true);
+                                vController!.play();
+                              });
+                          } catch (e) {
+                            print(e);
+                          }
+                        } else {
+                          return Center(
+                            child: Icon(
+                              Icons.play_circle_outline_outlined,
+                              size: 42,
+                            ),
+                          );
                         }
-                      } else {}
+                      }
                       return Stack(
                         alignment: Alignment.center,
                         children: [
@@ -136,231 +169,282 @@ class _EditExerciseState extends ConsumerState<EditExercise> {
                 ),
               ),
               CustomTextField(
-                maxLength: 20,
-                  textController: nameController, hintText: 'exercise name'),
+                  maxLength: 30,
+                  textController: nameController,
+                  hintText: 'exercise name'),
               const SizedBox(
                 height: 10,
               ),
               CustomTextField(
+                maxLength: 250,
                   textController: descriptionController,
                   hintText: 'description'),
               const SizedBox(
                 height: 10,
               ),
-              Row(
-                // shrinkWrap: true,
-                children: [
-                  Expanded(
-                    child: ListTile(
-                      title: Text(options[0]),
-                      leading: Radio<String>(
-                        value: options[0],
-                        groupValue: selected,
-                        activeColor: Theme.of(context)
-                            .colorScheme
-                            .primary, // Change the active radio button color here
-                        fillColor: MaterialStateProperty.all(Theme.of(context)
-                            .colorScheme
-                            .primary), // Change the fill color when selected
-                        splashRadius:
-                            20, // Change the splash radius when clicked
-                        onChanged: (String? value) {
-                          setState(() {
-                            selected = value.toString();
-                          });
-                        },
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: ListTile(
-                      title: Text(options[1]),
-                      leading: Radio<String>(
-                        value: options[1],
-                        groupValue: selected,
-                        activeColor: Theme.of(context)
-                            .colorScheme
-                            .primary, // Change the active radio button color here
-                        fillColor: MaterialStateProperty.all(Theme.of(context)
-                            .colorScheme
-                            .primary), //ll color when selected
-                        splashRadius:
-                            20, // Change the splash radius when clicked
-                        onChanged: (String? value) {
-                          setState(() {
-                            selected = value.toString();
-                          });
-                        },
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 60,
-              ),
-              Builder(builder: (context) {
-                if (selected == options[0]) {
-                  return Column(
-                    children: [
-                      NumberPicker(
-                        itemHeight: 50,
-                        itemWidth: 50,
-                        minValue: 0,
-                        infiniteLoop: true,
-                        itemCount: 2,
-                        maxValue: 100,
-                        value: weightValue.toInt(),
-                        selectedTextStyle: TextStyle(
-                            color: Theme.of(context).colorScheme.primary,
-                            fontSize: 38),
-                        onChanged: (value) {
-                          setState(() {
-                            weightValue = value.toDouble();
-                          });
-                        },
-                      ),
-                      Text('Weight: $weightValue' 'kgs'),
-                      const SizedBox(
-                        height: 40,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Column(
-                              children: [
-                                NumberPicker(
-                                  itemHeight: 50,
-                                  itemWidth: 50,
-                                  minValue: 0,
-                                  infiniteLoop: true,
-                                  itemCount: 2,
-                                  maxValue: 25,
-                                  selectedTextStyle: TextStyle(
-                                      color:
-                                          Theme.of(context).colorScheme.primary,
-                                      fontSize: 38),
-                                  value: repValue,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      repValue = value;
-                                    });
-                                  },
-                                ),
-                                Text('Reps: $repValue'),
-                              ],
+              StatefulBuilder(builder: (context, setState) {
+                return Column(
+                  children: [
+                    Row(
+                      // shrinkWrap: true,
+                      children: [
+                        Expanded(
+                          child: ListTile(
+                            title: Text(options[0]),
+                            leading: Radio<String>(
+                              value: options[0],
+                              groupValue: selected,
+                              activeColor: Theme.of(context)
+                                  .colorScheme
+                                  .primary, // Change the active radio button color here
+                              fillColor: MaterialStateProperty.all(Theme.of(
+                                      context)
+                                  .colorScheme
+                                  .primary), // Change the fill color when selected
+                              splashRadius:
+                                  20, // Change the splash radius when clicked
+                              onChanged: (String? value) {
+                                setState(() {
+                                  selected = value.toString();
+                                });
+                              },
                             ),
-                            Column(
-                              children: [
-                                NumberPicker(
-                                  itemHeight: 50,
-                                  itemWidth: 50,
-                                  minValue: 0,
-                                  infiniteLoop: true,
-                                  itemCount: 2,
-                                  maxValue: 8,
-                                  selectedTextStyle: TextStyle(
-                                      color:
-                                          Theme.of(context).colorScheme.primary,
-                                      fontSize: 38),
-                                  value: setValue,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      setValue = value;
-                                    });
-                                  },
-                                ),
-                                Text('Sets: $setValue'),
-                              ],
+                          ),
+                        ),
+                        Expanded(
+                          child: ListTile(
+                            title: Text(options[1]),
+                            leading: Radio<String>(
+                              value: options[1],
+                              groupValue: selected,
+                              activeColor: Theme.of(context)
+                                  .colorScheme
+                                  .primary, // Change the active radio button color here
+                              fillColor: MaterialStateProperty.all(
+                                  Theme.of(context)
+                                      .colorScheme
+                                      .primary), //ll color when selected
+                              splashRadius:
+                                  20, // Change the splash radius when clicked
+                              onChanged: (String? value) {
+                                setState(() {
+                                  selected = value.toString();
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Builder(builder: (context) {
+                          return NumberPicker(
+                            itemHeight: 50,
+                            itemWidth: 60,
+                            minValue: 0,
+                            infiniteLoop: true,
+                            itemCount: 3,
+                            maxValue: 99,
+                            value: nominalValue.toInt(),
+                            selectedTextStyle: TextStyle(
+                                color: Theme.of(context).colorScheme.primary,
+                                fontSize: 38),
+                            onChanged: (value) {
+                              setState(() {
+                                nominalValue = value;
+                                weightValue = nominalValue + decimalValue / 10;
+                              });
+                            },
+                          );
+                        }),
+                        const Text(
+                          ".",
+                          style: TextStyle(fontSize: 32),
+                        ),
+                        NumberPicker(
+                          itemHeight: 50,
+                          itemWidth: 60,
+                          minValue: 0,
+                          infiniteLoop: true,
+                          itemCount: 3,
+                          maxValue: 9,
+                          value: decimalValue.toInt(),
+                          selectedTextStyle: TextStyle(
+                              color: Theme.of(context).colorScheme.primary,
+                              fontSize: 38),
+                          onChanged: (value) {
+                            setState(() {
+                              decimalValue = value;
+                              weightValue = nominalValue + decimalValue / 10;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                    Text('Weight: $weightValue' 'kgs'),
+                    Builder(builder: (context) {
+                      if (selected == options[0]) {
+                        return Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  Column(
+                                    children: [
+                                      NumberPicker(
+                                        itemHeight: 50,
+                                        itemWidth: 50,
+                                        minValue: 0,
+                                        infiniteLoop: true,
+                                        itemCount: 2,
+                                        maxValue: 25,
+                                        selectedTextStyle: TextStyle(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary,
+                                            fontSize: 38),
+                                        value: repValue,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            repValue = value;
+                                          });
+                                        },
+                                      ),
+                                      Text('Reps: $repValue'),
+                                    ],
+                                  ),
+                                  Column(
+                                    children: [
+                                      NumberPicker(
+                                        itemHeight: 50,
+                                        itemWidth: 50,
+                                        minValue: 0,
+                                        infiniteLoop: true,
+                                        itemCount: 2,
+                                        maxValue: 8,
+                                        selectedTextStyle: TextStyle(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary,
+                                            fontSize: 38),
+                                        value: setValue,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            setValue = value;
+                                          });
+                                        },
+                                      ),
+                                      Text('Sets: $setValue'),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
-                        ),
-                      ),
-                    ],
-                  );
-                } else {
-                  return Column(
-                    children: [
-                      NumberPicker(
-                        itemHeight: 50,
-                        itemWidth: 50,
-                        minValue: 0,
-                        infiniteLoop: true,
-                        itemCount: 2,
-                        maxValue: 24,
-                        value: hours.toInt(),
-                        selectedTextStyle: TextStyle(
-                            color: Theme.of(context).colorScheme.primary,
-                            fontSize: 38),
-                        onChanged: (value) {
-                          setState(() {
-                            hours = value;
-                          });
-                        },
-                      ),
-                      Text('Hours: $hours'),
-                      const SizedBox(
-                        height: 40,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Column(
-                              children: [
-                                NumberPicker(
-                                  itemHeight: 50,
-                                  itemWidth: 50,
-                                  minValue: 0,
-                                  infiniteLoop: true,
-                                  itemCount: 2,
-                                  maxValue: 60,
-                                  selectedTextStyle: TextStyle(
-                                      color:
-                                          Theme.of(context).colorScheme.primary,
-                                      fontSize: 38),
-                                  value: minutes,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      minutes = value;
-                                    });
-                                  },
-                                ),
-                                Text('Minutes: $minutes'),
-                              ],
-                            ),
-                            Column(
-                              children: [
-                                NumberPicker(
-                                  itemHeight: 50,
-                                  itemWidth: 50,
-                                  minValue: 0,
-                                  infiniteLoop: true,
-                                  itemCount: 2,
-                                  maxValue: 60,
-                                  selectedTextStyle: TextStyle(
-                                      color:
-                                          Theme.of(context).colorScheme.primary,
-                                      fontSize: 38),
-                                  value: seconds,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      seconds = value;
-                                    });
-                                  },
-                                ),
-                                Text('Seconds: $seconds'),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  );
-                }
+                        );
+                      } else {
+                        return Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Column(
+                                children: [
+                                  NumberPicker(
+                                    itemHeight: 50,
+                                    itemWidth: 50,
+                                    minValue: 0,
+                                    infiniteLoop: true,
+                                    itemCount: 2,
+                                    maxValue: 5,
+                                    value: hours.toInt(),
+                                    selectedTextStyle: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                        fontSize: 38),
+                                    onChanged: (value) {
+                                      setState(() {
+                                        hours = value;
+                                      });
+                                    },
+                                  ),
+                                  Text('Hrs: $hours'),
+                                ],
+                              ),
+                              const Text(
+                                ":",
+                                style: TextStyle(fontSize: 32),
+                              ),
+                              Column(
+                                children: [
+                                  NumberPicker(
+                                    itemHeight: 50,
+                                    itemWidth: 50,
+                                    minValue: 0,
+                                    infiniteLoop: true,
+                                    itemCount: 2,
+                                    maxValue: 60,
+                                    selectedTextStyle: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                        fontSize: 38),
+                                    value: minutes,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        minutes = value;
+                                      });
+                                    },
+                                  ),
+                                  Text('Min: $minutes'),
+                                ],
+                              ),
+                              const Text(
+                                ":",
+                                style: TextStyle(fontSize: 32),
+                              ),
+                              Column(
+                                children: [
+                                  NumberPicker(
+                                    itemHeight: 50,
+                                    itemWidth: 50,
+                                    minValue: 0,
+                                    infiniteLoop: true,
+                                    itemCount: 2,
+                                    maxValue: 60,
+                                    selectedTextStyle: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                        fontSize: 38),
+                                    value: seconds,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        seconds = value;
+                                      });
+                                    },
+                                  ),
+                                  Text('Sec: $seconds'),
+                                ],
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                    }),
+                  ],
+                );
               }),
               const SizedBox(
                 height: 20,
@@ -377,31 +461,40 @@ class _EditExerciseState extends ConsumerState<EditExercise> {
               onTap: () {
                 if (nameController.text.isNotEmpty) {
                   if (selected == options[0]) {
-                    if (finalVideo != null) {
-                      LocalExerciseModel editedExercise = LocalExerciseModel(
-                          description: descriptionController.text,
-                          toolName: "",
-                          weight: weightValue,
-                          reps: repValue,
-                          sets: setValue,
-                          time: totalTime,
-                          type: selected,
-                          name: nameController.text);
-                      editedExercise.video = finalVideo;
-                      workoutDraft!.fetchedExercises.removeAt(widget.index);
-                      workoutDraft!.fetchedExercises
-                          .insert(widget.index, editedExercise);
+                    if (repValue != 0 && setValue != 0) {
+                      if (finalVideo != null) {
+                        LocalExerciseModel editedExercise = LocalExerciseModel(
+                            description: descriptionController.text,
+                            toolName: "",
+                            weight: weightValue,
+                            reps: repValue,
+                            sets: setValue,
+                            time: totalTime,
+                            type: selected,
+                            name: nameController.text);
+                        editedExercise.video = finalVideo;
+                        workoutDraft!.fetchedExercises.removeAt(widget.index);
+                        workoutDraft!.fetchedExercises
+                            .insert(widget.index, editedExercise);
+                        context.pop();
+                      } else {
+                        ExerciseModel exerciseModel = ExerciseModel(
+                            name: nameController.text,
+                            type: selected,
+                            description: descriptionController.text,
+                            weight: weightValue,
+                            reps: repValue,
+                            sets: setValue);
+                        workoutDraft!.fetchedExercises.removeAt(widget.index);
+                        workoutDraft!.fetchedExercises
+                            .insert(widget.index, exerciseModel);
+                        context.pop();
+                      }
                     } else {
-                      ExerciseModel exerciseModel = ExerciseModel(
-                          name: nameController.text,
-                          type: selected,
-                          description: descriptionController.text,
-                          weight: weightValue,
-                          reps: repValue,
-                          sets: setValue);
-                      workoutDraft!.fetchedExercises.removeAt(widget.index);
-                      workoutDraft!.fetchedExercises
-                          .insert(widget.index, exerciseModel);
+                      ScaffoldMessenger.of(context).showSnackBar(Commons()
+                          .snackBarMessage(
+                              'Both Sets and Reps Should Be More Than 0',
+                              Colors.red));
                     }
                   } else {
                     calculateTime();
@@ -423,6 +516,7 @@ class _EditExerciseState extends ConsumerState<EditExercise> {
                         workoutDraft!.fetchedExercises.removeAt(widget.index);
                         workoutDraft!.fetchedExercises
                             .insert(widget.index, editedExercise);
+                        context.pop();
                       } else {
                         ExerciseModel exerciseModel = ExerciseModel(
                           type: selected,
@@ -433,13 +527,11 @@ class _EditExerciseState extends ConsumerState<EditExercise> {
                         workoutDraft!.fetchedExercises.removeAt(widget.index);
                         workoutDraft!.fetchedExercises
                             .insert(widget.index, exerciseModel);
+                        context.pop();
                       }
                     }
                   }
-                  context.pop();
-                  try {
-                    vController!.dispose();
-                  } catch (e) {}
+                  try {} catch (e) {}
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(Commons()
                       .snackBarMessage(

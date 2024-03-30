@@ -24,13 +24,12 @@ class FeedServices {
     return postQuery;
   }
 
-  Query<UserModel> fetchNonFollowedUsers(String uid) {
-    following.add(user.uid);
+  Query<UserModel> fetchUsers(String uid) {
     final Query<UserModel> postQuery;
 
     postQuery = FirebaseFirestore.instance
         .collection('users')
-        .where('uid', whereNotIn: following)
+        .where('uid', isNotEqualTo: uid)
         .withConverter(
           fromFirestore: (snapshot, _) => UserModel.fromMap(snapshot.data()!),
           toFirestore: (value, options) => value.toMap(),
@@ -54,7 +53,7 @@ class FeedServices {
   Query<WorkoutModel> fetchWorkouts(String uid) {
     final Query<WorkoutModel> postQuery;
     postQuery = FirebaseFirestore.instance
-        .collection('user_workouts_demo')
+        .collection('workout_templates_demo')
         .where("uid", isNotEqualTo: uid)
         .withConverter(
           fromFirestore: (snapshot, _) =>
@@ -103,9 +102,9 @@ class FeedServices {
 
   Query<WorkoutModel> fetchUserWorkouts(uid) {
     final postQuery = FirebaseFirestore.instance
-        .collection(
-            user.uid == uid ? 'user_workouts_demo' : 'workout_templates_demo')
+        .collection('user_workouts_demo')
         .where('uid', isEqualTo: uid)
+        .orderBy("createdAt", descending: true)
         .withConverter(
           fromFirestore: (snapshot, _) =>
               WorkoutModel.fromMap(snapshot.data()!),

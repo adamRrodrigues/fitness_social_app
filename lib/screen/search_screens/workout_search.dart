@@ -39,7 +39,7 @@ class WorkoutSearch extends ConsumerWidget {
                     stream: workouts
                         .where("workoutName", isGreaterThan: st.trim())
                         .where("workoutName",
-                            isLessThanOrEqualTo: "${st.trim()}\uf7ff").limit(5)
+                            isLessThanOrEqualTo: "${st.trim()}\uf7ff")
                         .snapshots(),
                     builder: (context, snapshot) {
                       if (snapshot.hasData &&
@@ -57,7 +57,6 @@ class WorkoutSearch extends ConsumerWidget {
                               mini: false,
                               day: day,
                               selection: selection,
-                              template: true,
                             );
                           },
                         );

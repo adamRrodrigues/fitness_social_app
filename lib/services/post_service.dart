@@ -115,10 +115,8 @@ class WorkoutPostServices {
   String id = "";
 
   Future postWorkout(WorkoutModel workoutModel, Uint8List image,
-      List<LocalExerciseModel> exercises) async {
+      List<dynamic> exercises) async {
     await workoutPosts.add(workoutModel.toMap()).then((value) async {
-      List<String> videoUrls = [];
-
       await users.doc(thisUser!.uid).update({
         'posts': FieldValue.arrayUnion([value.id]),
       });
@@ -137,10 +135,8 @@ class WorkoutPostServices {
               value.id,
               "exercise${i.toString()}");
           exercise['imageUrl'] = exerciseVideo;
-          videoUrls.add(exerciseVideo);
         } catch (e) {
           exercise['imageUrl'] = "";
-          videoUrls.add("");
         }
         await workoutPosts.doc(value.id).update({
           'postId': value.id,
@@ -156,11 +152,6 @@ class WorkoutPostServices {
         for (int i = 0; i < exercises.length; i++) {
           Map<String, dynamic> exercise = exercises[i].toMap();
 
-          try {
-            exercise['imageUrl'] = videoUrls[i];
-          } catch (e) {
-            exercise['imageUrl'] = "";
-          }
           await workoutTemplates.doc(value.id).update({
             'postId': value.id,
             'templateId': value.id,
@@ -248,7 +239,7 @@ class WorkoutPostServices {
                     "exercise${i.toString()}");
                 exercise['imageUrl'] = exerciseVideo;
               } catch (e) {
-                // exercise['imageUrl'] = "";
+                exercise['imageUrl'] = "";
               }
               await workoutTemplates.doc(editId).update({
                 'postId': workoutModel.templateId,
@@ -281,7 +272,7 @@ class WorkoutPostServices {
                     "exercise${i.toString()}");
                 exercise['imageUrl'] = exerciseVideo;
               } catch (e) {
-                // exercise['imageUrl'] = "";
+                exercise['imageUrl'] = "";
               }
               await workoutPosts.doc(editId).update({
                 'postId': editId,
@@ -318,7 +309,7 @@ class WorkoutPostServices {
                 "exercise${i.toString()}");
             exercise['imageUrl'] = exerciseVideo;
           } catch (e) {
-            // exercise['imageUrl'] = "";
+            exercise['imageUrl'] = "";
           }
           await workoutPosts.doc(value.id).update({
             'postId': value.id,
@@ -339,22 +330,21 @@ class WorkoutPostServices {
   }
 
   Future deletePost(id, bool isTemplate) async {
-    await StorageServices().deleteImages('workoutPostImages', id);
     if (isTemplate) {
       await workoutTemplates.doc(id).delete();
+      await StorageServices().deleteImages('workoutPostImages', id);
     } else {
       await FirebaseFirestore.instance
           .collection('user_workouts_demo')
           .doc(id)
           .delete();
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(thisUser!.uid)
+          .update({
+        'posts': FieldValue.arrayRemove([id])
+      });
     }
-
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc(thisUser!.uid)
-        .update({
-      'posts': FieldValue.arrayRemove([id])
-    });
   }
 
   Future addToSavedWorkouts(String uid, String templateId, bool liked) async {

@@ -100,7 +100,7 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                 onTap: () async {
                   if (titleController.text.isNotEmpty &&
                       image != null &&
-                      workoutDraft!.exercises.isNotEmpty) {
+                      workoutDraft!.fetchedExercises.isNotEmpty) {
                     WorkoutModel workoutModel = WorkoutModel(
                         workoutName: titleController.text,
                         categories: workoutDraft!.categories,
@@ -124,11 +124,11 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
 
                     try {
                       // await WorkoutPostServices()
-                      //     .postTemplate(workoutModel, workoutDraft!.exercises);
+                      //     .postTemplate(workoutModel, workoutDraft!.fetchedExercises);
                       await WorkoutPostServices().postWorkout(
                         workoutModel,
                         image!,
-                        workoutDraft!.exercises,
+                        workoutDraft!.fetchedExercises,
                       );
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -320,25 +320,25 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                 Padding(
                   padding: const EdgeInsets.all(4.0),
                   child: CustomTextField(
-                    maxLength: 20,
+                      maxLength: 20,
                       textController: titleController,
                       hintText: 'Give Your Workout a Name'),
                 ),
                 const SizedBox(
                   height: 10,
                 ),
-                workoutDraft!.exercises.isNotEmpty
+                workoutDraft!.fetchedExercises.isNotEmpty
                     ? ReorderableListView.builder(
                         onReorder: (oldIndex, newIndex) {
                           LocalExerciseModel exercise =
-                              workoutDraft!.exercises.removeAt(oldIndex);
-                          workoutDraft!.exercises.insert(
+                              workoutDraft!.fetchedExercises.removeAt(oldIndex);
+                          workoutDraft!.fetchedExercises.insert(
                               newIndex > oldIndex ? newIndex -= 1 : newIndex,
                               exercise);
                         },
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
-                        itemCount: workoutDraft!.exercises.length,
+                        itemCount: workoutDraft!.fetchedExercises.length,
                         itemBuilder: (context, index) {
                           return InkWell(
                             key: ValueKey(index),
@@ -346,12 +346,11 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                               context.pushNamed(RouteConstants.localEditWorkout,
                                   extra: {
                                     "editingExercise":
-                                        workoutDraft!.exercises[index],
+                                        workoutDraft!.fetchedExercises[index],
                                     "index": index
                                   });
                             },
                             child: Slidable(
-                              
                               startActionPane: ActionPane(
                                   motion: const ScrollMotion(),
                                   children: [
@@ -361,8 +360,9 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                                       flex: 1,
                                       onPressed: (context) {
                                         setState(() {
-                                          workoutDraft!.exercises.add(
-                                              workoutDraft!.exercises[index]);
+                                          workoutDraft!.fetchedExercises.add(
+                                              workoutDraft!
+                                                  .fetchedExercises[index]);
                                         });
                                       },
                                       backgroundColor: Colors.greenAccent,
@@ -382,7 +382,7 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                                       flex: 1,
                                       onPressed: (context) {
                                         setState(() {
-                                          workoutDraft!.exercises
+                                          workoutDraft!.fetchedExercises
                                               .removeAt(index);
                                         });
                                       },
@@ -397,7 +397,7 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                                 padding: const EdgeInsets.all(8.0),
                                 child: LocalExerciseWidget(
                                     exerciseModel:
-                                        workoutDraft!.exercises[index]),
+                                        workoutDraft!.fetchedExercises[index]),
                               ),
                             ),
                           );
@@ -415,8 +415,9 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
             elevation: 0,
             child: GestureDetector(
                 onTap: () {
-                  context.pushNamed(RouteConstants.createExercise,
-                      extra: workoutDraft!.exercises);
+                  context.pushNamed(
+                    RouteConstants.createExercise,
+                  );
                 },
                 child: const CustomButton(buttonText: 'Add Exercise')),
           ),

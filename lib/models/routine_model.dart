@@ -30,6 +30,14 @@ class Routine {
     routines[day].workouts.add(workout);
   }
 
+  void removeToRoutine(int day, int index) {
+    routines[day].workouts.removeAt(index);
+  }
+
+  void clearRoutine(int day) {
+    routines[day].workouts.clear();
+  }
+
   List<WorkoutModel> workoutSession = [];
 }
 

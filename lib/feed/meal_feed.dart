@@ -11,6 +11,7 @@ class MealFeed extends StatefulWidget {
       required this.postQuery,
       this.horizontal = false,
       this.add = false,
+      this.currentDay = 0,
       this.profileView = false,
       this.noPostsMessage = "Nothing to see here"});
 
@@ -18,6 +19,7 @@ class MealFeed extends StatefulWidget {
   final bool? profileView;
   final bool add;
   final String noPostsMessage;
+  final int currentDay;
   final bool horizontal;
 
   @override
@@ -64,6 +66,8 @@ class _MealFeedState extends State<MealFeed> {
           itemBuilder: (context, doc) {
             final post = doc.data();
             return MealWidget(
+              selection: widget.add,
+              day: widget.currentDay,
               meal: post,
             );
           },
