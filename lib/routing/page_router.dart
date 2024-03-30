@@ -10,6 +10,7 @@ import 'package:fitness_social_app/screen/create_meal_post.dart';
 import 'package:fitness_social_app/screen/create_post.dart';
 import 'package:fitness_social_app/screen/create_workout_post.dart';
 import 'package:fitness_social_app/screen/edit_exercise.dart';
+import 'package:fitness_social_app/screen/edit_meal_screen.dart';
 import 'package:fitness_social_app/screen/edit_profile_screen.dart';
 import 'package:fitness_social_app/screen/edit_workout.dart';
 import 'package:fitness_social_app/screen/fetching_workout_screen.dart';
@@ -65,6 +66,17 @@ final GoRouter appRouter = GoRouter(
               name: RouteConstants.createMeal,
               pageBuilder: (context, state) {
                 return const CupertinoPage(child: CreateMealPost());
+              },
+            ),
+            GoRoute(
+              path: 'editMealPage',
+              name: RouteConstants.editMeal,
+              pageBuilder: (context, state) {
+                MealModel mealModel = state.extra as MealModel;
+                return CupertinoPage(
+                    child: EditMealPost(
+                  meal: mealModel,
+                ));
               },
             ),
             GoRoute(

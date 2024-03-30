@@ -150,6 +150,10 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                             workoutDraft!.fetchedExercises,
                             widget.workoutModel.postId,
                             widget.workoutModel.isTemplate);
+                        if (image != null) {
+                          await WorkoutPostServices()
+                              .newImage(image!, widget.workoutModel.postId);
+                        }
                       } else {
                         String futureString = await WorkoutPostServices()
                             .templateToWorkout(

@@ -14,7 +14,7 @@ class MealDraft {
   Uint8List? image;
   String mealName = "";
   List<String> categories = [];
-  List<String> ingredients = [];
+  List<dynamic> ingredients = [];
   List<String> steps = [];
   String description = "";
 }

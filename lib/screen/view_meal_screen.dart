@@ -1,8 +1,13 @@
 import 'package:easy_image_viewer/easy_image_viewer.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_social_app/models/meal_model.dart';
+import 'package:fitness_social_app/routing/route_constants.dart';
+import 'package:fitness_social_app/screen/run_workou.dart';
+import 'package:fitness_social_app/widgets/custom_button.dart';
 import 'package:fitness_social_app/widgets/image_widget.dart';
 import 'package:fitness_social_app/widgets/pill_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class ViewMealScreen extends StatefulWidget {
   const ViewMealScreen({Key? key, required this.mealModel}) : super(key: key);
@@ -12,6 +17,7 @@ class ViewMealScreen extends StatefulWidget {
 }
 
 class _ViewMealScreenState extends State<ViewMealScreen> {
+  User? user = FirebaseAuth.instance.currentUser;
   @override
   Widget build(BuildContext context) {
     ImageProvider image = Image.network(widget.mealModel.image).image;
@@ -113,6 +119,23 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
               ]),
             ),
           ],
+        ),
+        bottomNavigationBar: BottomAppBar(
+          height: 60,
+          padding: const EdgeInsets.all(8),
+          color: Colors.transparent,
+          elevation: 0,
+          child: GestureDetector(
+              onTap: () {
+                if (widget.mealModel.uid == user!.uid) {
+                  context.pushNamed(RouteConstants.editMeal,
+                      extra: widget.mealModel);
+                }
+              },
+              child: CustomButton(
+                  buttonText: widget.mealModel.uid == user!.uid
+                      ? 'Edit Meal'
+                      : "Create Meal From This Template")),
         ),
       ),
     );

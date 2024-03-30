@@ -22,6 +22,10 @@ class MealServices {
     });
   }
 
+  Future editMeal(MealModel meal) async {
+    await meals.doc(meal.postId).set(meal.toMap()).then((value) async {});
+  }
+
   Future deleteMeal(String mealId) async {
     await StorageServices().deleteImages('mealPostImages', mealId);
     await FirebaseFirestore.instance
@@ -34,6 +38,13 @@ class MealServices {
         .update({
       'posts': FieldValue.arrayRemove([mealId])
     });
+  }
+
+  Future newImage(Uint8List image, String id) async {
+    String thumbnail =
+        await StorageServices().postThumbnail('mealPostImages', id, image);
+
+    await meals.doc(id).update({'image': thumbnail});
   }
 
   MealModel getMealFromDoc(QueryDocumentSnapshot<Object?> data) {

@@ -10,7 +10,6 @@ import 'package:fitness_social_app/widgets/image_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 import 'package:video_player/video_player.dart';
