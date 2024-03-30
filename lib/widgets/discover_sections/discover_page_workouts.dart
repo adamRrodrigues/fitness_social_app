@@ -51,7 +51,6 @@ class _DiscoverPageWorkoutsState extends ConsumerState<DiscoverPageWorkouts> {
               // padding: const EdgeInsets.all(8.0),
               child: WorkoutWidget(
                 workoutModel: post,
-                template: true,
                 mini: false,
               ));
         },

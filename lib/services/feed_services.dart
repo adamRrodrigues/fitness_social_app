@@ -54,7 +54,7 @@ class FeedServices {
   Query<WorkoutModel> fetchWorkouts(String uid) {
     final Query<WorkoutModel> postQuery;
     postQuery = FirebaseFirestore.instance
-        .collection('user_workouts_demo')
+        .collection('workout_templates_demo')
         .where("uid", isNotEqualTo: uid)
         .withConverter(
           fromFirestore: (snapshot, _) =>
@@ -103,9 +103,9 @@ class FeedServices {
 
   Query<WorkoutModel> fetchUserWorkouts(uid) {
     final postQuery = FirebaseFirestore.instance
-        .collection(
-            user.uid == uid ? 'user_workouts_demo' : 'workout_templates_demo')
+        .collection('user_workouts_demo')
         .where('uid', isEqualTo: uid)
+        .orderBy("createdAt", descending: true)
         .withConverter(
           fromFirestore: (snapshot, _) =>
               WorkoutModel.fromMap(snapshot.data()!),

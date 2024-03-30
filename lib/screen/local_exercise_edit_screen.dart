@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:fitness_social_app/commons/commons.dart';
 import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/services/drafts.dart';
 import 'package:fitness_social_app/widgets/custom_button.dart';
@@ -165,255 +166,267 @@ class _LocalExerciseEditScreenState
                 const SizedBox(
                   height: 10,
                 ),
-                Row(
-                  // shrinkWrap: true,
-                  children: [
-                    Expanded(
-                      child: ListTile(
-                        title: Text(options[0]),
-                        leading: Radio<String>(
-                          value: options[0],
-                          groupValue: selected,
-                          activeColor: Theme.of(context)
-                              .colorScheme
-                              .primary, // Change the active radio button color here
-                          fillColor: MaterialStateProperty.all(Theme.of(context)
-                              .colorScheme
-                              .primary), // Change the fill color when selected
-                          splashRadius:
-                              20, // Change the splash radius when clicked
-                          onChanged: (String? value) {
-                            setState(() {
-                              selected = value.toString();
-                            });
-                          },
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: ListTile(
-                        title: Text(options[1]),
-                        leading: Radio<String>(
-                          value: options[1],
-                          groupValue: selected,
-                          activeColor: Theme.of(context)
-                              .colorScheme
-                              .primary, // Change the active radio button color here
-                          fillColor: MaterialStateProperty.all(Theme.of(context)
-                              .colorScheme
-                              .primary), //ll color when selected
-                          splashRadius:
-                              20, // Change the splash radius when clicked
-                          onChanged: (String? value) {
-                            setState(() {
-                              selected = value.toString();
-                            });
-                          },
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 60,
-                ),
-                Builder(builder: (context) {
-                  if (selected == options[0]) {
-                    return Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            NumberPicker(
-                              itemHeight: 50,
-                              itemWidth: 60,
-                              minValue: 0,
-                              infiniteLoop: true,
-                              itemCount: 3,
-                              maxValue: 99,
-                              value: nominalValue.toInt(),
-                              selectedTextStyle: TextStyle(
-                                  color: Theme.of(context).colorScheme.primary,
-                                  fontSize: 38),
-                              onChanged: (value) {
-                                setState(() {
-                                  nominalValue = value;
-                                  weightValue =
-                                      nominalValue + decimalValue / 10;
-                                });
-                              },
-                            ),
-                            const Text(
-                              ".",
-                              style: TextStyle(fontSize: 32),
-                            ),
-                            NumberPicker(
-                              itemHeight: 50,
-                              itemWidth: 60,
-                              minValue: 0,
-                              infiniteLoop: true,
-                              itemCount: 3,
-                              maxValue: 9,
-                              value: decimalValue.toInt(),
-                              selectedTextStyle: TextStyle(
-                                  color: Theme.of(context).colorScheme.primary,
-                                  fontSize: 38),
-                              onChanged: (value) {
-                                setState(() {
-                                  decimalValue = value;
-                                  weightValue =
-                                      nominalValue + decimalValue / 10;
-                                });
-                              },
-                            ),
-                          ],
-                        ),
-                        Text('Weight: $weightValue' 'kgs'),
-                        const SizedBox(
-                          height: 40,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text('Reps: $repValue'),
-                              NumberPicker(
-                                itemHeight: 50,
-                                itemWidth: 50,
-                                minValue: 0,
-                                infiniteLoop: true,
-                                axis: Axis.horizontal,
-                                itemCount: 3,
-                                maxValue: 25,
-                                selectedTextStyle: TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.primary,
-                                    fontSize: 38),
-                                value: repValue,
-                                onChanged: (value) {
-                                  setState(() {
-                                    repValue = value;
-                                  });
-                                },
-                              ),
-                              const SizedBox(
-                                height: 40,
-                              ),
-                              Text('Sets: $setValue'),
-                              NumberPicker(
-                                itemHeight: 50,
-                                itemWidth: 50,
-                                minValue: 0,
-                                infiniteLoop: true,
-                                itemCount: 3,
-                                axis: Axis.horizontal,
-                                maxValue: 8,
-                                selectedTextStyle: TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.primary,
-                                    fontSize: 38),
-                                value: setValue,
-                                onChanged: (value) {
-                                  setState(() {
-                                    setValue = value;
-                                  });
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    );
-                  } else {
-                    return Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                StatefulBuilder(builder: (context, setState) {
+                  return Column(
+                    children: [
+                      Row(
+                        // shrinkWrap: true,
                         children: [
-                          Column(
-                            children: [
-                              NumberPicker(
-                                itemHeight: 50,
-                                itemWidth: 50,
-                                minValue: 0,
-                                infiniteLoop: true,
-                                itemCount: 2,
-                                maxValue: 24,
-                                value: hours.toInt(),
-                                selectedTextStyle: TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.primary,
-                                    fontSize: 38),
-                                onChanged: (value) {
+                          Expanded(
+                            child: ListTile(
+                              title: Text(options[0]),
+                              leading: Radio<String>(
+                                value: options[0],
+                                groupValue: selected,
+                                activeColor: Theme.of(context)
+                                    .colorScheme
+                                    .primary, // Change the active radio button color here
+                                fillColor: MaterialStateProperty.all(Theme.of(
+                                        context)
+                                    .colorScheme
+                                    .primary), // Change the fill color when selected
+                                splashRadius:
+                                    20, // Change the splash radius when clicked
+                                onChanged: (String? value) {
                                   setState(() {
-                                    hours = value;
+                                    selected = value.toString();
                                   });
                                 },
                               ),
-                              Text('Hrs: $hours'),
-                            ],
+                            ),
                           ),
-                          const Text(
-                            ":",
-                            style: TextStyle(fontSize: 32),
-                          ),
-                          Column(
-                            children: [
-                              NumberPicker(
-                                itemHeight: 50,
-                                itemWidth: 50,
-                                minValue: 0,
-                                infiniteLoop: true,
-                                itemCount: 2,
-                                maxValue: 60,
-                                selectedTextStyle: TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.primary,
-                                    fontSize: 38),
-                                value: minutes,
-                                onChanged: (value) {
+                          Expanded(
+                            child: ListTile(
+                              title: Text(options[1]),
+                              leading: Radio<String>(
+                                value: options[1],
+                                groupValue: selected,
+                                activeColor: Theme.of(context)
+                                    .colorScheme
+                                    .primary, // Change the active radio button color here
+                                fillColor: MaterialStateProperty.all(
+                                    Theme.of(context)
+                                        .colorScheme
+                                        .primary), //ll color when selected
+                                splashRadius:
+                                    20, // Change the splash radius when clicked
+                                onChanged: (String? value) {
                                   setState(() {
-                                    minutes = value;
+                                    selected = value.toString();
                                   });
                                 },
                               ),
-                              Text('Min: $minutes'),
-                            ],
-                          ),
-                          const Text(
-                            ":",
-                            style: TextStyle(fontSize: 32),
-                          ),
-                          Column(
-                            children: [
-                              NumberPicker(
-                                itemHeight: 50,
-                                itemWidth: 50,
-                                minValue: 0,
-                                infiniteLoop: true,
-                                itemCount: 2,
-                                maxValue: 60,
-                                selectedTextStyle: TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.primary,
-                                    fontSize: 38),
-                                value: seconds,
-                                onChanged: (value) {
-                                  setState(() {
-                                    seconds = value;
-                                  });
-                                },
-                              ),
-                              Text('Sec: $seconds'),
-                            ],
+                            ),
                           ),
                         ],
                       ),
-                    );
-                  }
+                      const SizedBox(
+                        height: 60,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          NumberPicker(
+                            itemHeight: 50,
+                            itemWidth: 60,
+                            minValue: 0,
+                            infiniteLoop: true,
+                            itemCount: 3,
+                            maxValue: 99,
+                            value: nominalValue.toInt(),
+                            selectedTextStyle: TextStyle(
+                                color: Theme.of(context).colorScheme.primary,
+                                fontSize: 38),
+                            onChanged: (value) {
+                              // setState(() {
+                              nominalValue = value;
+                              weightValue = nominalValue + decimalValue / 10;
+                              // });
+                            },
+                          ),
+                          const Text(
+                            ".",
+                            style: TextStyle(fontSize: 32),
+                          ),
+                          NumberPicker(
+                            itemHeight: 50,
+                            itemWidth: 60,
+                            minValue: 0,
+                            infiniteLoop: true,
+                            itemCount: 3,
+                            maxValue: 9,
+                            value: decimalValue.toInt(),
+                            selectedTextStyle: TextStyle(
+                                color: Theme.of(context).colorScheme.primary,
+                                fontSize: 38),
+                            onChanged: (value) {
+                              // setState(() {
+                              decimalValue = value;
+                              weightValue = nominalValue + decimalValue / 10;
+                              // });
+                            },
+                          ),
+                        ],
+                      ),
+                      Text('Weight: $weightValue' 'kgs'),
+                      const SizedBox(
+                        height: 40,
+                      ),
+                      Builder(builder: (context) {
+                        if (selected == options[0]) {
+                          return Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text('Reps: $repValue'),
+                                    NumberPicker(
+                                      itemHeight: 50,
+                                      itemWidth: 50,
+                                      minValue: 0,
+                                      infiniteLoop: true,
+                                      axis: Axis.horizontal,
+                                      itemCount: 3,
+                                      maxValue: 25,
+                                      selectedTextStyle: TextStyle(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
+                                          fontSize: 38),
+                                      value: repValue,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          repValue = value;
+                                        });
+                                      },
+                                    ),
+                                    const SizedBox(
+                                      height: 40,
+                                    ),
+                                    Text('Sets: $setValue'),
+                                    NumberPicker(
+                                      itemHeight: 50,
+                                      itemWidth: 50,
+                                      minValue: 0,
+                                      infiniteLoop: true,
+                                      itemCount: 3,
+                                      axis: Axis.horizontal,
+                                      maxValue: 8,
+                                      selectedTextStyle: TextStyle(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
+                                          fontSize: 38),
+                                      value: setValue,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          setValue = value;
+                                        });
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          );
+                        } else {
+                          return Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Column(
+                                  children: [
+                                    NumberPicker(
+                                      itemHeight: 50,
+                                      itemWidth: 50,
+                                      minValue: 0,
+                                      infiniteLoop: true,
+                                      itemCount: 2,
+                                      maxValue: 24,
+                                      value: hours.toInt(),
+                                      selectedTextStyle: TextStyle(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
+                                          fontSize: 38),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          hours = value;
+                                        });
+                                      },
+                                    ),
+                                    Text('Hrs: $hours'),
+                                  ],
+                                ),
+                                const Text(
+                                  ":",
+                                  style: TextStyle(fontSize: 32),
+                                ),
+                                Column(
+                                  children: [
+                                    NumberPicker(
+                                      itemHeight: 50,
+                                      itemWidth: 50,
+                                      minValue: 0,
+                                      infiniteLoop: true,
+                                      itemCount: 2,
+                                      maxValue: 60,
+                                      selectedTextStyle: TextStyle(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
+                                          fontSize: 38),
+                                      value: minutes,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          minutes = value;
+                                        });
+                                      },
+                                    ),
+                                    Text('Min: $minutes'),
+                                  ],
+                                ),
+                                const Text(
+                                  ":",
+                                  style: TextStyle(fontSize: 32),
+                                ),
+                                Column(
+                                  children: [
+                                    NumberPicker(
+                                      itemHeight: 50,
+                                      itemWidth: 50,
+                                      minValue: 0,
+                                      infiniteLoop: true,
+                                      itemCount: 2,
+                                      maxValue: 60,
+                                      selectedTextStyle: TextStyle(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
+                                          fontSize: 38),
+                                      value: seconds,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          seconds = value;
+                                        });
+                                      },
+                                    ),
+                                    Text('Sec: $seconds'),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+                      }),
+                    ],
+                  );
                 }),
                 const SizedBox(
                   height: 20,
@@ -430,25 +443,60 @@ class _LocalExerciseEditScreenState
           child: GestureDetector(
               onTap: () async {
                 calculateTime();
-                LocalExerciseModel editedExercise = LocalExerciseModel(
-                    description: descriptionController.text,
-                    toolName: "",
-                    weight: weightValue,
-                    reps: repValue,
-                    sets: setValue,
-                    time: totalTime,
-                    type: selected,
-                    name: nameController.text);
-                if (finalVideo != null) {
-                  editedExercise.video = finalVideo;
-                } else {
-                  editedExercise.video = widget.localExerciseModel.video;
-                }
-                workoutDraft!.exercises.removeAt(widget.index);
+                if (selected == "sets") {
+                  if (repValue != 0 && setValue != 0) {
+                    LocalExerciseModel editedExercise = LocalExerciseModel(
+                        description: descriptionController.text,
+                        toolName: "",
+                        weight: weightValue,
+                        reps: repValue,
+                        sets: setValue,
+                        time: totalTime,
+                        type: selected,
+                        name: nameController.text);
+                    if (finalVideo != null) {
+                      editedExercise.video = finalVideo;
+                    } else {
+                      editedExercise.video = widget.localExerciseModel.video;
+                    }
+                    workoutDraft!.exercises.removeAt(widget.index);
 
-                workoutDraft!.exercises.insert(widget.index, editedExercise);
-                vController!.dispose();
-                context.pop();
+                    workoutDraft!.exercises
+                        .insert(widget.index, editedExercise);
+                    vController!.dispose();
+                    context.pop();
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(Commons()
+                        .snackBarMessage(
+                            'Sets and Reps cannot be 0', Colors.red));
+                  }
+                } else {
+                  if (totalTime != 0) {
+                    LocalExerciseModel editedExercise = LocalExerciseModel(
+                        description: descriptionController.text,
+                        toolName: "",
+                        weight: weightValue,
+                        reps: repValue,
+                        sets: setValue,
+                        time: totalTime,
+                        type: selected,
+                        name: nameController.text);
+                    if (finalVideo != null) {
+                      editedExercise.video = finalVideo;
+                    } else {
+                      editedExercise.video = widget.localExerciseModel.video;
+                    }
+                    workoutDraft!.exercises.removeAt(widget.index);
+
+                    workoutDraft!.exercises
+                        .insert(widget.index, editedExercise);
+                    vController!.dispose();
+                    context.pop();
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(Commons()
+                        .snackBarMessage('Time Cannot Be 0', Colors.red));
+                  }
+                }
               },
               child: const CustomButton(buttonText: 'Done')),
         ),

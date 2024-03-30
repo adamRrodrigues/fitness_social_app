@@ -43,10 +43,8 @@ bool checkLimits(int current, int limit) {
 
 void incrementSet(int setLimit, int exerciseLimit, int workoutLimit) async {
   //check workout limit
-  if (setLimit == 0) {
-    currentSet.value = 1;
-  }
-  if (checkLimits(currentSet.value, setLimit) || currentSet.value == 1) {
+
+  if (checkLimits(currentSet.value, setLimit)) {
     currentSet.value = 1;
     if (!checkLimits(currentExercise.value, exerciseLimit)) {
       currentExercise.value++;
@@ -64,7 +62,10 @@ void incrementSet(int setLimit, int exerciseLimit, int workoutLimit) async {
               .update({"workoutStreak": FieldValue.increment(1)});
           day!.setDay();
         }
-        reset();
+        currentExercise.value = 0;
+        currentWorkout.value = 0;
+        currentSeconds.value = 0;
+        currentSet.value = 1;
       }
     }
   } else {
@@ -136,7 +137,9 @@ class _RunWorkoutState extends ConsumerState<RunWorkout> {
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    vController!.dispose();
+    try {
+      vController!.dispose();
+    } catch (e) {}
   }
 
   @override
@@ -526,19 +529,9 @@ class _RunWorkoutState extends ConsumerState<RunWorkout> {
           color: Colors.transparent,
           elevation: 0,
           child: ValueListenableBuilder(
-              valueListenable: currentWorkout,
-              builder: (context, currentWorkout, child) {
-                if (currentWorkout == widget.workouts.length - 1) {
-                  return GestureDetector(
-                    onTap: () {
-                      // vController!.initialize();
-                      resetState();
-                      showDone.value = false;
-                      context.pop();
-                    },
-                    child: CustomButton(buttonText: "Done"),
-                  );
-                } else {
+              valueListenable: showDone,
+              builder: (context, showDone, c) {
+                if (!showDone) {
                   return Row(
                     children: [
                       SizedBox(
@@ -562,22 +555,19 @@ class _RunWorkoutState extends ConsumerState<RunWorkout> {
                                 const EdgeInsets.symmetric(horizontal: 8.0),
                             child: GestureDetector(
                               onTap: () async {
-                                if (widget.workouts[currentWorkout]
+                                if (widget.workouts[currentWorkout.value]
                                             .exercises[currentExercise.value]
                                         ['type'] ==
                                     "sets") {
                                   incrementSet(
-                                      widget.workouts[currentWorkout]
+                                      widget.workouts[currentWorkout.value]
                                               .exercises[currentExercise.value]
                                           ['sets'],
-                                      widget.workouts[currentWorkout].exercises
-                                              .length -
+                                      widget.workouts[currentWorkout.value]
+                                              .exercises.length -
                                           1,
                                       widget.workouts.length - 1);
                                 } else {
-                                  // timer(widget.workouts[currentWorkout]
-                                  //         .exercises[currentExercise.value]['time'] *
-                                  //     60);
                                   if (currentSeconds.value == 0) {
                                     startTimer();
                                   } else {
@@ -585,14 +575,14 @@ class _RunWorkoutState extends ConsumerState<RunWorkout> {
                                     workoutSeconds = 100;
                                     if (!checkLimits(
                                         currentExercise.value,
-                                        widget.workouts[currentWorkout]
+                                        widget.workouts[currentWorkout.value]
                                                 .exercises.length -
                                             1)) {
                                       currentExercise.value++;
                                     } else {
-                                      if (!checkLimits(currentWorkout,
+                                      if (!checkLimits(currentWorkout.value,
                                           widget.workouts.length - 1)) {
-                                        currentWorkout++;
+                                        currentWorkout.value++;
                                         currentExercise.value = 0;
                                         currentSet.value = 1;
                                       } else {
@@ -606,7 +596,7 @@ class _RunWorkoutState extends ConsumerState<RunWorkout> {
                                           });
                                           day!.setDay();
                                         }
-                                        showDone.value = true;
+                                        showDone = true;
                                       }
                                     }
                                   }
@@ -615,7 +605,7 @@ class _RunWorkoutState extends ConsumerState<RunWorkout> {
                               child: ValueListenableBuilder(
                                   valueListenable: currentSeconds,
                                   builder: (context, currentSeconds, child) {
-                                    if (widget.workouts[currentWorkout]
+                                    if (widget.workouts[currentWorkout.value]
                                                 .exercises[
                                             currentExercise.value]['type'] ==
                                         "time") {
@@ -631,6 +621,10 @@ class _RunWorkoutState extends ConsumerState<RunWorkout> {
                             )),
                       ),
                     ],
+                  );
+                } else {
+                  return CustomButton(
+                    buttonText: "Done",
                   );
                 }
               }),

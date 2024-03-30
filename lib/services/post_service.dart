@@ -339,22 +339,21 @@ class WorkoutPostServices {
   }
 
   Future deletePost(id, bool isTemplate) async {
-    await StorageServices().deleteImages('workoutPostImages', id);
     if (isTemplate) {
       await workoutTemplates.doc(id).delete();
+      await StorageServices().deleteImages('workoutPostImages', id);
     } else {
       await FirebaseFirestore.instance
           .collection('user_workouts_demo')
           .doc(id)
           .delete();
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(thisUser!.uid)
+          .update({
+        'posts': FieldValue.arrayRemove([id])
+      });
     }
-
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc(thisUser!.uid)
-        .update({
-      'posts': FieldValue.arrayRemove([id])
-    });
   }
 
   Future addToSavedWorkouts(String uid, String templateId, bool liked) async {

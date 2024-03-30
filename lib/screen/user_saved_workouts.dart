@@ -15,14 +15,14 @@ class UserSavedWorkouts extends StatelessWidget {
           physics: const BouncingScrollPhysics(),
           headerSliverBuilder: (context, innerBoxIsScrolled) =>
               [const SliverAppBar(title: Text("Saved Workouts"))],
-          body: StreamBuilder(
-              stream: FirebaseFirestore.instance
+          body: FutureBuilder(
+              future: FirebaseFirestore.instance
                   .collection("saved")
                   .doc(uid)
-                  .snapshots(),
+                  .get(),
               builder: (context, snapshot) {
                 if (snapshot.hasData &&
-                    snapshot.connectionState == ConnectionState.active) {
+                    snapshot.connectionState == ConnectionState.done) {
                   List<dynamic> items = snapshot.data!.get('posts');
                   print(items);
                   return ListView.builder(
@@ -54,7 +54,7 @@ class UserSavedWorkouts extends StatelessWidget {
                               return Container();
                             }
                           } else {
-                            return Container();
+                            return Center(child: CircularProgressIndicator());
                           }
                         },
                       );

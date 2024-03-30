@@ -255,7 +255,10 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                                 color: Theme.of(context).colorScheme.secondary),
                             borderRadius: BorderRadius.circular(10)),
                         child: image == null
-                            ? ImageWidget(url: widget.workoutModel.imageUrl)
+                            ? ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: ImageWidget(
+                                    url: widget.workoutModel.imageUrl))
                             : ClipRRect(
                                 borderRadius: BorderRadius.circular(10),
                                 child: Image.memory(
