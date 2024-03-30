@@ -156,13 +156,14 @@ class _LocalExerciseEditScreenState
                   ),
                 ),
                 CustomTextField(
-                  maxLength: 30,
-                    textController: nameController, hintText: 'exercise name'),
+                    maxLength: 30,
+                    textController: nameController,
+                    hintText: 'exercise name'),
                 const SizedBox(
                   height: 10,
                 ),
                 CustomTextField(
-                  maxLength: 250,
+                    maxLength: 250,
                     textController: descriptionController,
                     hintText: 'description'),
                 const SizedBox(
@@ -461,9 +462,9 @@ class _LocalExerciseEditScreenState
                     } else {
                       editedExercise.video = widget.localExerciseModel.video;
                     }
-                    workoutDraft!.exercises.removeAt(widget.index);
+                    workoutDraft!.fetchedExercises.removeAt(widget.index);
 
-                    workoutDraft!.exercises
+                    workoutDraft!.fetchedExercises
                         .insert(widget.index, editedExercise);
                     vController!.dispose();
                     context.pop();
@@ -488,9 +489,9 @@ class _LocalExerciseEditScreenState
                     } else {
                       editedExercise.video = widget.localExerciseModel.video;
                     }
-                    workoutDraft!.exercises.removeAt(widget.index);
+                    workoutDraft!.fetchedExercises.removeAt(widget.index);
 
-                    workoutDraft!.exercises
+                    workoutDraft!.fetchedExercises
                         .insert(widget.index, editedExercise);
                     vController!.dispose();
                     context.pop();

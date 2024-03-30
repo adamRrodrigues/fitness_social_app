@@ -19,6 +19,7 @@ import 'package:fitness_social_app/widgets/workout_widgets/exercise_widget.dart'
 import 'package:fitness_social_app/widgets/workout_widgets/local_exercise_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:modals/modals.dart';
@@ -46,6 +47,14 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
   FocusNode focusNode = FocusNode();
 
   bool loadingExercises = true;
+
+  List<String> popularTags = [
+    "Chest",
+    "Arms",
+    "Cardio",
+    "Legs",
+    "Back",
+  ];
 
   void selectImage(String mode) async {
     try {
@@ -306,52 +315,76 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                         backgroundColor: Theme.of(context).colorScheme.primary,
                         onPressed: () {
                           focusNode.requestFocus();
-                          showModal(ModalEntry.aligned(context,
-                              tag: 'containerModal',
-                              barrierDismissible: true,
-                              alignment: Alignment.center,
-                              // removeOnPop: true,
-
-                              child: Material(
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .background,
-                                      border: Border.all(
-                                          width: 2,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary),
-                                      borderRadius: BorderRadius.circular(10)),
-                                  width: 300,
-                                  height: 200,
-                                  child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      CustomTextField(
-                                          focusNode: focusNode,
-                                          textController: categoryController,
-                                          hintText: 'add a category'),
-                                      GestureDetector(
-                                          onTap: () {
+                          showModalBottomSheet(
+                            context: context,
+                            isScrollControlled: true,
+                            showDragHandle: true,
+                            useSafeArea: true,
+                            shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(20))),
+                            builder: (context) {
+                              return SizedBox(
+                                height: 450,
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: CustomTextField(
+                                              focusNode: focusNode,
+                                              textController:
+                                                  categoryController,
+                                              hintText: 'add a category'),
+                                        ),
+                                        FloatingActionButton(
+                                          mini: true,
+                                          onPressed: () {
                                             setState(() {
-                                              widget.workoutModel.categories
+                                              workoutDraft!.categories
                                                   .add(categoryController.text);
                                               categoryController.text = '';
                                             });
-                                            removeAllModals();
                                           },
-                                          child: const Padding(
-                                            padding: EdgeInsets.all(8.0),
-                                            child:
-                                                CustomButton(buttonText: 'Add'),
-                                          ))
-                                    ],
-                                  ),
+                                          child: const Icon(Icons.add),
+                                        ),
+                                      ],
+                                    ),
+                                    const Divider(),
+                                    const Center(
+                                      child: Text("Popular Tags: "),
+                                    ),
+                                    Expanded(
+                                      child: ListView.builder(
+                                        shrinkWrap: true,
+                                        itemCount: popularTags.length,
+                                        itemBuilder: (context, index) {
+                                          return GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                workoutDraft!.categories
+                                                    .add(popularTags[index]);
+                                                context.pop();
+                                              });
+                                            },
+                                            child: Column(
+                                              children: [
+                                                ListTile(
+                                                  title:
+                                                      Text(popularTags[index]),
+                                                ),
+                                                const Divider()
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    )
+                                  ],
                                 ),
-                              )));
+                              );
+                            },
+                          );
                         },
                         child: const Icon(Icons.add),
                       )
@@ -393,9 +426,56 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                                       },
                                     );
                                   },
-                                  child: ExerciseWidget(
-                                      exerciseModel: workoutDraft!
-                                          .fetchedExercises[index]),
+                                  child: Slidable(
+                                    startActionPane: ActionPane(
+                                        motion: const ScrollMotion(),
+                                        children: [
+                                          SlidableAction(
+                                            autoClose: true,
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            flex: 1,
+                                            onPressed: (context) {
+                                              setState(() {
+                                                workoutDraft!.fetchedExercises
+                                                    .add(workoutDraft!
+                                                            .fetchedExercises[
+                                                        index]);
+                                              });
+                                            },
+                                            backgroundColor: Colors.greenAccent,
+                                            foregroundColor: Theme.of(context)
+                                                .scaffoldBackgroundColor,
+                                            icon: Icons.replay_rounded,
+                                            label: 'Duplicate',
+                                          )
+                                        ]),
+                                    endActionPane: ActionPane(
+                                        motion: ScrollMotion(),
+                                        children: [
+                                          SlidableAction(
+                                            padding: const EdgeInsets.all(8),
+                                            autoClose: true,
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            flex: 1,
+                                            onPressed: (context) {
+                                              setState(() {
+                                                workoutDraft!.fetchedExercises
+                                                    .removeAt(index);
+                                              });
+                                            },
+                                            backgroundColor: Colors.redAccent,
+                                            foregroundColor: Theme.of(context)
+                                                .scaffoldBackgroundColor,
+                                            icon: Icons.delete,
+                                            label: 'Remove',
+                                          )
+                                        ]),
+                                    child: ExerciseWidget(
+                                        exerciseModel: workoutDraft!
+                                            .fetchedExercises[index]),
+                                  ),
                                 ),
                               );
                             } else {
@@ -411,9 +491,56 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                                           "index": index
                                         });
                                   },
-                                  child: LocalExerciseWidget(
-                                      exerciseModel: workoutDraft!
-                                          .fetchedExercises[index]),
+                                  child: Slidable(
+                                    startActionPane: ActionPane(
+                                        motion: const ScrollMotion(),
+                                        children: [
+                                          SlidableAction(
+                                            autoClose: true,
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            flex: 1,
+                                            onPressed: (context) {
+                                              setState(() {
+                                                workoutDraft!.fetchedExercises
+                                                    .add(workoutDraft!
+                                                            .fetchedExercises[
+                                                        index]);
+                                              });
+                                            },
+                                            backgroundColor: Colors.greenAccent,
+                                            foregroundColor: Theme.of(context)
+                                                .scaffoldBackgroundColor,
+                                            icon: Icons.replay_rounded,
+                                            label: 'Duplicate',
+                                          )
+                                        ]),
+                                    endActionPane: ActionPane(
+                                        motion: ScrollMotion(),
+                                        children: [
+                                          SlidableAction(
+                                            padding: const EdgeInsets.all(8),
+                                            autoClose: true,
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            flex: 1,
+                                            onPressed: (context) {
+                                              setState(() {
+                                                workoutDraft!.fetchedExercises
+                                                    .removeAt(index);
+                                              });
+                                            },
+                                            backgroundColor: Colors.redAccent,
+                                            foregroundColor: Theme.of(context)
+                                                .scaffoldBackgroundColor,
+                                            icon: Icons.delete,
+                                            label: 'Remove',
+                                          )
+                                        ]),
+                                    child: LocalExerciseWidget(
+                                        exerciseModel: workoutDraft!
+                                            .fetchedExercises[index]),
+                                  ),
                                 ),
                               );
                             }

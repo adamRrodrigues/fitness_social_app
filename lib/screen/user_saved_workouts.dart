@@ -37,8 +37,7 @@ class UserSavedWorkouts extends StatelessWidget {
                     icon: Icon(Icons.food_bank),
                   ),
                 ]),
-                SizedBox(
-                  height: 600,
+                Expanded(
                   child: TabBarView(
                       // physics: NeverScrollableScrollPhysics(),
                       children: [
@@ -63,6 +62,7 @@ class UserSavedWorkouts extends StatelessWidget {
             List<dynamic> items = snapshot.data!.get('posts');
             if (items.isNotEmpty) {
               return ListView.builder(
+                physics: BouncingScrollPhysics(),
                 itemCount: items.length,
                 itemBuilder: (context, index) {
                   return FutureBuilder(
@@ -116,6 +116,7 @@ class UserSavedWorkouts extends StatelessWidget {
             List<dynamic> items = snapshot.data!.get('meals');
             if (items.isNotEmpty) {
               return ListView.builder(
+                physics: BouncingScrollPhysics(),
                 itemCount: items.length,
                 itemBuilder: (context, index) {
                   return FutureBuilder(

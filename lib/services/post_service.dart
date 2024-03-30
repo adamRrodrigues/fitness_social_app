@@ -117,8 +117,6 @@ class WorkoutPostServices {
   Future postWorkout(WorkoutModel workoutModel, Uint8List image,
       List<dynamic> exercises) async {
     await workoutPosts.add(workoutModel.toMap()).then((value) async {
-      List<String> videoUrls = [];
-
       await users.doc(thisUser!.uid).update({
         'posts': FieldValue.arrayUnion([value.id]),
       });
@@ -137,10 +135,8 @@ class WorkoutPostServices {
               value.id,
               "exercise${i.toString()}");
           exercise['imageUrl'] = exerciseVideo;
-          videoUrls.add(exerciseVideo);
         } catch (e) {
           exercise['imageUrl'] = "";
-          videoUrls.add("");
         }
         await workoutPosts.doc(value.id).update({
           'postId': value.id,
@@ -156,11 +152,6 @@ class WorkoutPostServices {
         for (int i = 0; i < exercises.length; i++) {
           Map<String, dynamic> exercise = exercises[i].toMap();
 
-          try {
-            exercise['imageUrl'] = videoUrls[i];
-          } catch (e) {
-            exercise['imageUrl'] = "";
-          }
           await workoutTemplates.doc(value.id).update({
             'postId': value.id,
             'templateId': value.id,
@@ -248,7 +239,7 @@ class WorkoutPostServices {
                     "exercise${i.toString()}");
                 exercise['imageUrl'] = exerciseVideo;
               } catch (e) {
-                // exercise['imageUrl'] = "";
+                exercise['imageUrl'] = "";
               }
               await workoutTemplates.doc(editId).update({
                 'postId': workoutModel.templateId,
@@ -281,7 +272,7 @@ class WorkoutPostServices {
                     "exercise${i.toString()}");
                 exercise['imageUrl'] = exerciseVideo;
               } catch (e) {
-                // exercise['imageUrl'] = "";
+                exercise['imageUrl'] = "";
               }
               await workoutPosts.doc(editId).update({
                 'postId': editId,

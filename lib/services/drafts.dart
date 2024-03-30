@@ -5,7 +5,6 @@ import 'dart:typed_data';
 class WorkoutDraft {
   Uint8List? image;
   String workoutName = '';
-  List<LocalExerciseModel> exercises = [];
   List<dynamic> fetchedExercises = [];
   List<String> categories = [];
 }
