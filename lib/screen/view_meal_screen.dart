@@ -45,6 +45,16 @@ class _ViewMealScreenState extends State<ViewMealScreen> {
                 ),
               ),
             ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Text("Calories: ${widget.mealModel.calories.toString()}"),
+                  Text("Servings: ${widget.mealModel.servings.toString()}")
+                ],
+              ),
+            ),
             SizedBox(
               height: 40,
               child: ListView.builder(

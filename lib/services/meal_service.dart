@@ -49,6 +49,26 @@ class MealServices {
     });
   }
 
+  Future saveMeal(String uid, String mealId, bool isLiked) async {
+    if (!isLiked) {
+      await meals.doc(mealId).update({
+        "likes": FieldValue.arrayUnion([uid])
+      });
+
+      await FirebaseFirestore.instance.collection("saved").doc(uid).update({
+        "meals": FieldValue.arrayUnion([mealId])
+      });
+    } else {
+      await meals.doc(mealId).update({
+        "likes": FieldValue.arrayRemove([uid])
+      });
+
+      await FirebaseFirestore.instance.collection("saved").doc(uid).update({
+        "meals": FieldValue.arrayRemove([mealId])
+      });
+    }
+  }
+
   Future newImage(Uint8List image, String id) async {
     String thumbnail =
         await StorageServices().postThumbnail('mealPostImages', id, image);

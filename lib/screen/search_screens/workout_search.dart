@@ -1,7 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fitness_social_app/main.dart';
-import 'package:fitness_social_app/screen/run_workou.dart';
 import 'package:fitness_social_app/services/post_service.dart';
 import 'package:fitness_social_app/widgets/text_widget.dart';
 import 'package:fitness_social_app/widgets/workout_widgets/workout_widget.dart';
@@ -24,8 +21,6 @@ class WorkoutSearch extends ConsumerWidget {
       searchTerm.value = searchController.text;
     }
 
-    User? user = ref.read(userProvider);
-
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -45,7 +40,6 @@ class WorkoutSearch extends ConsumerWidget {
                         .where("workoutName", isGreaterThan: st.trim())
                         .where("workoutName",
                             isLessThanOrEqualTo: "${st.trim()}\uf7ff")
-                        .limit(5)
                         .snapshots(),
                     builder: (context, snapshot) {
                       if (snapshot.hasData &&
@@ -58,16 +52,12 @@ class WorkoutSearch extends ConsumerWidget {
                           itemBuilder: (context, index) {
                             final workout =
                                 WorkoutPostServices().mapDocPost(data[index]);
-                            if (workout.uid == user!.uid) {
-                              return Container();
-                            } else {
-                              return WorkoutWidget(
-                                workoutModel: workout,
-                                mini: false,
-                                day: day,
-                                selection: selection,
-                              );
-                            }
+                            return WorkoutWidget(
+                              workoutModel: workout,
+                              mini: false,
+                              day: day,
+                              selection: selection,
+                            );
                           },
                         );
                       } else {

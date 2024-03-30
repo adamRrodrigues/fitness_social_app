@@ -48,15 +48,10 @@ class _FollowageScreenState extends ConsumerState<FollowageScreen> {
                 builder: (context, snapshot) {
                   if (snapshot.hasData &&
                       snapshot.connectionState == ConnectionState.active) {
-                    final docs = snapshot.data!.docs.toList();
+                    final docs = snapshot.data!.docs.map((e) => e.id).toList();
                     // List<String> ids = [widget.uid];
-                    for (var i = 0; i < docs.length; i++) {
-                      ids.add(docs[i].id);
-
-                      print(docs[i].id);
-                    }
                     return StreamBuilder(
-                      stream: users.where("uid", whereIn: ids).snapshots(),
+                      stream: users.where("uid", whereIn: docs).snapshots(),
                       builder: (context, snapshot) {
                         if (snapshot.hasData &&
                             snapshot.connectionState ==

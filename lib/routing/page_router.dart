@@ -17,6 +17,7 @@ import 'package:fitness_social_app/screen/fetching_workout_screen.dart';
 import 'package:fitness_social_app/screen/local_exercise_edit_screen.dart';
 import 'package:fitness_social_app/screen/run_routine.dart';
 import 'package:fitness_social_app/screen/run_workou.dart';
+import 'package:fitness_social_app/screen/search_meals.dart';
 import 'package:fitness_social_app/screen/search_screens/followage_screen.dart';
 import 'package:fitness_social_app/screen/search_screens/search_screen.dart';
 import 'package:fitness_social_app/screen/search_workouts.dart';
@@ -80,6 +81,17 @@ final GoRouter appRouter = GoRouter(
               },
             ),
             GoRoute(
+              path: 'searchMealsScreen',
+              name: RouteConstants.searchMealsScreen,
+              pageBuilder: (context, state) {
+                int currentDay = state.extra as int;
+                return CupertinoPage(
+                    child: SearchMealsMain(
+                  currentDay: currentDay,
+                ));
+              },
+            ),
+            GoRoute(
               path: 'viewMealPlanScreen/:id',
               name: RouteConstants.viewMealPlanScreen,
               pageBuilder: (context, state) {
@@ -116,11 +128,7 @@ final GoRouter appRouter = GoRouter(
               path: 'createExercisePage',
               name: RouteConstants.createExercise,
               pageBuilder: (context, state) {
-                List<dynamic> exercises = state.extra as List<dynamic>;
-                return CupertinoPage(
-                    child: CreateExercise(
-                  exercises: exercises,
-                ));
+                return CupertinoPage(child: CreateExercise());
               },
             ),
             GoRoute(

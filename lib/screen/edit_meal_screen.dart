@@ -163,7 +163,7 @@ class _EditMealPostState extends ConsumerState<EditMealPost>
                               mealName: titleController.text,
                               description: mealDraft!.description,
                               calories: double.parse(caloriesController.text),
-                              uid: "",
+                              uid: user!.uid,
                               postId: "",
                               servings: int.parse(servingsController.text),
                               image: mealDraft!.image != null
@@ -174,8 +174,9 @@ class _EditMealPostState extends ConsumerState<EditMealPost>
                               ingredients: mealDraft!.ingredients,
                               tags: mealDraft!.categories);
                           try {
-                            String fs =
-                                await MealServices().templateToMeal(mealModel, );
+                            String fs = await MealServices().templateToMeal(
+                              mealModel,
+                            );
                             if (mealDraft!.image != null) {
                               await MealServices()
                                   .newImage(mealDraft!.image!, fs);

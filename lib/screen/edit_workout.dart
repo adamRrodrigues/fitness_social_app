@@ -107,7 +107,9 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
           appBar: AppBar(
             elevation: 0,
             title: Text(
-              "Create a Workout",
+              widget.workoutModel.uid == user!.uid
+                  ? "Edit a Workout"
+                  : "Create From Template",
               style: Theme.of(context).textTheme.titleLarge,
             ),
             backgroundColor: Theme.of(context).colorScheme.background,
@@ -397,19 +399,22 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                                 ),
                               );
                             } else {
-                              return GestureDetector(
-                                onTap: () {
-                                  context.pushNamed(
-                                      RouteConstants.localEditWorkout,
-                                      extra: {
-                                        "editingExercise": workoutDraft!
-                                            .fetchedExercises[index],
-                                        "index": index
-                                      });
-                                },
-                                child: LocalExerciseWidget(
-                                    exerciseModel:
-                                        workoutDraft!.fetchedExercises[index]),
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    context.pushNamed(
+                                        RouteConstants.localEditWorkout,
+                                        extra: {
+                                          "editingExercise": workoutDraft!
+                                              .fetchedExercises[index],
+                                          "index": index
+                                        });
+                                  },
+                                  child: LocalExerciseWidget(
+                                      exerciseModel: workoutDraft!
+                                          .fetchedExercises[index]),
+                                ),
                               );
                             }
                           });
@@ -426,8 +431,9 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
             elevation: 0,
             child: GestureDetector(
                 onTap: () {
-                  context.pushNamed(RouteConstants.createExercise,
-                      extra: workoutDraft!.fetchedExercises);
+                  context.pushNamed(
+                    RouteConstants.createExercise,
+                  );
                 },
                 child: const CustomButton(buttonText: 'Add Exercise')),
           ),

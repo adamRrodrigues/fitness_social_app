@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_social_app/main.dart';
+import 'package:fitness_social_app/services/feed_services.dart';
 import 'package:fitness_social_app/widgets/mini_profie.dart';
 import 'package:fitness_social_app/widgets/text_widget.dart';
 import 'package:flutter/material.dart';
@@ -30,6 +31,7 @@ class _UserSearchState extends ConsumerState<UserSearch> {
     // TODO: implement initState
     super.initState();
     user = ref.read(userProvider);
+
   }
 
   @override

@@ -13,40 +13,35 @@ class SearchScreen extends ConsumerWidget {
   final int currentDay;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return WillPopScope(
-      onWillPop: () async {
-        FeedServices().followers = [];
-        FeedServices().following = [];
-        return true;
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(searchType),
-          elevation: 0,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        ),
-        body: SafeArea(
-          child: Builder(
-            builder: (context) {
-              if (searchType == "Users") {
-                return const UserSearch();
-              } else if (searchType == "Workouts") {
-                return const WorkoutSearch();
-              } else if (searchType == "Add To Routine") {
-                return WorkoutSearch(
-                  selection: true,
-                  day: currentDay,
-                );
-              } else if (searchType == "Add To Meal Plan") {
-                return SearchMeals(
-                  selection: true,
-                  day: currentDay,
-                );
-              } else {
-                return const SearchMeals();
-              }
-            },
-          ),
+    FeedServices().followers = [];
+    FeedServices().following = [];
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(searchType),
+        elevation: 0,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      ),
+      body: SafeArea(
+        child: Builder(
+          builder: (context) {
+            if (searchType == "Users") {
+              return const UserSearch();
+            } else if (searchType == "Workouts") {
+              return const WorkoutSearch();
+            } else if (searchType == "Add To Routine") {
+              return WorkoutSearch(
+                selection: true,
+                day: currentDay,
+              );
+            } else if (searchType == "Add To Meal Plan") {
+              return SearchMeals(
+                selection: true,
+                day: currentDay,
+              );
+            } else {
+              return const SearchMeals();
+            }
+          },
         ),
       ),
     );

@@ -24,13 +24,12 @@ class FeedServices {
     return postQuery;
   }
 
-  Query<UserModel> fetchNonFollowedUsers(String uid) {
-    following.add(user.uid);
+  Query<UserModel> fetchUsers(String uid) {
     final Query<UserModel> postQuery;
 
     postQuery = FirebaseFirestore.instance
         .collection('users')
-        .where('uid', whereNotIn: following)
+        .where('uid', isNotEqualTo: uid)
         .withConverter(
           fromFirestore: (snapshot, _) => UserModel.fromMap(snapshot.data()!),
           toFirestore: (value, options) => value.toMap(),

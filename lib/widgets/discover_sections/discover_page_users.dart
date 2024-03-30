@@ -43,11 +43,11 @@ class _DiscoverPageUsersState extends ConsumerState<DiscoverPageUsers> {
         errorBuilder: (context, error, stackTrace) {
           return const Text("Error");
         },
-        query: feedServices.fetchNonFollowedUsers(widget.user!.uid),
+        query: feedServices.fetchUsers(widget.user!.uid),
         itemBuilder: (context, doc) {
           final post = doc.data();
           return SizedBox(
-              width: 400,
+              width: 100,
               // padding: const EdgeInsets.all(8.0),
               child: MiniProfileWidget(
                 thisUser: post,

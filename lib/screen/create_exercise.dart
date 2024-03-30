@@ -13,8 +13,7 @@ import 'package:numberpicker/numberpicker.dart';
 import 'package:video_player/video_player.dart';
 
 class CreateExercise extends ConsumerStatefulWidget {
-  const CreateExercise({Key? key, required this.exercises}) : super(key: key);
-  final List<dynamic> exercises;
+  const CreateExercise({Key? key}) : super(key: key);
 
   @override
   _CreateExerciseState createState() => _CreateExerciseState();
@@ -150,7 +149,7 @@ class _CreateExerciseState extends ConsumerState<CreateExercise> {
                 height: 10,
               ),
               CustomTextField(
-                maxLength: 250,
+                  maxLength: 250,
                   textController: descriptionController,
                   hintText: 'description'),
               const SizedBox(
@@ -429,8 +428,8 @@ class _CreateExerciseState extends ConsumerState<CreateExercise> {
                             reps: repValue,
                             sets: setValue);
                         exerciseModel.video = finalVideo;
+                        workoutDraft!.fetchedExercises.add(exerciseModel);
 
-                        widget.exercises.add(exerciseModel);
                         context.pop();
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(Commons()
@@ -453,7 +452,7 @@ class _CreateExerciseState extends ConsumerState<CreateExercise> {
                             reps: repValue,
                             sets: setValue);
                         exerciseModel.video = finalVideo;
-                        workoutDraft!.exercises.add(exerciseModel);
+                        workoutDraft!.fetchedExercises.add(exerciseModel);
                         context.pop();
                       }
                     }
@@ -463,8 +462,7 @@ class _CreateExerciseState extends ConsumerState<CreateExercise> {
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(Commons()
                         .snackBarMessage(
-                            'Exercise must have a name',
-                            Colors.red));
+                            'Exercise must have a name', Colors.red));
                   }
                 },
                 child: const CustomButton(buttonText: 'Done'))),

@@ -115,7 +115,7 @@ class WorkoutPostServices {
   String id = "";
 
   Future postWorkout(WorkoutModel workoutModel, Uint8List image,
-      List<LocalExerciseModel> exercises) async {
+      List<dynamic> exercises) async {
     await workoutPosts.add(workoutModel.toMap()).then((value) async {
       List<String> videoUrls = [];
 
@@ -318,7 +318,7 @@ class WorkoutPostServices {
                 "exercise${i.toString()}");
             exercise['imageUrl'] = exerciseVideo;
           } catch (e) {
-            // exercise['imageUrl'] = "";
+            exercise['imageUrl'] = "";
           }
           await workoutPosts.doc(value.id).update({
             'postId': value.id,

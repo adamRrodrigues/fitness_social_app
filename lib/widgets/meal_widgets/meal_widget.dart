@@ -12,30 +12,47 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class MealWidget extends ConsumerWidget {
+class MealWidget extends ConsumerStatefulWidget {
   const MealWidget(
       {Key? key, required this.meal, this.selection = false, this.day = 0})
       : super(key: key);
   final MealModel meal;
   final bool selection;
   final int day;
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    User? user = ref.read(userProvider);
+  _MealWidgetState createState() => _MealWidgetState();
+}
+
+class _MealWidgetState extends ConsumerState<MealWidget> {
+  User? user;
+  bool isLiked = false;
+  int likes = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    user = ref.read(userProvider);
+    isLiked = widget.meal.likes.contains(user!.uid);
+    likes = widget.meal.likes.length;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        if (selection == true) {
+        if (widget.selection == true) {
           await FirebaseFirestore.instance
               .collection("routines")
               .doc(user!.uid)
-              .collection("day $day")
+              .collection("day ${widget.day}")
               .doc("meals")
               .update({
-            "meals": FieldValue.arrayUnion([meal.postId])
+            "meals": FieldValue.arrayUnion([widget.meal.postId])
           });
           context.pop();
         } else {
-          context.pushNamed(RouteConstants.viewMealScreen, extra: meal);
+          context.pushNamed(RouteConstants.viewMealScreen, extra: widget.meal);
         }
       },
       onLongPress: () {
@@ -53,11 +70,11 @@ class MealWidget extends ConsumerWidget {
               child: ListView(
                 shrinkWrap: true,
                 children: [
-                  meal.uid == user!.uid
+                  widget.meal.uid == user!.uid
                       ? GestureDetector(
                           onTap: () {
                             context.pop();
-                            MealServices().deleteMeal(meal.postId);
+                            MealServices().deleteMeal(widget.meal.postId);
                           },
                           child: const BottomModalItem(
                             text: "Delete This Post",
@@ -96,26 +113,72 @@ class MealWidget extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(
-                    height: 200,
-                    width: double.infinity,
-                    child: ClipRRect(
-                      borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(10),
-                          topRight: Radius.circular(10)),
-                      child: ImageWidget(url: meal.image),
-                    ),
+                  Stack(
+                    children: [
+                      SizedBox(
+                        height: 200,
+                        width: double.infinity,
+                        child: ClipRRect(
+                          borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(10),
+                              topRight: Radius.circular(10)),
+                          child: ImageWidget(url: widget.meal.image),
+                        ),
+                      ),
+                      Positioned(
+                        right: 0,
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              MealServices().saveMeal(
+                                  user!.uid, widget.meal.postId, isLiked);
+                              isLiked = !isLiked;
+                              isLiked ? likes++ : likes--;
+                            });
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                isLiked
+                                    ? Icon(
+                                        Icons.bookmark_rounded,
+                                        size: 32,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                      )
+                                    : Icon(
+                                        Icons.bookmark_outline_rounded,
+                                        size: 32,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                      ),
+                                Text(
+                                  likes.toString(),
+                                  style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primary),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   MiniProfie(
-                    userId: meal.uid,
-                    optionalSubText: meal.mealName,
+                    userId: widget.meal.uid,
+                    optionalSubText: widget.meal.mealName,
                   ),
                   const SizedBox(
                     height: 5,
                   ),
                   ListView.builder(
-                    itemCount: 3 > meal.ingredients.length
-                        ? meal.ingredients.length
+                    itemCount: 3 > widget.meal.ingredients.length
+                        ? widget.meal.ingredients.length
                         : 3,
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
@@ -127,7 +190,7 @@ class MealWidget extends ConsumerWidget {
                         minLeadingWidth: 10,
                         dense: true,
                         title: Text(
-                          meal.ingredients[index],
+                          widget.meal.ingredients[index],
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                       );
