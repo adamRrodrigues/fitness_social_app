@@ -143,13 +143,14 @@ class _CreateExerciseState extends ConsumerState<CreateExercise> {
                 ),
               ),
               CustomTextField(
-                  maxLength: 20,
+                  maxLength: 30,
                   textController: nameController,
                   hintText: 'exercise name'),
               const SizedBox(
                 height: 10,
               ),
               CustomTextField(
+                maxLength: 250,
                   textController: descriptionController,
                   hintText: 'description'),
               const SizedBox(

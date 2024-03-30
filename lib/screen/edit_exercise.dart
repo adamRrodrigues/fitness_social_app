@@ -82,11 +82,15 @@ class _EditExerciseState extends ConsumerState<EditExercise> {
   void initState() {
     super.initState();
     workoutDraft = ref.read(draftProvider);
-    weightValue = widget.editingExercise.weight;
-    repValue = widget.editingExercise.reps;
-    setValue = widget.editingExercise.sets;
     nameController.text = widget.editingExercise.name;
     descriptionController.text = widget.editingExercise.description;
+    weightValue = widget.editingExercise.weight;
+    int intpart = weightValue.toInt();
+    double decpart = weightValue - intpart;
+    nominalValue = intpart;
+    decimalValue = (decpart * 10).toInt();
+    repValue = widget.editingExercise.reps;
+    setValue = widget.editingExercise.sets;
     totalTime = widget.editingExercise.time;
     selected = widget.editingExercise.type;
     hours = widget.editingExercise.time ~/ 60;
@@ -165,13 +169,14 @@ class _EditExerciseState extends ConsumerState<EditExercise> {
                 ),
               ),
               CustomTextField(
-                  maxLength: 20,
+                  maxLength: 30,
                   textController: nameController,
                   hintText: 'exercise name'),
               const SizedBox(
                 height: 10,
               ),
               CustomTextField(
+                maxLength: 250,
                   textController: descriptionController,
                   hintText: 'description'),
               const SizedBox(

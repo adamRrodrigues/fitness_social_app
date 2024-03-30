@@ -156,11 +156,13 @@ class _LocalExerciseEditScreenState
                   ),
                 ),
                 CustomTextField(
+                  maxLength: 30,
                     textController: nameController, hintText: 'exercise name'),
                 const SizedBox(
                   height: 10,
                 ),
                 CustomTextField(
+                  maxLength: 250,
                     textController: descriptionController,
                     hintText: 'description'),
                 const SizedBox(
@@ -239,10 +241,10 @@ class _LocalExerciseEditScreenState
                                 color: Theme.of(context).colorScheme.primary,
                                 fontSize: 38),
                             onChanged: (value) {
-                              // setState(() {
-                              nominalValue = value;
-                              weightValue = nominalValue + decimalValue / 10;
-                              // });
+                              setState(() {
+                                nominalValue = value;
+                                weightValue = nominalValue + decimalValue / 10;
+                              });
                             },
                           ),
                           const Text(
@@ -261,10 +263,10 @@ class _LocalExerciseEditScreenState
                                 color: Theme.of(context).colorScheme.primary,
                                 fontSize: 38),
                             onChanged: (value) {
-                              // setState(() {
-                              decimalValue = value;
-                              weightValue = nominalValue + decimalValue / 10;
-                              // });
+                              setState(() {
+                                decimalValue = value;
+                                weightValue = nominalValue + decimalValue / 10;
+                              });
                             },
                           ),
                         ],

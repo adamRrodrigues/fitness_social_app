@@ -71,12 +71,10 @@ class _FollowageScreenState extends ConsumerState<FollowageScreen> {
                               itemBuilder: (context, index) {
                                 final user =
                                     UserServices().mapDocUser(data[index]);
-                                return Expanded(
-                                  child: MiniProfie(
-                                    userId: data[index].id,
-                                    userModel: user,
-                                  ).animate().shimmer(),
-                                );
+                                return MiniProfie(
+                                  userId: data[index].id,
+                                  userModel: user,
+                                ).animate().shimmer();
                               },
                             );
                           } else {

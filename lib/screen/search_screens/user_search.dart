@@ -86,12 +86,10 @@ class _UserSearchState extends ConsumerState<UserSearch> {
                                       physics: const BouncingScrollPhysics(),
                                       itemCount: data.length,
                                       itemBuilder: (context, index) {
-                                        return Expanded(
-                                          child:
-                                              MiniProfie(userId: data[index].id)
-                                                  .animate()
-                                                  .shimmer(),
-                                        );
+                                        return MiniProfie(
+                                                userId: data[index].id)
+                                            .animate()
+                                            .shimmer();
                                       },
                                     );
                                   } else {
