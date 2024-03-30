@@ -54,14 +54,8 @@ void incrementSet(int setLimit, int exerciseLimit, int workoutLimit) async {
         currentExercise.value = 0;
         currentSet.value = 1;
       } else {
-        showDone.value = true;
-        if (await day!.checkDay()) {
-          await FirebaseFirestore.instance
-              .collection('user_stats')
-              .doc(user!.uid)
-              .update({"workoutStreak": FieldValue.increment(1)});
-          day!.setDay();
-        }
+        endWorkout();
+
         currentExercise.value = 0;
         currentWorkout.value = 0;
         currentSeconds.value = 0;
@@ -73,8 +67,15 @@ void incrementSet(int setLimit, int exerciseLimit, int workoutLimit) async {
   }
 }
 
-void endWorkout() {
+void endWorkout() async {
   showDone.value = true;
+  if (await day!.checkDay()) {
+    await FirebaseFirestore.instance
+        .collection('user_stats')
+        .doc(user!.uid)
+        .update({"workoutStreak": FieldValue.increment(1)});
+    day!.setDay();
+  }
 }
 
 void reset() {
@@ -131,7 +132,6 @@ class _RunWorkoutState extends ConsumerState<RunWorkout> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     day = ref.read(dayProvider);
     user = ref.read(userProvider);
@@ -139,7 +139,6 @@ class _RunWorkoutState extends ConsumerState<RunWorkout> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     try {
       vController!.dispose();
@@ -630,17 +629,9 @@ class _RunWorkoutState extends ConsumerState<RunWorkout> {
                                         currentExercise.value = 0;
                                         currentSet.value = 1;
                                       } else {
+                                        // if (await day!.checkDay()) {
                                         endWorkout();
-                                        if (await day!.checkDay()) {
-                                          await FirebaseFirestore.instance
-                                              .collection('user_stats')
-                                              .doc(user!.uid)
-                                              .update({
-                                            "workoutStreak":
-                                                FieldValue.increment(1)
-                                          });
-                                          day!.setDay();
-                                        }
+                                        // }
                                       }
                                     }
                                   }

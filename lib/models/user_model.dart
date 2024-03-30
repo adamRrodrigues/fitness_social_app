@@ -52,8 +52,8 @@ class UserModel {
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
         username: map['username'] as String,
-        firstName: '',
-        lastName: '',
+        firstName: map['firstName'] as String,
+        lastName: map['lastName'] as String,
         uid: map['uid'] as String,
         posts: List.from(
           (map['posts'] as List),

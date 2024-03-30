@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_social_app/auth/auth_console.dart';
 import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/pages/main_page.dart';
+import 'package:fitness_social_app/screen/onboarding_screen/onboarding_screens.dart';
 import 'package:fitness_social_app/services/auth_service.dart';
 import 'package:fitness_social_app/services/routine_services.dart';
 import 'package:flutter/material.dart';
@@ -23,12 +24,7 @@ class _AuthStateState extends ConsumerState<AuthState> {
   Widget build(BuildContext context) {
     Auth auth = ref.read(authProvider);
 
-    Future createAccount() async {
-      await RoutineServices().createRoutine();
-      setState(() {
-        auth.isRegistering = false;
-      });
-    }
+    
 
     return Scaffold(
       body: StreamBuilder<User?>(
@@ -38,10 +34,8 @@ class _AuthStateState extends ConsumerState<AuthState> {
             if (!auth.isRegistering) {
               return const MainPage();
             } else {
-              createAccount();
-              return const Center(
-                child: Text("Creating Your Account"),
-              );
+              // createAccount();
+              return const OnboardingScreens();
             }
           } else {
             return const AuthConsole();
