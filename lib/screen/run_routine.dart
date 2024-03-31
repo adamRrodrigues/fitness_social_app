@@ -48,7 +48,7 @@ class _RunRoutineState extends ConsumerState<RunRoutine> {
           itemCount: routine!.routines[widget.currentDay].workouts.length,
           onReorder: _onReorder,
           itemBuilder: (context, index) {
-            return Container(
+            return GestureDetector(
               key: ValueKey(index),
               child: WorkoutWidget(
                   workoutModel:

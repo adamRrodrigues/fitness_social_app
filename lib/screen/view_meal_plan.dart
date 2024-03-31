@@ -1,10 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/models/meal_model.dart';
 import 'package:fitness_social_app/routing/route_constants.dart';
-import 'package:fitness_social_app/services/feed_services.dart';
-import 'package:fitness_social_app/services/meal_service.dart';
 import 'package:fitness_social_app/services/routine_services.dart';
 import 'package:fitness_social_app/widgets/custom_button.dart';
 import 'package:fitness_social_app/widgets/custom_calender.dart';
@@ -45,48 +42,30 @@ class VviewMealPlanScreenState extends State<ViewMealPlanScreen> {
     User? user = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
-        appBar: AppBar(
-          title: const Text("My Meal Plan"),
-          elevation: 0,
+      appBar: AppBar(
+        title: const Text("My Meal Plan"),
+        elevation: 0,
+      ),
+      body: SafeArea(
+          child: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        child: Column(
+          children: [
+            CustomCalender(
+              currentDay: currentDay,
+              dates: dates,
+              today: now,
+              func: (data) {
+                setState(() {
+                  currentDay = data;
+                });
+              },
+            ),
+            MealPlan(user: user, currentDay: currentDay)
+          ],
         ),
-        body: SafeArea(
-            child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          child: Column(
-            children: [
-              CustomCalender(
-                currentDay: currentDay,
-                dates: dates,
-                today: now,
-                func: (data) {
-                  setState(() {
-                    currentDay = data;
-                  });
-                },
-              ),
-              MealPlan(user: user, currentDay: currentDay)
-            ],
-          ),
-        )),
-        bottomNavigationBar: BottomAppBar(
-            height: 60,
-            padding: const EdgeInsets.all(8),
-            color: Colors.transparent,
-            elevation: 0,
-            child: user!.uid == widget.uid
-                ? GestureDetector(
-                    onTap: () {
-                      context.pushNamed(RouteConstants.searchScreen,
-                          pathParameters: {"searchType": "Add To Meal Plan"},
-                          extra: currentDay);
-                    },
-                    child: const CustomButton(buttonText: 'Add Meal'))
-                : GestureDetector(
-                    onTap: () {
-                      RoutineServices()
-                          .saveMealPlan(user.uid, widget.uid, currentDay);
-                    },
-                    child: const CustomButton(buttonText: 'Save Meal Plan'))));
+      )),
+    );
   }
 }
 
@@ -119,7 +98,6 @@ class MealPlan extends StatelessWidget {
           if (data['meals'].isNotEmpty) {
             for (int i = 0; i < data['meals'].length; i++) {
               meals.add(data['meals'][i]);
-              print(meals);
             }
             if (meals.isNotEmpty) {
               return ListView.builder(
@@ -129,7 +107,6 @@ class MealPlan extends StatelessWidget {
                 itemBuilder: (context, index) {
                   return Slidable(
                     closeOnScroll: true,
-                    
                     startActionPane:
                         ActionPane(motion: const ScrollMotion(), children: [
                       SlidableAction(

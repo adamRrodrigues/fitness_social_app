@@ -48,14 +48,6 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
 
   bool loadingExercises = true;
 
-  List<String> popularTags = [
-    "Chest",
-    "Arms",
-    "Cardio",
-    "Legs",
-    "Back",
-  ];
-
   void selectImage(String mode) async {
     try {
       Uint8List? file;
@@ -140,7 +132,7 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                         uid: user!.uid,
                         imageUrl: imageUrl,
                         postId: '',
-                        templateId: widget.workoutModel.postId,
+                        templateId: widget.workoutModel.templateId,
                         createdAt: Timestamp.now(),
                         likeCount: 0,
                         likes: List.empty(),
@@ -315,76 +307,52 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                         backgroundColor: Theme.of(context).colorScheme.primary,
                         onPressed: () {
                           focusNode.requestFocus();
-                          showModalBottomSheet(
-                            context: context,
-                            isScrollControlled: true,
-                            showDragHandle: true,
-                            useSafeArea: true,
-                            shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.vertical(
-                                    top: Radius.circular(20))),
-                            builder: (context) {
-                              return SizedBox(
-                                height: 450,
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: CustomTextField(
-                                              focusNode: focusNode,
-                                              textController:
-                                                  categoryController,
-                                              hintText: 'add a category'),
-                                        ),
-                                        FloatingActionButton(
-                                          mini: true,
-                                          onPressed: () {
+                          showModal(ModalEntry.aligned(context,
+                              tag: 'containerModal',
+                              barrierDismissible: true,
+                              alignment: Alignment.center,
+                              // removeOnPop: true,
+
+                              child: Material(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .background,
+                                      border: Border.all(
+                                          width: 2,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary),
+                                      borderRadius: BorderRadius.circular(10)),
+                                  width: 300,
+                                  height: 200,
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      CustomTextField(
+                                          focusNode: focusNode,
+                                          textController: categoryController,
+                                          hintText: 'add a category'),
+                                      GestureDetector(
+                                          onTap: () {
                                             setState(() {
-                                              workoutDraft!.categories
+                                              widget.workoutModel.categories
                                                   .add(categoryController.text);
                                               categoryController.text = '';
                                             });
+                                            removeAllModals();
                                           },
-                                          child: const Icon(Icons.add),
-                                        ),
-                                      ],
-                                    ),
-                                    const Divider(),
-                                    const Center(
-                                      child: Text("Popular Tags: "),
-                                    ),
-                                    Expanded(
-                                      child: ListView.builder(
-                                        shrinkWrap: true,
-                                        itemCount: popularTags.length,
-                                        itemBuilder: (context, index) {
-                                          return GestureDetector(
-                                            onTap: () {
-                                              setState(() {
-                                                workoutDraft!.categories
-                                                    .add(popularTags[index]);
-                                                context.pop();
-                                              });
-                                            },
-                                            child: Column(
-                                              children: [
-                                                ListTile(
-                                                  title:
-                                                      Text(popularTags[index]),
-                                                ),
-                                                const Divider()
-                                              ],
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    )
-                                  ],
+                                          child: const Padding(
+                                            padding: EdgeInsets.all(8.0),
+                                            child:
+                                                CustomButton(buttonText: 'Add'),
+                                          ))
+                                    ],
+                                  ),
                                 ),
-                              );
-                            },
-                          );
+                              )));
                         },
                         child: const Icon(Icons.add),
                       )
@@ -411,17 +379,18 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                             if (workoutDraft!
                                     .fetchedExercises[index].runtimeType ==
                                 ExerciseModel) {
+                              print(workoutDraft!.fetchedExercises[index]);
                               return Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: GestureDetector(
                                   onTap: () {
+                                    print(
+                                        workoutDraft!.fetchedExercises[index]);
                                     context.pushNamed(
                                       RouteConstants.editExercise,
                                       extra: {
                                         "editingExercise": workoutDraft!
                                             .fetchedExercises[index],
-                                        "exercises":
-                                            workoutDraft!.fetchedExercises,
                                         "index": index
                                       },
                                     );
@@ -437,10 +406,9 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                                             flex: 1,
                                             onPressed: (context) {
                                               setState(() {
-                                                workoutDraft!.fetchedExercises
-                                                    .add(workoutDraft!
-                                                            .fetchedExercises[
-                                                        index]);
+                                                workoutDraft!.fetchedExercises.add(
+                                                    workoutDraft!
+                                                        .fetchedExercises[index]);
                                               });
                                             },
                                             backgroundColor: Colors.greenAccent,
@@ -451,7 +419,7 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                                           )
                                         ]),
                                     endActionPane: ActionPane(
-                                        motion: ScrollMotion(),
+                                        motion: const ScrollMotion(),
                                         children: [
                                           SlidableAction(
                                             padding: const EdgeInsets.all(8),
@@ -491,56 +459,9 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                                           "index": index
                                         });
                                   },
-                                  child: Slidable(
-                                    startActionPane: ActionPane(
-                                        motion: const ScrollMotion(),
-                                        children: [
-                                          SlidableAction(
-                                            autoClose: true,
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            flex: 1,
-                                            onPressed: (context) {
-                                              setState(() {
-                                                workoutDraft!.fetchedExercises
-                                                    .add(workoutDraft!
-                                                            .fetchedExercises[
-                                                        index]);
-                                              });
-                                            },
-                                            backgroundColor: Colors.greenAccent,
-                                            foregroundColor: Theme.of(context)
-                                                .scaffoldBackgroundColor,
-                                            icon: Icons.replay_rounded,
-                                            label: 'Duplicate',
-                                          )
-                                        ]),
-                                    endActionPane: ActionPane(
-                                        motion: ScrollMotion(),
-                                        children: [
-                                          SlidableAction(
-                                            padding: const EdgeInsets.all(8),
-                                            autoClose: true,
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            flex: 1,
-                                            onPressed: (context) {
-                                              setState(() {
-                                                workoutDraft!.fetchedExercises
-                                                    .removeAt(index);
-                                              });
-                                            },
-                                            backgroundColor: Colors.redAccent,
-                                            foregroundColor: Theme.of(context)
-                                                .scaffoldBackgroundColor,
-                                            icon: Icons.delete,
-                                            label: 'Remove',
-                                          )
-                                        ]),
-                                    child: LocalExerciseWidget(
-                                        exerciseModel: workoutDraft!
-                                            .fetchedExercises[index]),
-                                  ),
+                                  child: LocalExerciseWidget(
+                                      exerciseModel: workoutDraft!
+                                          .fetchedExercises[index]),
                                 ),
                               );
                             }

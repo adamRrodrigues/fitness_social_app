@@ -1,11 +1,11 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-
 class WorkoutDraft {
   Uint8List? image;
   String workoutName = '';
   List<dynamic> fetchedExercises = [];
+  List<LocalExerciseModel> exercises = [];
   List<String> categories = [];
 }
 
@@ -44,7 +44,7 @@ class LocalExerciseModel {
     return <String, dynamic>{
       'name': name,
       'description': description,
-      'video': "",
+      'imageUrl': "",
       'toolName': "",
       'weight': weight,
       'reps': reps,

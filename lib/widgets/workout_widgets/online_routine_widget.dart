@@ -60,7 +60,7 @@ class _OnlineRoutineWidgetState extends ConsumerState<OnlineRoutineWidget> {
               ? ListView.builder(
                   addAutomaticKeepAlives: true,
                   shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
+                  physics: const BouncingScrollPhysics(),
                   itemCount: data['workouts'].length,
                   itemBuilder: (context, index) {
                     return Slidable(

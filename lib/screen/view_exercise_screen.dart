@@ -17,12 +17,21 @@ class ViewExerciseScreen extends StatefulWidget {
 class _ViewExerciseScreenState extends State<ViewExerciseScreen> {
   VideoPlayerController? vController;
   @override
+  void dispose() {
+    super.dispose();
+    try {
+      vController!.dispose();
+    } catch (e) {}
+  }
+
+  @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
         try {
           vController!.dispose();
         } catch (e) {}
+
         return true;
       },
       child: Scaffold(

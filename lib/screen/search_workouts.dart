@@ -1,9 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_social_app/feed/workout_feed.dart';
 import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/models/routine_model.dart';
+import 'package:fitness_social_app/models/workout_post_model.dart';
 import 'package:fitness_social_app/screen/search_screens/workout_search.dart';
 import 'package:fitness_social_app/services/feed_services.dart';
+import 'package:fitness_social_app/services/post_service.dart';
+import 'package:fitness_social_app/widgets/workout_widgets/workout_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -38,7 +42,7 @@ class _SearchWorkoutsState extends ConsumerState<SearchWorkouts> {
             style: Theme.of(context).textTheme.titleLarge,
           )),
       body: DefaultTabController(
-        length: 2,
+        length: 3,
         child: Column(
           children: [
             TabBar(
@@ -46,7 +50,7 @@ class _SearchWorkoutsState extends ConsumerState<SearchWorkouts> {
               tabs: [
                 Tab(
                     icon: Icon(
-                  Icons.fitness_center_rounded,
+                  Icons.person_rounded,
                   color: Theme.of(context).colorScheme.secondary,
                 )),
                 Tab(
@@ -54,22 +58,28 @@ class _SearchWorkoutsState extends ConsumerState<SearchWorkouts> {
                   Icons.bookmark_rounded,
                   color: Theme.of(context).colorScheme.secondary,
                 )),
+                Tab(
+                    icon: Icon(
+                  Icons.search_rounded,
+                  color: Theme.of(context).colorScheme.secondary,
+                )),
               ],
             ),
             Expanded(
               child: TabBarView(
                 children: [
-                  WorkoutSearch(
-                    selection: true,
-                    day: widget.index,
-                  ),
                   WorkoutFeed(
                     profileView: true,
                     selection: true,
                     day: widget.index,
                     uid: user!.uid,
                     postQuery: FeedServices().fetchUserWorkouts(user.uid),
-                  )
+                  ),
+                  workoutsSaved(),
+                  WorkoutSearch(
+                    selection: true,
+                    day: widget.index,
+                  ),
                 ],
               ),
             )
@@ -77,5 +87,60 @@ class _SearchWorkoutsState extends ConsumerState<SearchWorkouts> {
         ),
       ),
     );
+  }
+
+  FutureBuilder<DocumentSnapshot<Map<String, dynamic>>> workoutsSaved() {
+    return FutureBuilder(
+        future:
+            FirebaseFirestore.instance.collection("saved").doc(user!.uid).get(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData &&
+              snapshot.connectionState == ConnectionState.done) {
+            List<dynamic> items = snapshot.data!.get('posts');
+            if (items.isNotEmpty) {
+              return ListView.builder(
+                physics: BouncingScrollPhysics(),
+                itemCount: items.length,
+                itemBuilder: (context, index) {
+                  return FutureBuilder(
+                    future: FirebaseFirestore.instance
+                        .collection('workout_templates_demo')
+                        .doc(items[index])
+                        .get(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData &&
+                          snapshot.connectionState == ConnectionState.done) {
+                        try {
+                          Map<String, dynamic> thisWorkout =
+                              snapshot.data!.data() as Map<String, dynamic>;
+
+                          final WorkoutModel mappedWorkout =
+                              WorkoutPostServices()
+                                  .mapDocPostFuture(thisWorkout);
+
+                          return WorkoutWidget(workoutModel: mappedWorkout);
+                        } catch (e) {
+                          WorkoutPostServices()
+                              .removeFromSavedWorkouts(items[index], user!.uid);
+                          return Container();
+                        }
+                      } else {
+                        return Center(child: CircularProgressIndicator());
+                      }
+                    },
+                  );
+                },
+              );
+            } else {
+              return Center(
+                child: Text("No Workouts Saved"),
+              );
+            }
+          } else {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        });
   }
 }

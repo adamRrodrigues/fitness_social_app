@@ -282,54 +282,57 @@ class _LocalExerciseEditScreenState
                             children: [
                               Padding(
                                 padding: const EdgeInsets.all(16.0),
-                                child: Column(
+                                child: Row(
                                   mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                      MainAxisAlignment.spaceAround,
                                   children: [
-                                    Text('Reps: $repValue'),
-                                    NumberPicker(
-                                      itemHeight: 50,
-                                      itemWidth: 50,
-                                      minValue: 0,
-                                      infiniteLoop: true,
-                                      axis: Axis.horizontal,
-                                      itemCount: 3,
-                                      maxValue: 25,
-                                      selectedTextStyle: TextStyle(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary,
-                                          fontSize: 38),
-                                      value: repValue,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          repValue = value;
-                                        });
-                                      },
+                                    Column(
+                                      children: [
+                                        NumberPicker(
+                                          itemHeight: 50,
+                                          itemWidth: 50,
+                                          minValue: 0,
+                                          infiniteLoop: true,
+                                          itemCount: 2,
+                                          maxValue: 25,
+                                          selectedTextStyle: TextStyle(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary,
+                                              fontSize: 38),
+                                          value: repValue,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              repValue = value;
+                                            });
+                                          },
+                                        ),
+                                        Text('Reps: $repValue'),
+                                      ],
                                     ),
-                                    const SizedBox(
-                                      height: 40,
-                                    ),
-                                    Text('Sets: $setValue'),
-                                    NumberPicker(
-                                      itemHeight: 50,
-                                      itemWidth: 50,
-                                      minValue: 0,
-                                      infiniteLoop: true,
-                                      itemCount: 3,
-                                      axis: Axis.horizontal,
-                                      maxValue: 8,
-                                      selectedTextStyle: TextStyle(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary,
-                                          fontSize: 38),
-                                      value: setValue,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          setValue = value;
-                                        });
-                                      },
+                                    Column(
+                                      children: [
+                                        NumberPicker(
+                                          itemHeight: 50,
+                                          itemWidth: 50,
+                                          minValue: 0,
+                                          infiniteLoop: true,
+                                          itemCount: 2,
+                                          maxValue: 8,
+                                          selectedTextStyle: TextStyle(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary,
+                                              fontSize: 38),
+                                          value: setValue,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              setValue = value;
+                                            });
+                                          },
+                                        ),
+                                        Text('Sets: $setValue'),
+                                      ],
                                     ),
                                   ],
                                 ),
@@ -462,11 +465,18 @@ class _LocalExerciseEditScreenState
                     } else {
                       editedExercise.video = widget.localExerciseModel.video;
                     }
-                    workoutDraft!.fetchedExercises.removeAt(widget.index);
+                    try {
+                      workoutDraft!.fetchedExercises.removeAt(widget.index);
 
-                    workoutDraft!.fetchedExercises
-                        .insert(widget.index, editedExercise);
-                    vController!.dispose();
+                      workoutDraft!.fetchedExercises
+                          .insert(widget.index, editedExercise);
+                      vController!.dispose();
+                    } catch (e) {
+                      workoutDraft!.exercises.removeAt(widget.index);
+
+                      workoutDraft!.exercises
+                          .insert(widget.index, editedExercise);
+                    }
                     context.pop();
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(Commons()
@@ -489,11 +499,18 @@ class _LocalExerciseEditScreenState
                     } else {
                       editedExercise.video = widget.localExerciseModel.video;
                     }
-                    workoutDraft!.fetchedExercises.removeAt(widget.index);
+                    try {
+                      workoutDraft!.fetchedExercises.removeAt(widget.index);
 
-                    workoutDraft!.fetchedExercises
-                        .insert(widget.index, editedExercise);
-                    vController!.dispose();
+                      workoutDraft!.fetchedExercises
+                          .insert(widget.index, editedExercise);
+                      vController!.dispose();
+                    } catch (e) {
+                      workoutDraft!.exercises.removeAt(widget.index);
+
+                      workoutDraft!.exercises
+                          .insert(widget.index, editedExercise);
+                    }
                     context.pop();
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(Commons()

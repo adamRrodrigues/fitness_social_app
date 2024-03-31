@@ -100,7 +100,7 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                 onTap: () async {
                   if (titleController.text.isNotEmpty &&
                       image != null &&
-                      workoutDraft!.fetchedExercises.isNotEmpty) {
+                      workoutDraft!.exercises.isNotEmpty) {
                     WorkoutModel workoutModel = WorkoutModel(
                         workoutName: titleController.text,
                         categories: workoutDraft!.categories,
@@ -124,11 +124,11 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
 
                     try {
                       // await WorkoutPostServices()
-                      //     .postTemplate(workoutModel, workoutDraft!.fetchedExercises);
+                      //     .postTemplate(workoutModel, workoutDraft!.exercises);
                       await WorkoutPostServices().postWorkout(
                         workoutModel,
                         image!,
-                        workoutDraft!.fetchedExercises,
+                        workoutDraft!.exercises,
                       );
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -327,18 +327,18 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                 const SizedBox(
                   height: 10,
                 ),
-                workoutDraft!.fetchedExercises.isNotEmpty
+                workoutDraft!.exercises.isNotEmpty
                     ? ReorderableListView.builder(
                         onReorder: (oldIndex, newIndex) {
                           LocalExerciseModel exercise =
-                              workoutDraft!.fetchedExercises.removeAt(oldIndex);
-                          workoutDraft!.fetchedExercises.insert(
+                              workoutDraft!.exercises.removeAt(oldIndex);
+                          workoutDraft!.exercises.insert(
                               newIndex > oldIndex ? newIndex -= 1 : newIndex,
                               exercise);
                         },
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
-                        itemCount: workoutDraft!.fetchedExercises.length,
+                        itemCount: workoutDraft!.exercises.length,
                         itemBuilder: (context, index) {
                           return InkWell(
                             key: ValueKey(index),
@@ -346,7 +346,7 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                               context.pushNamed(RouteConstants.localEditWorkout,
                                   extra: {
                                     "editingExercise":
-                                        workoutDraft!.fetchedExercises[index],
+                                        workoutDraft!.exercises[index],
                                     "index": index
                                   });
                             },
@@ -360,9 +360,8 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                                       flex: 1,
                                       onPressed: (context) {
                                         setState(() {
-                                          workoutDraft!.fetchedExercises.add(
-                                              workoutDraft!
-                                                  .fetchedExercises[index]);
+                                          workoutDraft!.exercises.add(
+                                              workoutDraft!.exercises[index]);
                                         });
                                       },
                                       backgroundColor: Colors.greenAccent,
@@ -382,7 +381,7 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                                       flex: 1,
                                       onPressed: (context) {
                                         setState(() {
-                                          workoutDraft!.fetchedExercises
+                                          workoutDraft!.exercises
                                               .removeAt(index);
                                         });
                                       },
@@ -397,7 +396,7 @@ class _CreateWorkoutPostState extends ConsumerState<CreateWorkoutPost> {
                                 padding: const EdgeInsets.all(8.0),
                                 child: LocalExerciseWidget(
                                     exerciseModel:
-                                        workoutDraft!.fetchedExercises[index]),
+                                        workoutDraft!.exercises[index]),
                               ),
                             ),
                           );

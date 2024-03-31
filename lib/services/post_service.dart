@@ -115,8 +115,10 @@ class WorkoutPostServices {
   String id = "";
 
   Future postWorkout(WorkoutModel workoutModel, Uint8List image,
-      List<dynamic> exercises) async {
+      List<LocalExerciseModel> exercises) async {
     await workoutPosts.add(workoutModel.toMap()).then((value) async {
+      List<String> videoUrls = [];
+
       await users.doc(thisUser!.uid).update({
         'posts': FieldValue.arrayUnion([value.id]),
       });
@@ -135,8 +137,10 @@ class WorkoutPostServices {
               value.id,
               "exercise${i.toString()}");
           exercise['imageUrl'] = exerciseVideo;
+          videoUrls.add(exerciseVideo);
         } catch (e) {
           exercise['imageUrl'] = "";
+          videoUrls.add("");
         }
         await workoutPosts.doc(value.id).update({
           'postId': value.id,
@@ -152,6 +156,11 @@ class WorkoutPostServices {
         for (int i = 0; i < exercises.length; i++) {
           Map<String, dynamic> exercise = exercises[i].toMap();
 
+          try {
+            exercise['imageUrl'] = videoUrls[i];
+          } catch (e) {
+            exercise['imageUrl'] = "";
+          }
           await workoutTemplates.doc(value.id).update({
             'postId': value.id,
             'templateId': value.id,
@@ -222,11 +231,14 @@ class WorkoutPostServices {
             .doc(editId)
             .set(workoutModel.toMap())
             .then((value) async {
+          await workoutTemplates.doc(editId).update({
+            'postId': editId,
+            "isTemplate": true,
+          });
           for (int i = 0; i < exercises.length; i++) {
-            if (exercises.runtimeType == ExerciseModel) {
+            if (exercises[i].runtimeType == ExerciseModel) {
               Map<String, dynamic> exercise = exercises[i].toMap();
               await workoutTemplates.doc(editId).update({
-                'postId': editId,
                 'exercises': FieldValue.arrayUnion([exercise]),
               });
             } else {
@@ -242,8 +254,6 @@ class WorkoutPostServices {
                 exercise['imageUrl'] = "";
               }
               await workoutTemplates.doc(editId).update({
-                'postId': workoutModel.templateId,
-                "isTemplate": true,
                 'exercises': FieldValue.arrayUnion([exercise])
               });
               print(exercise);
@@ -256,7 +266,7 @@ class WorkoutPostServices {
             .set(workoutModel.toMap())
             .then((value) async {
           for (int i = 0; i < exercises.length; i++) {
-            if (exercises.runtimeType == ExerciseModel) {
+            if (exercises[i].runtimeType == ExerciseModel) {
               Map<String, dynamic> exercise = exercises[i].toMap();
               await workoutPosts.doc(editId).update({
                 'postId': editId,
@@ -292,7 +302,7 @@ class WorkoutPostServices {
     await workoutPosts.add(workoutModel.toMap()).then((value) async {
       id = value.id;
       for (int i = 0; i < exercises.length; i++) {
-        if (exercises.runtimeType == ExerciseModel) {
+        if (exercises[i].runtimeType == ExerciseModel) {
           Map<String, dynamic> exercise = exercises[i].toMap();
           await workoutPosts.doc(value.id).update({
             'postId': value.id,

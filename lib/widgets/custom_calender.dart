@@ -74,7 +74,10 @@ class _CustomeCalenderState extends State<CustomCalender> {
                                                 .colorScheme
                                                 .primary,
                                             fontSize: 36)
-                                    : Theme.of(context).textTheme.titleLarge,
+                                    : Theme.of(context)
+                                        .textTheme
+                                        .titleLarge!
+                                        .copyWith(fontSize: 26),
                               ),
                             ],
                           ),

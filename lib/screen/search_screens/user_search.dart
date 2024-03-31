@@ -18,7 +18,6 @@ class UserSearch extends ConsumerStatefulWidget {
 class _UserSearchState extends ConsumerState<UserSearch> {
   CollectionReference users = FirebaseFirestore.instance.collection("users");
   User? user;
-  List<String> ids = [];
   TextEditingController searchController = TextEditingController();
   ValueNotifier<String> searchTerm = ValueNotifier("");
 
@@ -31,7 +30,6 @@ class _UserSearchState extends ConsumerState<UserSearch> {
     // TODO: implement initState
     super.initState();
     user = ref.read(userProvider);
-
   }
 
   @override
@@ -45,11 +43,7 @@ class _UserSearchState extends ConsumerState<UserSearch> {
               builder: (context, snapshot) {
                 if (snapshot.hasData &&
                     snapshot.connectionState == ConnectionState.active) {
-                  final docs = snapshot.data!.docs.toList();
-                  List<String> ids = [user!.uid];
-                  for (var i = 0; i < docs.length; i++) {
-                    ids.add(docs[i].id);
-                  }
+                  final docs = snapshot.data!.docs.map((e) => e.id).toList();
                   return Column(
                     children: [
                       Padding(
@@ -65,8 +59,8 @@ class _UserSearchState extends ConsumerState<UserSearch> {
                             return StreamBuilder(
                                 stream: searchController.text == ""
                                     ? users
-                                        .where("uid", whereNotIn: ids)
-                                        .limit(5)
+                                        .where("uid", whereNotIn: docs)
+                                        .limit(10)
                                         .snapshots()
                                     : users
                                         .where("username",
@@ -75,7 +69,7 @@ class _UserSearchState extends ConsumerState<UserSearch> {
                                         .where("username",
                                             isLessThanOrEqualTo:
                                                 "${searchTerm.trim()}\uf7ff")
-                                        .limit(5)
+                                        .limit(10)
                                         .snapshots(),
                                 builder: (context, snapshot) {
                                   if (snapshot.hasData &&
