@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fitness_social_app/components/share.dart';
 import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/models/user_stats.dart';
 import 'package:fitness_social_app/pages/chat_page.dart';

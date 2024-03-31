@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fitness_social_app/components/share.dart';
 import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/models/routine_model.dart';
 import 'package:fitness_social_app/models/workout_post_model.dart';
@@ -103,15 +104,12 @@ class _WorkoutWidgetState extends ConsumerState<WorkoutWidget> {
                             icon: Icons.delete_rounded,
                           ))
                       : Container(),
-                  GestureDetector(
-                      onTap: () {
-                        context.pop();
-                      },
-                      child: const BottomModalItem(
-                        text: "Share",
-                        iconRequired: true,
-                        icon: Icons.share_rounded,
-                      ))
+                  ShareGeneric(
+                    onlyIcon: false,
+                    postTitle: widget.workoutModel.workoutName,
+                    postId: widget.workoutModel.postId,
+                    postImg: widget.workoutModel.imageUrl,
+                  ),
                 ],
               ),
             );

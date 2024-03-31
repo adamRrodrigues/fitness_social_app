@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fitness_social_app/components/share.dart';
 import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/models/generic_post_model.dart';
 import 'package:fitness_social_app/routing/route_constants.dart';
@@ -9,6 +10,7 @@ import 'package:fitness_social_app/widgets/mini_profie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 
 class GenericPostWidget extends ConsumerStatefulWidget {
@@ -30,6 +32,17 @@ class _GenericPostWidgetState extends ConsumerState<GenericPostWidget> {
   GenericPostServices? genericPostServices;
 
   bool isLiked = false;
+
+  void showToast(String message) {
+    Fluttertoast.showToast(
+      msg: message,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      backgroundColor: Theme.of(context).colorScheme.primary,
+      textColor: Colors.black,
+      fontSize: 16.0,
+    );
+  }
 
   @override
   void initState() {
@@ -83,14 +96,17 @@ class _GenericPostWidgetState extends ConsumerState<GenericPostWidget> {
                       : Container(),
                   const Divider(),
                   GestureDetector(
-                      onTap: () {
-                        context.pop();
-                      },
-                      child: const BottomModalItem(
-                        text: "Share",
-                        iconRequired: true,
-                        icon: Icons.share_rounded,
-                      ))
+                    onTap: () {
+                      context.pop();
+                      showToast("Currently unavailable");
+                    },
+                    child: const BottomModalItem(
+                      text: "Share",
+                      iconRequired: true,
+                      icon: Icons.share_rounded,
+                    ),
+                    // child: ,
+                  )
                 ],
               ),
             );
@@ -186,7 +202,11 @@ class _GenericPostWidgetState extends ConsumerState<GenericPostWidget> {
                             ),
                           ],
                         ),
-                        const Icon(Icons.share_outlined),
+                        GestureDetector(
+                            onTap: () {
+                              showToast("Currently unavailable");
+                            },
+                            child: const Icon(Icons.share_outlined)),
                       ],
                     ),
                   )

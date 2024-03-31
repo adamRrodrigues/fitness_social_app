@@ -106,4 +106,29 @@ class UserServices {
                 achievements: List.empty())
             .toMap());
   }
+
+  Future getUser(String uid) async {
+    // postQuery = FirebaseFirestore.instance
+    //     .collection("users")
+    //     .doc(uid)
+    //    );
+
+    final docRef = FirebaseFirestore.instance.collection('users').doc(uid);
+
+    final snapshot = await docRef.get();
+
+    if (snapshot.exists) {
+      return UserModel.fromMap(snapshot.data()!);
+    }
+
+    return null;
+
+    // return UserModel.fromMap(docRef.get())
+
+    // final snapshot = await docRef.get();
+    // if (snapshot.exists) {
+    //   return snapshot.data();
+    // }
+    // return null; // Handle case where user data doesn't exist
+  }
 }

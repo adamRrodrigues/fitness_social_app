@@ -14,6 +14,7 @@ import 'package:fitness_social_app/widgets/mini_profie.dart';
 import 'package:fitness_social_app/widgets/text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class ViewPost extends ConsumerStatefulWidget {
   const ViewPost({Key? key, required this.post, required this.postId})
@@ -40,6 +41,17 @@ class _ViewPostState extends ConsumerState<ViewPost> {
     likeCount = widget.post.likeCount;
     comments = widget.post.comments.reversed.toList();
     super.initState();
+  }
+
+  void showToast(String message) {
+    Fluttertoast.showToast(
+      msg: message,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      backgroundColor: Theme.of(context).colorScheme.primary,
+      textColor: Colors.black,
+      fontSize: 16.0,
+    );
   }
 
   @override
@@ -162,9 +174,9 @@ class _ViewPostState extends ConsumerState<ViewPost> {
                                     ? SizedBox(
                                         height: 520,
                                         child: ListView.builder(
-                                          physics: const BouncingScrollPhysics(),
+                                          physics:
+                                              const BouncingScrollPhysics(),
                                           shrinkWrap: true,
-
                                           itemCount: comments.length,
                                           itemBuilder: (context, index) {
                                             CommentModel comment = CommentModel(
@@ -273,7 +285,12 @@ class _ViewPostState extends ConsumerState<ViewPost> {
                   ],
                 ),
               ),
-              const Icon(Icons.share_outlined),
+              GestureDetector(
+                onTap: () {
+                  showToast("Currently unavailable");
+                },
+                child: const Icon(Icons.share_outlined),
+              )
             ],
           ),
           const SizedBox(

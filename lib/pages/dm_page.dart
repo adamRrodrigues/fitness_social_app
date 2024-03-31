@@ -1,7 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fitness_social_app/components/chat_bubble.dart';
+import 'package:fitness_social_app/models/user_model.dart';
+import 'package:fitness_social_app/routing/route_constants.dart';
 import 'package:fitness_social_app/services/chat_services.dart';
+import 'package:fitness_social_app/services/fallback_services.dart';
+import 'package:fitness_social_app/services/feed_services.dart';
+import 'package:fitness_social_app/services/user_services.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class DmPage extends StatefulWidget {
   final String username;
@@ -140,14 +146,112 @@ class _DmPageState extends State<DmPage> {
 
     // align messages to the righ if sender is the current user, otherwise left
 
+    if (data['isShared'] ?? false) {
+      return Container(
+        alignment: alignment,
+        child: harambe(
+          imgUrl: data["imgUrl"],
+          postTitle: data["postTitle"],
+          // senderId: data["senderID"],
+          postId: data['postId'],
+        ),
+      );
+    } else {
+      return Container(
+        alignment: alignment,
+        child: Column(
+          crossAxisAlignment:
+              isCurrent ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          children: [
+            // Text(data["message"]),
+            ChatBubble(message: data["message"], isCurrentUser: isCurrent)
+          ],
+        ),
+      );
+    }
+  }
+
+  Widget myImager(String imgUrl) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8.0),
+        child: Image.network(
+          imgUrl,
+          fit: BoxFit.cover,
+
+          alignment: Alignment.center,
+          height: 100.0,
+          // height: double.infinity,
+          width: double.infinity,
+          // width: imageWidth,
+        ),
+      ),
+    );
+  }
+
+  Widget harambe({
+    required String imgUrl,
+    required String postTitle,
+    required String postId,
+  }) {
+    double widgetWidth = MediaQuery.of(context).size.width - 100;
+
     return Container(
-      alignment: alignment,
+      margin: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16.0),
+      // height: 266,
+      width: widgetWidth,
+      decoration: BoxDecoration(
+        color: Color.fromARGB(153, 48, 47, 47),
+        borderRadius: BorderRadius.circular(16.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            blurRadius: 10.0,
+            spreadRadius: 0.0,
+          ),
+        ],
+      ),
       child: Column(
-        crossAxisAlignment:
-            isCurrent ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Text(data["message"]),
-          ChatBubble(message: data["message"], isCurrentUser: isCurrent)
+          myImager(imgUrl),
+          const SizedBox(height: 10.0),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              postTitle,
+              style: const TextStyle(
+                fontSize: 16.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          const SizedBox(height: 10.0),
+          ElevatedButton(
+            onPressed: () async {
+              // Navigator.pushNamed(context, RouteConstants.userPage,
+              // arguments: {"extra": senderId});
+
+              // FallbackService().test(senderId);
+              // return;
+
+              // var gay = await UserServices().getUser(senderId);
+
+              context.pushNamed(
+                RouteConstants.fetchingWorkoutScreen,
+                extra: postId,
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+            ),
+            child: const Text('Visit'),
+          ),
         ],
       ),
     );
