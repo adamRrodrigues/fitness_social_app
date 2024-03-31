@@ -55,7 +55,7 @@ class RoutineServices {
     });
   }
 
-  Future saveRoutine(String uid, String routineId, int day) async {
+  Future saveRoutine(String uid, String routineId, int day, int toDay) async {
     //get routine workouts
     List<dynamic> workouts = [];
     await routines
@@ -75,7 +75,7 @@ class RoutineServices {
 
     await routines
         .doc(uid)
-        .collection('day $day')
+        .collection('day $toDay')
         .doc('workouts')
         .update({"workouts": FieldValue.arrayUnion(workouts)});
   }
@@ -86,7 +86,7 @@ class RoutineServices {
     });
   }
 
-  Future saveMealPlan(String uid, String routineId, int day) async {
+  Future saveMealPlan(String uid, String routineId, int day, int toDay) async {
     //get routine workouts
     List<dynamic> workouts = [];
     await routines
@@ -106,7 +106,7 @@ class RoutineServices {
 
     await routines
         .doc(uid)
-        .collection('day $day')
+        .collection('day $toDay')
         .doc('workouts')
         .update({"workouts": FieldValue.arrayUnion(workouts)});
   }

@@ -141,6 +141,7 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage>
                   func: (data) {
                     setState(() {
                       currentDay = data;
+                      routine!.clearRoutine(data);
                     });
                   },
                 ),

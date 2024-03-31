@@ -112,7 +112,7 @@ class ViewWorkout extends StatelessWidget {
           elevation: 0,
           child: GestureDetector(
             onTap: () {
-              context.pushReplacementNamed(RouteConstants.editWorkout,
+              context.pushNamed(RouteConstants.editWorkout,
                   extra: {"workoutModel": workoutModel, "day": 69});
             },
             child: CustomButton(

@@ -462,11 +462,18 @@ class _LocalExerciseEditScreenState
                     } else {
                       editedExercise.video = widget.localExerciseModel.video;
                     }
-                    workoutDraft!.fetchedExercises.removeAt(widget.index);
+                    try {
+                      workoutDraft!.fetchedExercises.removeAt(widget.index);
 
-                    workoutDraft!.fetchedExercises
-                        .insert(widget.index, editedExercise);
-                    vController!.dispose();
+                      workoutDraft!.fetchedExercises
+                          .insert(widget.index, editedExercise);
+                      vController!.dispose();
+                    } catch (e) {
+                      workoutDraft!.exercises.removeAt(widget.index);
+
+                      workoutDraft!.exercises
+                          .insert(widget.index, editedExercise);
+                    }
                     context.pop();
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(Commons()
@@ -489,11 +496,18 @@ class _LocalExerciseEditScreenState
                     } else {
                       editedExercise.video = widget.localExerciseModel.video;
                     }
-                    workoutDraft!.fetchedExercises.removeAt(widget.index);
+                    try {
+                      workoutDraft!.fetchedExercises.removeAt(widget.index);
 
-                    workoutDraft!.fetchedExercises
-                        .insert(widget.index, editedExercise);
-                    vController!.dispose();
+                      workoutDraft!.fetchedExercises
+                          .insert(widget.index, editedExercise);
+                      vController!.dispose();
+                    } catch (e) {
+                      workoutDraft!.exercises.removeAt(widget.index);
+
+                      workoutDraft!.exercises
+                          .insert(widget.index, editedExercise);
+                    }
                     context.pop();
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(Commons()

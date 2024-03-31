@@ -16,15 +16,16 @@ class AuthState extends ConsumerStatefulWidget {
 }
 
 class _AuthStateState extends ConsumerState<AuthState> {
-  Future createAccount() async {
-    await RoutineServices().createRoutine();
-  }
-
   @override
   Widget build(BuildContext context) {
     Auth auth = ref.read(authProvider);
 
-    
+    Future createAccount() async {
+      await RoutineServices().createRoutine();
+      setState(() {
+        auth.isRegistering = false;
+      });
+    }
 
     return Scaffold(
       body: StreamBuilder<User?>(
@@ -34,8 +35,10 @@ class _AuthStateState extends ConsumerState<AuthState> {
             if (!auth.isRegistering) {
               return const MainPage();
             } else {
-              // createAccount();
-              return const OnboardingScreens();
+              createAccount();
+              return Center(
+                child: Text("Creating Your Account"),
+              );
             }
           } else {
             return const AuthConsole();
