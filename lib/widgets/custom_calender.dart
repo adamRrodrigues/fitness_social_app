@@ -46,37 +46,42 @@ class _CustomeCalenderState extends State<CustomCalender> {
                     shrinkWrap: true,
                     itemCount: days.length,
                     itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            changeAbleToday = widget.dates[index];
-                            widget.func(index);
-                          });
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(14.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                days[index],
-                                style: Theme.of(context).textTheme.bodySmall,
-                              ),
-                              Text(
-                                widget.dates[index].day.toString(),
-                                style: changeAbleToday.day ==
-                                        widget.dates[index].day
-                                    ? Theme.of(context)
-                                        .textTheme
-                                        .titleLarge!
-                                        .copyWith(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primary,
-                                            fontSize: 36)
-                                    : Theme.of(context).textTheme.titleLarge,
-                              ),
-                            ],
+                      return Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              changeAbleToday = widget.dates[index];
+                              widget.func(index);
+                            });
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(14.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  days[index],
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                ),
+                                Text(
+                                  widget.dates[index].day.toString(),
+                                  style: changeAbleToday.day ==
+                                          widget.dates[index].day
+                                      ? Theme.of(context)
+                                          .textTheme
+                                          .titleLarge!
+                                          .copyWith(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary,
+                                              fontSize: 36)
+                                      : Theme.of(context)
+                                          .textTheme
+                                          .titleLarge!
+                                          .copyWith(fontSize: 26),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       );

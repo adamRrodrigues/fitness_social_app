@@ -37,15 +37,21 @@ class _ViewRoutineState extends ConsumerState<ViewRoutine>
   @override
   void initState() {
     super.initState();
-    currentDay = widget.currentDay;
+   currentDay = now.weekday;
+    if (currentDay == 7) {
+      currentDay = 0;
+    }
+    print("day $currentDay");
     DateTime firstDayOfWeek = now.subtract(Duration(days: currentDay));
     today = now;
-    routine = ref.read(routineProvider);
-    tabController = TabController(length: 2, vsync: this, initialIndex: 0);
+
     for (int i = 0; i < 7; i++) {
       final day = firstDayOfWeek.add(Duration(days: i));
       dates.add(day);
     }
+
+    routine = ref.read(routineProvider);
+    tabController = TabController(length: 2, vsync: this, initialIndex: 0);
   }
 
   @override
