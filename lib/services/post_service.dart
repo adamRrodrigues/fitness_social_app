@@ -231,11 +231,14 @@ class WorkoutPostServices {
             .doc(editId)
             .set(workoutModel.toMap())
             .then((value) async {
+          await workoutTemplates.doc(editId).update({
+            'postId': editId,
+            "isTemplate": true,
+          });
           for (int i = 0; i < exercises.length; i++) {
             if (exercises[i].runtimeType == ExerciseModel) {
               Map<String, dynamic> exercise = exercises[i].toMap();
               await workoutTemplates.doc(editId).update({
-                'postId': editId,
                 'exercises': FieldValue.arrayUnion([exercise]),
               });
             } else {
@@ -251,8 +254,6 @@ class WorkoutPostServices {
                 exercise['imageUrl'] = "";
               }
               await workoutTemplates.doc(editId).update({
-                'postId': workoutModel.templateId,
-                "isTemplate": true,
                 'exercises': FieldValue.arrayUnion([exercise])
               });
               print(exercise);

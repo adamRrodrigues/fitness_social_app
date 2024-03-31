@@ -114,6 +114,20 @@ class FeedServices {
     return postQuery;
   }
 
+  Query<WorkoutModel> fetchUserTemplates(uid) {
+    final postQuery = FirebaseFirestore.instance
+        .collection('workout_templates_demo')
+        .where('uid', isEqualTo: uid)
+        .orderBy("createdAt", descending: true)
+        .withConverter(
+          fromFirestore: (snapshot, _) =>
+              WorkoutModel.fromMap(snapshot.data()!),
+          toFirestore: (post, _) => post.toMap(),
+        );
+
+    return postQuery;
+  }
+
   WorkoutModel mapSingleWorkout(
       DocumentSnapshot<Map<String, dynamic>> workoutData) {
     WorkoutModel thisWorkout = WorkoutModel(

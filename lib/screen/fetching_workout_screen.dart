@@ -4,6 +4,7 @@ import 'package:fitness_social_app/services/feed_services.dart';
 import 'package:fitness_social_app/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lottie/lottie.dart';
 
 class FetchingWorkoutScreen extends StatefulWidget {
   const FetchingWorkoutScreen({Key? key, required this.workoutId})
@@ -50,19 +51,10 @@ class _FetchingWorkoutScreenState extends State<FetchingWorkoutScreen> {
       body: Center(
         child: Builder(builder: (context) {
           if (!exists) {
-            return GestureDetector(
-              onTap: () {
-                context.pop();
-              },
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                height: 40,
-                child: const CustomButton(
-                  buttonText:
-                      'Sorry Looks Like this Template no longer exists :(',
-                ),
-              ),
-            );
+            return (Center(
+              child: Text(
+                  "Sorry Looks Like This Template has Been Deleted By The User"),
+            ));
           } else {
             return FutureBuilder(
                 future: FirebaseFirestore.instance
@@ -90,7 +82,7 @@ class _FetchingWorkoutScreenState extends State<FetchingWorkoutScreen> {
                             .doc(widget.workoutId)
                             .get(),
                         builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
+                          if (snapshot.connectionState !=
                                   ConnectionState.done &&
                               snapshot.hasData) {
                             final newData = snapshot.data;
@@ -107,7 +99,13 @@ class _FetchingWorkoutScreenState extends State<FetchingWorkoutScreen> {
                             });
                             exists = false;
                           }
-                          return const Text("Fetching Workout");
+                          return Column(
+                            children: [
+                              LottieBuilder.network(
+                                  "https://lottie.host/69d46a18-3885-495c-9076-fbc296a4c7a1/BlXniAaGlQ.json"),
+                              const Text("Fetching Workout"),
+                            ],
+                          );
                         },
                       );
                     }

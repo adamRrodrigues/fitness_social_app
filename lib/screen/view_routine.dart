@@ -90,7 +90,7 @@ class _ViewRoutineState extends ConsumerState<ViewRoutine>
             SizedBox(
               height: 600,
               child: TabBarView(
-                  // physics: NeverScrollableScrollPhysics(),
+                  physics: NeverScrollableScrollPhysics(),
                   controller: tabController,
                   children: [
                     OnlineRoutineWidget(
