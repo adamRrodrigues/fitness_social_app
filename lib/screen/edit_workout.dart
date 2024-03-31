@@ -19,6 +19,7 @@ import 'package:fitness_social_app/widgets/workout_widgets/exercise_widget.dart'
 import 'package:fitness_social_app/widgets/workout_widgets/local_exercise_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:modals/modals.dart';
@@ -131,7 +132,7 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                         uid: user!.uid,
                         imageUrl: imageUrl,
                         postId: '',
-                        templateId: widget.workoutModel.postId,
+                        templateId: widget.workoutModel.templateId,
                         createdAt: Timestamp.now(),
                         likeCount: 0,
                         likes: List.empty(),
@@ -383,20 +384,66 @@ class _EditWorkoutState extends ConsumerState<EditWorkout> {
                                 padding: const EdgeInsets.all(8.0),
                                 child: GestureDetector(
                                   onTap: () {
-                                    print(workoutDraft!.fetchedExercises[index]);
+                                    print(
+                                        workoutDraft!.fetchedExercises[index]);
                                     context.pushNamed(
                                       RouteConstants.editExercise,
                                       extra: {
                                         "editingExercise": workoutDraft!
                                             .fetchedExercises[index],
-                                        
                                         "index": index
                                       },
                                     );
                                   },
-                                  child: ExerciseWidget(
-                                      exerciseModel: workoutDraft!
-                                          .fetchedExercises[index]),
+                                  child: Slidable(
+                                    startActionPane: ActionPane(
+                                        motion: const ScrollMotion(),
+                                        children: [
+                                          SlidableAction(
+                                            autoClose: true,
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            flex: 1,
+                                            onPressed: (context) {
+                                              setState(() {
+                                                workoutDraft!.fetchedExercises.add(
+                                                    workoutDraft!
+                                                        .fetchedExercises[index]);
+                                              });
+                                            },
+                                            backgroundColor: Colors.greenAccent,
+                                            foregroundColor: Theme.of(context)
+                                                .scaffoldBackgroundColor,
+                                            icon: Icons.replay_rounded,
+                                            label: 'Duplicate',
+                                          )
+                                        ]),
+                                    endActionPane: ActionPane(
+                                        motion: const ScrollMotion(),
+                                        children: [
+                                          SlidableAction(
+                                            padding: const EdgeInsets.all(8),
+                                            autoClose: true,
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            flex: 1,
+                                            onPressed: (context) {
+                                              setState(() {
+                                                workoutDraft!.fetchedExercises
+                                                    .removeAt(index);
+                                              });
+                                            },
+                                            backgroundColor: Colors.redAccent,
+                                            foregroundColor: Theme.of(context)
+                                                .scaffoldBackgroundColor,
+                                            icon: Icons.delete,
+                                            label: 'Remove',
+                                          )
+                                        ]),
+                                    child: ExerciseWidget(
+                                        exerciseModel: workoutDraft!
+                                            .fetchedExercises[index]),
+                                  ),
                                 ),
                               );
                             } else {
