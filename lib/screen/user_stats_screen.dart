@@ -101,6 +101,7 @@ class _UserStatsScreenState extends ConsumerState<UserStatsScreen> {
                       final thisUserStat = UserStats(
                           uid: widget.uid,
                           userWeight: data['userWeight'],
+                          stepsGoal: data["stepsGoal"],
                           userHeight: data['userHeight'],
                           steps: List<int>.from(data['steps']),
                           workoutStreak: data['workoutStreak'],

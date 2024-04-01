@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fitness_social_app/commons/commons.dart';
 import 'package:fitness_social_app/main.dart';
 import 'package:fitness_social_app/models/routine_model.dart';
 import 'package:fitness_social_app/models/workout_post_model.dart';
@@ -8,6 +9,7 @@ import 'package:fitness_social_app/services/fallback_services.dart';
 import 'package:fitness_social_app/widgets/custom_button.dart';
 import 'package:fitness_social_app/widgets/custom_calender.dart';
 import 'package:fitness_social_app/widgets/progress_widget.dart';
+import 'package:fitness_social_app/widgets/text_widget.dart';
 import 'package:fitness_social_app/widgets/workout_widgets/online_routine_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -41,14 +43,11 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage>
   @override
   void initState() {
     super.initState();
-    // checkRoutineExists();
     currentDay = now.weekday;
     if (currentDay == 7) {
       currentDay = 0;
     }
-
-    // FallbackService().populateMultipleStepsUserStats(currentDay);
-
+    FallbackService().createUserStats();
     print("day $currentDay");
     DateTime firstDayOfWeek = now.subtract(Duration(days: currentDay));
     today = now;
@@ -58,9 +57,6 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage>
       final day = firstDayOfWeek.add(Duration(days: i));
       dates.add(day);
     }
-    // setState(() {
-    //   routineExists = true;
-    // });
 
     // initliazlie the pedometer
     initPedometer();
@@ -164,41 +160,192 @@ class _FitnesstrackerPageState extends ConsumerState<FitnesstrackerPage>
                         ValueListenableBuilder(
                             valueListenable: _steps,
                             builder: (context, steps, child) {
-                              return Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Material(
-                                  elevation: 2,
-                                  borderRadius: BorderRadius.circular(20),
-                                  child: Container(
-                                    height: 300,
-                                    decoration: BoxDecoration(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .surface,
-                                        borderRadius:
-                                            BorderRadius.circular(20)),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          "Steps",
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .titleLarge,
+                              int maxValue = 1000;
+                              return StreamBuilder(
+                                  stream: FirebaseFirestore.instance
+                                      .collection("user_stats")
+                                      .doc(user.uid)
+                                      .snapshots(),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData &&
+                                        snapshot.connectionState ==
+                                            ConnectionState.active) {
+                                      TextEditingController maxSteps =
+                                          TextEditingController();
+                                      maxValue =
+                                          snapshot.data!.get('stepsGoal');
+                                      return GestureDetector(
+                                        onTap: () {
+                                          showModalBottomSheet(
+                                            context: context,
+                                            builder: (context) {
+                                              return Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: SizedBox(
+                                                  height: 400,
+                                                  child: Material(
+                                                    child: Align(
+                                                      alignment:
+                                                          Alignment.topCenter,
+                                                      child: Row(
+                                                        children: [
+                                                          Expanded(
+                                                            child: CustomTextField(
+                                                                textInputType:
+                                                                    TextInputType
+                                                                        .number,
+                                                                maxLength: 5,
+                                                                textController:
+                                                                    maxSteps,
+                                                                hintText:
+                                                                    'Set Steps Goal'),
+                                                          ),
+                                                          Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(8.0),
+                                                            child:
+                                                                GestureDetector(
+                                                              onTap: () async {
+                                                                showDialog(
+                                                                  context:
+                                                                      context,
+                                                                  builder:
+                                                                      (context) {
+                                                                    return Center(
+                                                                      child:
+                                                                          CircularProgressIndicator(),
+                                                                    );
+                                                                  },
+                                                                );
+                                                                await FirebaseFirestore
+                                                                    .instance
+                                                                    .collection(
+                                                                        "user_stats")
+                                                                    .doc(user
+                                                                        .uid)
+                                                                    .update({
+                                                                  "stepsGoal":
+                                                                      int.parse(
+                                                                          maxSteps
+                                                                              .text)
+                                                                });
+                                                                if (context
+                                                                    .mounted) {
+                                                                  context.pop();
+                                                                  context.pop();
+                                                                }
+                                                                ScaffoldMessenger.of(
+                                                                        context)
+                                                                    .showSnackBar(Commons().snackBarMessage(
+                                                                        "Steps Goal Updated",
+                                                                        Colors
+                                                                            .green));
+                                                              },
+                                                              child: Icon(
+                                                                Icons
+                                                                    .post_add_rounded,
+                                                                size: 32,
+                                                                color: Theme.of(
+                                                                        context)
+                                                                    .colorScheme
+                                                                    .primary,
+                                                              ),
+                                                            ),
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          );
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Material(
+                                            elevation: 2,
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                            child: Container(
+                                              height: 300,
+                                              decoration: BoxDecoration(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .surface,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          20)),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    "Steps",
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .titleLarge,
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 30,
+                                                  ),
+                                                  ProgressWidget(
+                                                      // type: 'steps',
+                                                      value: steps,
+                                                      maxValue:
+                                                          maxValue.toDouble(),
+                                                      color: const Color(
+                                                          0xffFF8080)),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
                                         ),
-                                        const SizedBox(
-                                          height: 30,
+                                      );
+                                    } else {
+                                      return Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Material(
+                                          elevation: 2,
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                          child: Container(
+                                            height: 300,
+                                            decoration: BoxDecoration(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .surface,
+                                                borderRadius:
+                                                    BorderRadius.circular(20)),
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  "Steps",
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .titleLarge,
+                                                ),
+                                                const SizedBox(
+                                                  height: 30,
+                                                ),
+                                                ProgressWidget(
+                                                    // type: 'steps',
+                                                    value: steps,
+                                                    maxValue:
+                                                        maxValue.toDouble(),
+                                                    color: const Color(
+                                                        0xffFF8080)),
+                                              ],
+                                            ),
+                                          ),
                                         ),
-                                        ProgressWidget(
-                                            // type: 'steps',
-                                            value: steps,
-                                            color: const Color(0xffFF8080)),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              );
+                                      );
+                                    }
+                                  });
                             }),
                         StreamBuilder(
                           stream: FirebaseFirestore.instance

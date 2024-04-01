@@ -44,7 +44,10 @@ class FallbackService {
   Future createUserStats() async {
     var querySnapshots = await users.get();
     for (var doc in querySnapshots.docs) {
-      await UserServices().createUserStats(doc.id);
+      await FirebaseFirestore.instance
+          .collection("user_stats")
+          .doc(doc.id)
+          .update({"stepsGoal": 1000});
     }
   }
 

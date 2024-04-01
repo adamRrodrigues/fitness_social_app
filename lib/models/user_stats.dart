@@ -9,6 +9,7 @@ class UserStats {
   final double userHeight;
   final List<int> steps;
   final int workoutStreak;
+  final int stepsGoal;
   final List<Achievement> achievements;
   UserStats({
     required this.uid,
@@ -16,6 +17,7 @@ class UserStats {
     required this.userHeight,
     required this.steps,
     required this.workoutStreak,
+    required this.stepsGoal,
     required this.achievements,
   });
 
@@ -25,6 +27,7 @@ class UserStats {
     double? userHeight,
     List<int>? steps,
     int? workoutStreak,
+    int? stepsGoal,
     List<Achievement>? achievements,
   }) {
     return UserStats(
@@ -33,6 +36,7 @@ class UserStats {
       userHeight: userHeight ?? this.userHeight,
       steps: steps ?? this.steps,
       workoutStreak: workoutStreak ?? this.workoutStreak,
+      stepsGoal: stepsGoal ?? this.stepsGoal,
       achievements: achievements ?? this.achievements,
     );
   }
@@ -44,6 +48,7 @@ class UserStats {
       'userHeight': userHeight,
       'steps': steps,
       'workoutStreak': workoutStreak,
+      'stepsGoal': stepsGoal,
       'achievements': achievements.map((x) => x.toMap()).toList(),
     };
   }
@@ -53,8 +58,9 @@ class UserStats {
       uid: map['uid'] as String,
       userWeight: map['userWeight'] as double,
       userHeight: map['userHeight'] as double,
-      steps: map['steps'] as List<int>,
+      steps: List<int>.from((map['steps'] as List<int>)),
       workoutStreak: map['workoutStreak'] as int,
+      stepsGoal: map['stepsGoal'] as int,
       achievements: List<Achievement>.from(
         (map['achievements'] as List<int>).map<Achievement>(
           (x) => Achievement.fromMap(x as Map<String, dynamic>),
@@ -70,26 +76,30 @@ class UserStats {
 
   @override
   String toString() {
-    return 'UserStats(userWeight: $userWeight, userHeight: $userHeight, steps: $steps, workoutStreak: $workoutStreak, achievements: $achievements)';
+    return 'UserStats(uid: $uid, userWeight: $userWeight, userHeight: $userHeight, steps: $steps, workoutStreak: $workoutStreak, stepsGoal: $stepsGoal, achievements: $achievements)';
   }
 
   @override
   bool operator ==(covariant UserStats other) {
     if (identical(this, other)) return true;
 
-    return other.userWeight == userWeight &&
+    return other.uid == uid &&
+        other.userWeight == userWeight &&
         other.userHeight == userHeight &&
-        other.steps == steps &&
+        listEquals(other.steps, steps) &&
         other.workoutStreak == workoutStreak &&
+        other.stepsGoal == stepsGoal &&
         listEquals(other.achievements, achievements);
   }
 
   @override
   int get hashCode {
-    return userWeight.hashCode ^
+    return uid.hashCode ^
+        userWeight.hashCode ^
         userHeight.hashCode ^
         steps.hashCode ^
         workoutStreak.hashCode ^
+        stepsGoal.hashCode ^
         achievements.hashCode;
   }
 }
